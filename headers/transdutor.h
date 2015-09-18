@@ -1,4 +1,5 @@
-#ifndef transdutor
+#ifndef TRANSDUTOR_H
+#define TRANSDUTOR_H
 	#define BREAKLINE '\n'
 	typedef char WORD[200];
 	typedef int STATE;
@@ -12,12 +13,12 @@
 	struct {
 		int TBEGIN;
 		int TEND;
-		int TIDENT;
+		int TID;
 		
 	} TOKENS_ID = {
 		.TBEGIN = 0,
 		.TEND 	= 1,
-		.TIDENT = 2
+		.TID = 2
 	};
 	
 	/*ESTADOS AUTOMATO */

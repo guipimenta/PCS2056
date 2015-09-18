@@ -1,10 +1,13 @@
-#include<stdio.h>
+#include <stdio.h>
 #include <string.h>
-#include"transdutor.h"
+#include <transdutor.h>
+#include <aux_char.h>
+#include <lexical_error.h>
+
 
 int main() 
 {
-	WORD to_token = "begin";
+	WORD to_token = "#<>!abc";
 	TOKEN t = tokenizer(to_token);
 	printf(">> %d\n", t.id);
 }
@@ -15,7 +18,7 @@ TOKEN tokenizer(WORD word)
 	char c 	= word[i];
 	STATE current = S0;
 	TOKEN tokenized;
-	while(c != BREAKLINE)
+	while(TRUE)
 	{
 		switch(c)
 		{
@@ -38,7 +41,22 @@ TOKEN tokenizer(WORD word)
 				{
 					current = SI;
 				}
+				break;
+			case BREAKLINE:
+				if(current == SI)
+				{
+					CREATE_TOKEN(tokenized, TOKENS_ID.TID);
+					return tokenized;
+				}
+				break;
 			default:
+				if(current == SI)
+					
+					if(isLetter(c) == TRUE)
+					{
+						throw_lexical_error(LEX_ERROR_IDENTIFICATION_CODE);
+						return tokenized;
+					}
 				break;
 		}
 		i++;
