@@ -1,0 +1,48 @@
+// 
+// Definição da Sintaxe
+
+// Espaçador
+/s*
+
+// Delimitadores
+	^begin$	// denota inicio do blocl
+	^end$	// denota fim do block
+	\n$		// denota fim de instrucao
+
+// Identificadores:
+	// Para facilitar o parsing
+	// identificadores de variáveis começam com '#'
+		#[a-zA-Z]+
+
+// Operador Numérico
+	\d+(.(\d)+)?
+
+// declaracoes de variaveis
+	// declare <identificador>
+		declare <identificador>
+
+// Operadores Aritiméticos
+	(\+|\-|\*|\/)
+
+// Operadores de expressão
+	(==|!=|>|>=|<|<=)
+
+// declaração de comandos
+	// comando condicional
+		if
+		fend
+		else
+		lend
+
+
+	// comando while
+		while
+		wend
+
+	// entrada
+	// @ identifica comandos da linguagem
+	// input
+		@read
+	// output
+		@write
+
