@@ -33,6 +33,11 @@ TOKEN tokenizer(WORD word)
 					return tokenized;	
 				}
 				break;
+			case '#':
+				if(current == S0)
+				{
+					current = SI;
+				}
 			default:
 				break;
 		}
