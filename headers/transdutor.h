@@ -18,7 +18,7 @@
 	} TOKENS_ID = {
 		.TBEGIN = 0,
 		.TEND 	= 1,
-		.TID = 2
+		.TID 	= 2
 	};
 	
 	/*ESTADOS AUTOMATO */

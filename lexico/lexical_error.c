@@ -10,11 +10,19 @@ ERROR lexical_error_message(int error_num)
 	switch(error_num)
 	{
 		case LEX_ERROR_IDENTIFICATION_CODE:
-			CREATE_ERROR(err, LEX_ERROR_IDENTIFICATION_CODE, "Identification contains invalid character");
+			CREATE_ERROR(err, LEX_ERROR_IDENTIFICATION_CODE, LEX_ERROR_IDENTIFICATION_MESSAGE);
+			return err;
+			break;
+		case LEX_ERROR_BEGIN_CODE:
+			CREATE_ERROR(err, LEX_ERROR_IDENTIFICATION_CODE, LEX_ERROR_BEGIN_MESSAGE);
+			return err;
+			break;
+		case LEX_ERROR_END_CODE:
+			CREATE_ERROR(err, LEX_ERROR_END_CODE, LEX_ERROR_END_MESSAGE);
 			return err;
 			break;
 		default:
-			CREATE_ERROR(err, LEX_ERROR_UNKOWN_CODE, "Parser failed!");
+			CREATE_ERROR(err, LEX_ERROR_UNKOWN_CODE, LEX_UNKOWN_MESSAGE);
 			break;
 	}	
 }

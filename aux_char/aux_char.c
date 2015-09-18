@@ -1,8 +1,8 @@
-#include<stdio.h>
-#include<aux_char.h>
+#include <stdio.h>
+#include <aux_char.h>
+#include <bool.h>
 
-
-int isLetter(const unsigned char c)
+BOOL isLetter(const unsigned char c)
 {
 	if((c >= UA && c <= UZ) || (c >= LA && c <= LZ))
 	{

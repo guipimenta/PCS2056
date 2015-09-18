@@ -4,11 +4,8 @@
 
 #ifndef AUX_CHAR_H
 #define AUX_CHAR_H
+#include <bool.h>
 
-#ifndef BOOLS
-#define TRUE 1
-#define FALSE 0
-#endif
 
 /*ASCII CODE TABLE*/
 
@@ -19,6 +16,6 @@
 
 
 /*FUNCTIONS HEADERS*/
-int isLetter(const unsigned char c);
+BOOL isLetter(const unsigned char c);
 
 #endif
