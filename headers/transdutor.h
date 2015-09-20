@@ -14,22 +14,21 @@
 		int TBEGIN;
 		int TEND;
 		int TID;
+		int TIF;
+		int TIN;
 		
 	} TOKENS_ID = {
 		.TBEGIN = 0,
 		.TEND 	= 1,
-		.TID 	= 2
+		.TID 	= 2,
+		.TIF	= 3,
+		.TIN 	= 4
 	};
 	
 	/*ESTADOS AUTOMATO */
 	
 	/* INITIAL */
 	#define S0 0
-	
-
-	/* IDENTIFICADOR */
-	#define SI 		0
-	#define SINV	-1
 	
 	#define CREATE_TOKEN(NTOKEN, ID) (NTOKEN.id = ID)
 	

@@ -13,3 +13,15 @@ BOOL isLetter(const unsigned char c)
 		return FALSE;
 	}
 }
+
+BOOL isNumber(const unsigned char c)
+{
+	if(c >= D0 || c <= D9)
+	{
+		return TRUE;
+	}
+	else 
+	{
+		return FALSE;
+	}
+}

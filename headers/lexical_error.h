@@ -6,16 +6,20 @@
 
 
 /*ERROR CODE*/
-#define LEX_ERROR_IDENTIFICATION_CODE 100
-#define LEX_ERROR_BEGIN_CODE 101
-#define LEX_ERROR_END_CODE 102
-#define LEX_ERROR_UNKOWN_CODE -100
+#define LEX_ERROR_IDENTIFICATION_CODE 	100
+#define LEX_ERROR_BEGIN_CODE 			101
+#define LEX_ERROR_END_CODE 				102
+#define LEX_ERROR_IF_CODE 				103
+#define LEX_ERROR_NUMBER_CODE 			104
+#define LEX_ERROR_UNKOWN_CODE 			-100
 
 /*ERROR MSG*/
-#define LEX_ERROR_IDENTIFICATION_MESSAGE "Invalid char on Identificator!"
-#define LEX_ERROR_BEGIN_MESSAGE "Invalid delimiter: expected begin"
-#define LEX_ERROR_END_MESSAGE "Invalid delimiter: expected end"
-#define LEX_UNKOWN_MESSAGE "Unkown parsing error ocurred!"
+#define LEX_ERROR_IDENTIFICATION_MESSAGE 	"Invalid char on Identificator!"
+#define LEX_ERROR_BEGIN_MESSAGE 			"Invalid delimiter: expected begin"
+#define LEX_ERROR_END_MESSAGE 				"Invalid delimiter: expected end"
+#define LEX_ERROR_IF_MESSAGE                "Invalid command: expected if"
+#define LEX_ERROR_NUMBER_MESSAGE			"Invalid number format!"
+#define LEX_UNKOWN_MESSAGE 					"Unkown parsing error ocurred!"
 
 /*Initializes an error*/
 #define CREATE_ERROR(NERROR, ERR_ID, ERR_MSG) ({NERROR.ID = ERR_ID; strcpy(NERROR.MSG, ERR_MSG);})

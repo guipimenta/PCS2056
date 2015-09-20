@@ -14,8 +14,13 @@
 #define LA 97
 #define LZ 122
 
+/*DECIMAL*/
+#define D0 48
+#define D9 57
+
 
 /*FUNCTIONS HEADERS*/
 BOOL isLetter(const unsigned char c);
+BOOL isNumber(const unsigned char c);
 
 #endif

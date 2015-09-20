@@ -5,7 +5,7 @@
 #include <lexical_error.h>
 #include <parser.h>
 
-
+// Test Lexical Interpreter
 int main() 
 {
 	WORD to_token;
@@ -13,12 +13,10 @@ int main()
 	while(1) {
 		printf(">> ");
 		scanf("%s", to_token);
-		printf(">> %s", to_token);
-		t = tokenizer(to_token);
-		printf(">> %d\n", t.id);
+		if(to_token[0] != '\n')
+			t = tokenizer(to_token);
 	}
 	return 0;
-	
 }
 
 TOKEN tokenizer(WORD word)
@@ -68,25 +66,48 @@ TOKEN tokenizer(WORD word)
 			case '#':
 				if(current == S0)
 				{
-					current = SI;
-				}
-				break;
-			case BREAKLINE:
-				if(current == SI)
-				{
-					CREATE_TOKEN(tokenized, TOKENS_ID.TID);
+					if(parse_identifier(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TEND);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_IDENTIFICATION_CODE);
+					}
 					return tokenized;
 				}
 				break;
-			default:
-				if(current == SI)
+			case 'i':
+				if(current == S0)
 				{
-					if(!isLetter(c) == FALSE)
+					if(parse_number(word) == TRUE)
 					{
-						throw_lexical_error(LEX_ERROR_IDENTIFICATION_CODE);
-						return tokenized;
+						CREATE_TOKEN(tokenized, TOKENS_ID.TIN);
 					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_NUMBER_CODE);
+					}
+					return tokenized;
 				}
+				break;
+			case BREAKLINE:
+				break;
+			default:
+				if(isNumber(c) == TRUE)
+				{
+					if(parse_number(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TIF);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_NUMBER_CODE);
+					}
+					return tokenized;
+				}
+				throw_lexical_error(LEX_ERROR_UNKOWN_CODE);
+				return tokenized;
 				break;
 
 		}
@@ -102,34 +123,51 @@ BOOL parse_begin(WORD word)
 	STATE current = S0;
 	while(TRUE)
 	{
-		printf(" >> %c\n", c);
-		printf(" >> %d\n", c);
 		switch(c)
 		{
 			case 'b':
 				if(current == S0) {
 					current = SBB;
 					break;
+				} 
+				else 
+				{
+					return FALSE;
 				}
 			case 'e':
 				if(current == SBB) {
 					current = SBE;
 					break;
 				}
+				else
+				{
+					return FALSE;
+				}
 			case 'g':
 				if(current == SBE) {
 					current = SBG;
 					break;
+				}
+				else {
+					return FALSE;
 				}
 			case 'i':
 				if(current == SBG) {
 					current = SBI;
 					break;
 				}
+				else
+				{
+					return FALSE;
+				}
 			case 'n':
 				if(current == SBI) {
 					current = SBN;
 					break;
+				}
+				else
+				{
+					return FALSE;
 				}
 			case COMMAND_END:
 				if(current == SBN)
@@ -149,8 +187,6 @@ BOOL parse_end(WORD word)
 	STATE current = S0;
 	while(TRUE)
 	{
-		printf(" >> %c\n", c);
-		printf(" >> %d\n", c);
 		switch(c)
 		{
 			case 'e':
@@ -189,4 +225,127 @@ BOOL parse_end(WORD word)
 		i++;
 		c = word[i];
 	}
+}
+
+BOOL parse_identifier(WORD word)
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case '#':
+				if(current == S0) {
+					current = SIH;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+			case COMMAND_END:
+				if(current == SIH)
+					return TRUE;
+			default:
+				if(current == SIH)
+				{
+					if(!isLetter(c) == TRUE)
+					{
+						return FALSE;
+					}
+				}
+		}
+		i++;
+		c = word[i];
+	}
+}
+
+BOOL parse_if(WORD word) 
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case 'i':
+				if(current == S0) 
+				{
+					current = SII;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case 'f':
+				if(current == SII)
+				{
+					current = SIF;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SIF)
+					return TRUE;
+			default:
+				return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;
+}
+
+BOOL parse_number(WORD word)
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case '.':
+				if(current == SNI) 
+				{
+					current = SND;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SNF || current == SNI)
+					return TRUE;
+				break;
+			default:
+				if(isNumber(c) == TRUE)
+				{
+					if(current == SND)
+					{
+						current = SNF;
+					}
+					if(current == S0)
+					{
+						current = SNI;
+					}
+				}
+				else
+					return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;
 }
