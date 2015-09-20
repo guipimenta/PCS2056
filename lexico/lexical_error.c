@@ -33,6 +33,10 @@ ERROR lexical_error_message(int error_num)
 			CREATE_ERROR(err, LEX_ERROR_DECLARE_CODE, LEX_ERROR_DECLARE_MESSAGE);
 			return err;
 			break;
+		case LEX_ERROR_FEND_CODE:
+			CREATE_ERROR(err, LEX_ERROR_FEND_CODE, LEX_ERROR_FEND_MESSAGE);
+			return err;
+			break;
 		default:
 			CREATE_ERROR(err, LEX_ERROR_UNKOWN_CODE, LEX_UNKOWN_MESSAGE);
 			return err;

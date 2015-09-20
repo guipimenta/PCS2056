@@ -12,6 +12,7 @@
 #define LEX_ERROR_IF_CODE 				103
 #define LEX_ERROR_NUMBER_CODE 			104
 #define LEX_ERROR_DECLARE_CODE 			105
+#define LEX_ERROR_FEND_CODE				106
 #define LEX_ERROR_UNKOWN_CODE 			-100
 
 /*ERROR MSG*/
@@ -20,7 +21,8 @@
 #define LEX_ERROR_END_MESSAGE 				"Invalid delimiter: expected end"
 #define LEX_ERROR_IF_MESSAGE                "Invalid command: expected if"
 #define LEX_ERROR_NUMBER_MESSAGE			"Invalid number format!"
-#define LEX_ERROR_DECLARE_MESSAGE			"Invalide declare: expected declare"
+#define LEX_ERROR_DECLARE_MESSAGE			"Invalid declare: expected declare"
+#define LEX_ERROR_FEND_MESSAGE				"Invalid command: expected fend"
 #define LEX_UNKOWN_MESSAGE 					"Unkown parsing error ocurred!"
 
 /*Initializes an error*/

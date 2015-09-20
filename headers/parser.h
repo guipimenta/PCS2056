@@ -38,11 +38,19 @@
 #define SDR 21
 #define SDEE 22
 
+/*DEFINE FEND*/
+#define SFF 24
+#define SFE 25
+#define SFN 26
+#define SFD 27
+
+
 BOOL parse_begin(WORD word);
 BOOL parse_end(WORD word);
 BOOL parse_identifier(WORD word);
 BOOL parse_if(WORD word);
 BOOL parse_number(WORD word);
 BOOL parse_declare(WORD word);
+BOOL parse_fend(WORD word);
 
 #endif

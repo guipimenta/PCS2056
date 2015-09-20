@@ -60,12 +60,6 @@ TOKEN tokenizer(WORD word)
 			case 'e':
 				if(current == S0)
 				{
-					current = SEE;
-				}
-				break;
-			case 'n':
-				if(current == SEE)
-				{
 					if(parse_end(word) == TRUE)
 					{
 						CREATE_TOKEN(tokenized, TOKENS_ID.TEND);
@@ -96,11 +90,25 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_number(word) == TRUE)
 					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TFE);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_FEND_CODE);
+					}
+					return tokenized;
+				}
+				break;
+			case 'f':
+				if(current == S0)
+				{
+					if(parse_fend(word) == TRUE)
+					{
 						CREATE_TOKEN(tokenized, TOKENS_ID.TIN);
 					}
 					else 
 					{
-						throw_lexical_error(LEX_ERROR_NUMBER_CODE);
+						throw_lexical_error(LEX_ERROR_FEND_CODE);
 					}
 					return tokenized;
 				}
@@ -309,6 +317,71 @@ BOOL parse_if(WORD word)
 				break;
 			case COMMAND_END:
 				if(current == SIF)
+					return TRUE;
+			default:
+				return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;
+}
+
+BOOL parse_fend(WORD word)
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case 'f':
+				if(current == S0) 
+				{
+					current = SFF;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case 'e':
+				if(current == SFF)
+				{
+					current = SFN;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'n':
+				if(current == SFN)
+				{
+					current = SFE;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'd':
+				if(current == SFE)
+				{
+					current = SFD;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SFD)
 					return TRUE;
 			default:
 				return FALSE;
