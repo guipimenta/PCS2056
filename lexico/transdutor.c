@@ -43,6 +43,20 @@ TOKEN tokenizer(WORD word)
 					return tokenized;
 				}
 				break;
+			case 'd':
+				if(current == S0)
+				{
+					if(parse_declare(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TDE);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_DECLARE_CODE);
+					}
+					return tokenized;
+				}
+				break;
 			case 'e':
 				if(current == S0)
 				{
@@ -343,6 +357,99 @@ BOOL parse_number(WORD word)
 				}
 				else
 					return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;
+}
+
+BOOL parse_declare(WORD word) 
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			printf("%d\n", c);
+			case 'd':
+				if(current == S0) 
+				{
+					current = SDD;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case 'e':
+				if(current == SDD)
+				{
+					current = SDE;
+					break;
+				}
+				else if(current == SDR)
+				{
+					current = SDEE;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'c':
+				if(current == SDE)
+				{
+					current = SDC;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'l':
+				if(current == SDC)
+				{
+					current = SDL;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'a':
+				if(current == SDL)
+				{
+					current = SDA;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'r':
+				if(current == SDA)
+				{
+					current = SDR;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SDEE)
+					return TRUE;
+			default:
+				return FALSE;
 		}
 		i++;
 		c = word[i];

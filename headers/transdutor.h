@@ -16,13 +16,15 @@
 		int TID;
 		int TIF;
 		int TIN;
+		int TDE;
 		
 	} TOKENS_ID = {
 		.TBEGIN = 0,
 		.TEND 	= 1,
 		.TID 	= 2,
 		.TIF	= 3,
-		.TIN 	= 4
+		.TIN 	= 4,
+		.TDE 	= 5
 	};
 	
 	/*ESTADOS AUTOMATO */

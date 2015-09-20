@@ -29,11 +29,20 @@
 #define SND 14
 #define SNF	15
 
+/*DECLARE PARSER*/
+#define SDD 16
+#define SDE 17
+#define SDC 18
+#define SDL 19
+#define SDA 20
+#define SDR 21
+#define SDEE 22
 
 BOOL parse_begin(WORD word);
 BOOL parse_end(WORD word);
 BOOL parse_identifier(WORD word);
 BOOL parse_if(WORD word);
 BOOL parse_number(WORD word);
+BOOL parse_declare(WORD word);
 
 #endif
