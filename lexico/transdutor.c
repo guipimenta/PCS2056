@@ -62,6 +62,18 @@ TOKEN tokenizer(WORD word)
 				{
 					current = SUE;
 				}
+				if(current == SUW)
+				{
+					if(parse_wend(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TWE);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_WEND_CODE);
+					}
+					return tokenized;
+				}
 				break;
 			case 'n':
 				if(current == SUE)
@@ -89,7 +101,7 @@ TOKEN tokenizer(WORD word)
 					}
 					return tokenized;
 				}
-				if(current == SUE)
+				else if(current == SUE)
 				{
 					if(parse_else(word) == TRUE)
 					{
@@ -143,6 +155,57 @@ TOKEN tokenizer(WORD word)
 					return tokenized;
 				}
 				break;
+			case 'w':
+				if(current == S0)
+				{
+					current = SUW;	
+				}
+				else if(current == SUAT)
+				{
+					if(parse_write(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TWW);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_WRITE_CODE);
+					}
+					return tokenized;
+				}
+				break;
+			case 'h':
+				if(current == SUW)
+				{
+					if(parse_while(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TWH);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_WHILE_CODE);
+					}
+					return tokenized;
+				}
+				break;
+			case '@':
+				if(current == S0)
+				{
+					current = SUAT;
+				}
+				break;
+			case 'r':
+				if(current == SUAT)
+				{
+					if(parse_read(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TWH);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_READ_CODE);
+					}
+					return tokenized;
+				}
 			case BREAKLINE:
 				break;
 			default:
@@ -682,4 +745,308 @@ BOOL parse_lend(WORD word)
 		c = word[i];
 	}
 	return FALSE;	
+}
+
+BOOL parse_while(WORD word)
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case 'w':
+				if(current == S0) 
+				{
+					current = SWW;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case 'h':
+				if(current == SWW)
+				{
+					current = SWH;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'i':
+				if(current == SWH)
+				{
+					current = SWI;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'l':
+				if(current == SWI)
+				{
+					current = SWL;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'e':
+				if(current == SWL)
+				{
+					current = SWE;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SWE)
+					return TRUE;
+			default:
+				return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;	
+}
+
+BOOL parse_wend(WORD word)
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case 'w':
+				if(current == S0) 
+				{
+					current = SWEW;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case 'e':
+				if(current == SWEW)
+				{
+					current = SWEE;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'n':
+				if(current == SWEE)
+				{
+					current = SWEN;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'd':
+				if(current == SWEN)
+				{
+					current = SWED;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SWED)
+					return TRUE;
+			default:
+				return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;
+}
+
+BOOL parse_read(WORD word)
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case '@':
+				if(current == S0) 
+				{
+					current = SRAT;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case 'r':
+				if(current == SRAT)
+				{
+					current = SRR;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'e':
+				if(current == SRR)
+				{
+					current = SRE;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'a':
+				if(current == SRE)
+				{
+					current = SRA;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'd':
+				if(current == SRA)
+				{
+					current = SRD;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SRD)
+					return TRUE;
+			default:
+				return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;
+}
+
+BOOL parse_write(WORD word)
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case '@':
+				if(current == S0) 
+				{
+					current = SWAT;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case 'w':
+				if(current == SWAT)
+				{
+					current = SWRW;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'r':
+				if(current == SWRW)
+				{
+					current = SWRR;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'i':
+				if(current == SWRR)
+				{
+					current = SWRI;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 't':
+				if(current == SWRI)
+				{
+					current = SWRT;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'e':
+				if(current == SWRT)
+				{
+					current = SWRE;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SWRE)
+					return TRUE;
+			default:
+				return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;
 }

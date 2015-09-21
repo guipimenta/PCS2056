@@ -20,6 +20,10 @@
 		int TFE;
 		int TEL;
 		int TLE;
+		int TWH;
+		int TWE;
+		int TWR;
+		int TWW;
 		
 	} TOKENS_ID = {
 		.TBEGIN = 0,
@@ -30,7 +34,11 @@
 		.TDE 	= 5,
 		.TFE	= 6,
 		.TEL	= 7,
-		.TLE 	= 8
+		.TLE 	= 8,
+		.TWH	= 9,
+		.TWE	= 10,
+		.TWR	= 11,
+		.TWW	= 12
 	};
 	
 	/*ESTADOS AUTOMATO */

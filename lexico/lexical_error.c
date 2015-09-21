@@ -45,6 +45,22 @@ ERROR lexical_error_message(int error_num)
 			CREATE_ERROR(err, LEX_ERROR_LEND_CODE, LEX_ERROR_LEND_MESSAGE);
 			return err;
 			break;
+		case LEX_ERROR_WHILE_CODE:
+			CREATE_ERROR(err, LEX_ERROR_WHILE_CODE, LEX_ERROR_WHILE_MESSAGE);
+			return err;
+			break;
+		case LEX_ERROR_WEND_CODE:
+			CREATE_ERROR(err, LEX_ERROR_WEND_CODE, LEX_ERROR_WEND_MESSAGE);
+			return err;
+			break;
+		case LEX_ERROR_READ_CODE:
+			CREATE_ERROR(err, LEX_ERROR_READ_CODE, LEX_ERROR_READ_MESSAGE);
+			return err;
+			break;
+		case LEX_ERROR_WRITE_CODE:
+			CREATE_ERROR(err, LEX_ERROR_WRITE_CODE, LEX_ERROR_WRITE_MESSAGE);
+			return err;
+			break;
 		default:
 			CREATE_ERROR(err, LEX_ERROR_UNKOWN_CODE, LEX_UNKOWN_MESSAGE);
 			return err;

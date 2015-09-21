@@ -56,8 +56,43 @@
 #define SENN 34
 #define SEND 35
 
+/*WHILE*/
+#define SWW 33
+#define SWH 34
+#define SWI 35
+#define SWL 36
+#define SWE 37
+
+/*WEND*/
+#define SWEW 38
+#define SWEE 39
+#define SWEN 40
+#define SWED 41
+
+/*@READ*/
+#define SRAT 42
+#define SRR	 43
+#define SRE  44
+#define SRA  45
+#define SRD  46
+
+/*WRITE*/
+#define SWAT 47
+#define SWRW 48
+#define SWRR 49
+#define SWRI 50
+#define SWRT 51
+#define SWRE 52
+
+
+/*UNDEFINED STATES*/
 /*COULD BE ELSE OR END*/
-#define SUE	100//State Undefined E
+#define SUE	100
+/*COULD BE WHILE OR WEND*/
+#define SUW 101
+/*@ is command*/
+#define SUAT 102
+
 
 BOOL parse_begin(WORD word);
 BOOL parse_end(WORD word);
@@ -68,5 +103,9 @@ BOOL parse_declare(WORD word);
 BOOL parse_fend(WORD word);
 BOOL parse_else(WORD word);
 BOOL parse_lend(WORD word);
+BOOL parse_while(WORD word);
+BOOL parse_wend(WORD word);
+BOOL parse_read(WORD word);
+BOOL parse_write(WORD word);
 
 #endif
