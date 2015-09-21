@@ -45,3 +45,9 @@
 	// output
 		@write
 
+// "*"
+
+//Comentários
+//=*\n
+
+

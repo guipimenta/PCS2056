@@ -118,13 +118,13 @@ TOKEN tokenizer(WORD word)
 			case 'i':
 				if(current == S0)
 				{
-					if(parse_number(word) == TRUE)
+					if(parse_if(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TFE);
+						CREATE_TOKEN(tokenized, TOKENS_ID.TIF);
 					}
 					else 
 					{
-						throw_lexical_error(LEX_ERROR_FEND_CODE);
+						throw_lexical_error(LEX_ERROR_IF_CODE);
 					}
 					return tokenized;
 				}
@@ -150,7 +150,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_number(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TIF);
+						CREATE_TOKEN(tokenized, TOKENS_ID.TIN);
 					}
 					else 
 					{
