@@ -206,6 +206,19 @@ TOKEN tokenizer(WORD word)
 					}
 					return tokenized;
 				}
+			case '/':
+				if(current == S0)
+				{
+					if(parse_comment(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TCC);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_COMMENT_CODE);
+					}
+					return tokenized;
+				}
 			case BREAKLINE:
 				break;
 			default:
@@ -1041,6 +1054,38 @@ BOOL parse_write(WORD word)
 				break;
 			case COMMAND_END:
 				if(current == SWRE)
+					return TRUE;
+			default:
+				return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;
+}
+
+BOOL parse_comment(WORD word)
+{
+		int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case '/':
+				if(current == S0) 
+				{
+					current = SCS1;
+					break;
+				}
+				else if(current == SCS1)
+				{
+					current = SCS2;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SCS2)
 					return TRUE;
 			default:
 				return FALSE;

@@ -24,6 +24,7 @@
 		int TWE;
 		int TWR;
 		int TWW;
+		int TCC;
 		
 	} TOKENS_ID = {
 		.TBEGIN = 0,
@@ -38,7 +39,8 @@
 		.TWH	= 9,
 		.TWE	= 10,
 		.TWR	= 11,
-		.TWW	= 12
+		.TWW	= 12,
+		.TCC	= 13
 	};
 	
 	/*ESTADOS AUTOMATO */

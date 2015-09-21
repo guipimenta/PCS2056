@@ -84,6 +84,9 @@
 #define SWRT 51
 #define SWRE 52
 
+/*COMMENT*/
+#define SCS1 55
+#define SCS2 56
 
 /*UNDEFINED STATES*/
 /*COULD BE ELSE OR END*/
@@ -107,5 +110,6 @@ BOOL parse_while(WORD word);
 BOOL parse_wend(WORD word);
 BOOL parse_read(WORD word);
 BOOL parse_write(WORD word);
+BOOL parse_comment(WORD word);
 
 #endif

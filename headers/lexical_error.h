@@ -19,6 +19,7 @@
 #define LEX_ERROR_WEND_CODE				110
 #define LEX_ERROR_READ_CODE				111
 #define LEX_ERROR_WRITE_CODE			112
+#define LEX_ERROR_COMMENT_CODE			113
 #define LEX_ERROR_UNKOWN_CODE 			-100
 
 /*ERROR MSG*/
@@ -35,6 +36,7 @@
 #define LEX_ERROR_WEND_MESSAGE				"Invalid command: expected wend"
 #define LEX_ERROR_READ_MESSAGE				"Invalid system command: expected @read"
 #define LEX_ERROR_WRITE_MESSAGE				"Invalid system command: expected write"
+#define LEX_ERROR_COMMENT_MESSAGE			"Invalid comment: expected comment"
 #define LEX_UNKOWN_MESSAGE 					"Unkown parsing error ocurred!"
 
 /*Initializes an error*/
