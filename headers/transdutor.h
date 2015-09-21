@@ -18,6 +18,8 @@
 		int TIN;
 		int TDE;
 		int TFE;
+		int TEL;
+		int TLE;
 		
 	} TOKENS_ID = {
 		.TBEGIN = 0,
@@ -26,7 +28,9 @@
 		.TIF	= 3,
 		.TIN 	= 4,
 		.TDE 	= 5,
-		.TFE	= 6
+		.TFE	= 6,
+		.TEL	= 7,
+		.TLE 	= 8
 	};
 	
 	/*ESTADOS AUTOMATO */

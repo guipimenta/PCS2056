@@ -13,6 +13,8 @@
 #define LEX_ERROR_NUMBER_CODE 			104
 #define LEX_ERROR_DECLARE_CODE 			105
 #define LEX_ERROR_FEND_CODE				106
+#define LEX_ERROR_ELSE_CODE				107
+#define LEX_ERROR_LEND_CODE				108
 #define LEX_ERROR_UNKOWN_CODE 			-100
 
 /*ERROR MSG*/
@@ -23,6 +25,8 @@
 #define LEX_ERROR_NUMBER_MESSAGE			"Invalid number format!"
 #define LEX_ERROR_DECLARE_MESSAGE			"Invalid declare: expected declare"
 #define LEX_ERROR_FEND_MESSAGE				"Invalid command: expected fend"
+#define LEX_ERROR_ELSE_MESSAGE				"Invalid command: expected else"
+#define LEX_ERROR_LEND_MESSAGE				"Invalud command: expected lend"
 #define LEX_UNKOWN_MESSAGE 					"Unkown parsing error ocurred!"
 
 /*Initializes an error*/

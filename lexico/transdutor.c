@@ -60,6 +60,12 @@ TOKEN tokenizer(WORD word)
 			case 'e':
 				if(current == S0)
 				{
+					current = SUE;
+				}
+				break;
+			case 'n':
+				if(current == SUE)
+				{
 					if(parse_end(word) == TRUE)
 					{
 						CREATE_TOKEN(tokenized, TOKENS_ID.TEND);
@@ -70,7 +76,31 @@ TOKEN tokenizer(WORD word)
 					}
 					return tokenized;
 				}
-				break;
+			case 'l':
+				if(current == S0)
+				{
+					if(parse_lend(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TLE);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_LEND_CODE);
+					}
+					return tokenized;
+				}
+				if(current == SUE)
+				{
+					if(parse_else(word) == TRUE)
+					{
+						CREATE_TOKEN(tokenized, TOKENS_ID.TEND);
+					}
+					else 
+					{
+						throw_lexical_error(LEX_ERROR_ELSE_CODE);
+					}
+					return tokenized;
+				}
 			case '#':
 				if(current == S0)
 				{
@@ -528,4 +558,128 @@ BOOL parse_declare(WORD word)
 		c = word[i];
 	}
 	return FALSE;
+}
+
+BOOL parse_else(WORD word)
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case 'e':
+				if(current == S0) 
+				{
+					current = SLE;
+					break;
+				}
+				else if(current == SLS)
+				{
+					current = SLEE;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case 'l':
+				if(current == SLE)
+				{
+					current = SLL;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 's':
+				if(current == SLL)
+				{
+					current = SLS;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SLEE)
+					return TRUE;
+			default:
+				return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;
+}
+
+BOOL parse_lend(WORD word)
+{
+	int i = 0;
+	unsigned char c	= word[i];
+	STATE current = S0;
+	while(TRUE)
+	{
+		switch(c)
+		{
+			case 'l':
+				if(current == S0) 
+				{
+					current = SENL;
+					break;
+				}
+				else 
+				{
+					return FALSE;
+				}
+				break;
+			case 'e':
+				if(current == SENL)
+				{
+					current = SENE;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'n':
+				if(current == SENE)
+				{
+					current = SENN;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case 'd':
+				if(current == SENN)
+				{
+					current = SEND;
+					break;
+				}
+				else
+				{
+					return FALSE;
+				}
+				break;
+			case COMMAND_END:
+				if(current == SEND)
+					return TRUE;
+			default:
+				return FALSE;
+		}
+		i++;
+		c = word[i];
+	}
+	return FALSE;	
 }

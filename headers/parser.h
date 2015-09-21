@@ -44,6 +44,20 @@
 #define SFN 26
 #define SFD 27
 
+/*DEFINE ELSE*/
+#define SLE 28
+#define SLL 29
+#define SLS 30
+#define SLEE 31
+
+/*LEND*/
+#define SENL 32
+#define SENE 33
+#define SENN 34
+#define SEND 35
+
+/*COULD BE ELSE OR END*/
+#define SUE	100//State Undefined E
 
 BOOL parse_begin(WORD word);
 BOOL parse_end(WORD word);
@@ -52,5 +66,7 @@ BOOL parse_if(WORD word);
 BOOL parse_number(WORD word);
 BOOL parse_declare(WORD word);
 BOOL parse_fend(WORD word);
+BOOL parse_else(WORD word);
+BOOL parse_lend(WORD word);
 
 #endif

@@ -37,6 +37,14 @@ ERROR lexical_error_message(int error_num)
 			CREATE_ERROR(err, LEX_ERROR_FEND_CODE, LEX_ERROR_FEND_MESSAGE);
 			return err;
 			break;
+		case LEX_ERROR_ELSE_CODE:
+			CREATE_ERROR(err, LEX_ERROR_ELSE_CODE, LEX_ERROR_ELSE_MESSAGE);
+			return err;
+			break;
+		case LEX_ERROR_LEND_CODE:
+			CREATE_ERROR(err, LEX_ERROR_LEND_CODE, LEX_ERROR_LEND_MESSAGE);
+			return err;
+			break;
 		default:
 			CREATE_ERROR(err, LEX_ERROR_UNKOWN_CODE, LEX_UNKOWN_MESSAGE);
 			return err;
@@ -48,5 +56,5 @@ void throw_lexical_error(int err_id)
 {
 	ERROR err;
 	err = lexical_error_message(err_id);
-	printf("[ERROR] \n\t ERROR_ID: %d \n\t %s \n\t", err.ID, err.MSG);
+	printf("[ERROR] \n\t ERROR_ID: %d \n\t %s \n", err.ID, err.MSG);
 }
