@@ -2,7 +2,7 @@
 #define PARSER_H
 #include <bool.h>
 
-#define COMMAND_END '\0'
+#define COMMAND_END '\n'
 
 /*BEGIN TOKEN PARSER*/
 #define SBB 1

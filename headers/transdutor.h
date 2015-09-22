@@ -10,38 +10,21 @@
 		WORD tvalue;	
 	} TOKEN;
 	
-	struct {
-		int TBEGIN;
-		int TEND;
-		int TID;
-		int TIF;
-		int TIN;
-		int TDE;
-		int TFE;
-		int TEL;
-		int TLE;
-		int TWH;
-		int TWE;
-		int TWR;
-		int TWW;
-		int TCC;
-		
-	} TOKENS_ID = {
-		.TBEGIN = 0,
-		.TEND 	= 1,
-		.TID 	= 2,
-		.TIF	= 3,
-		.TIN 	= 4,
-		.TDE 	= 5,
-		.TFE	= 6,
-		.TEL	= 7,
-		.TLE 	= 8,
-		.TWH	= 9,
-		.TWE	= 10,
-		.TWR	= 11,
-		.TWW	= 12,
-		.TCC	= 13
-	};
+	#define TBEGIN 	0	
+	#define TEND 	1
+	#define TID 	2
+	#define TIF		3
+	#define TIN 	4
+	#define TDE 	5
+	#define TFE 	6
+	#define TEL 	7
+	#define TLE 	8
+	#define TWH 	9
+	#define TWE 	10
+	#define TWR		11
+	#define TWW 	13
+	#define TCC 	14
+	#define TNU 	15
 	
 	/*ESTADOS AUTOMATO */
 	

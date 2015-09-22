@@ -5,7 +5,7 @@
 #include <lexical_error.h>
 #include <parser.h>
 
-// Test Lexical Interpreter
+
 int main() 
 {
 	WORD to_token;
@@ -34,7 +34,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_begin(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TBEGIN);
+						CREATE_TOKEN(tokenized, TBEGIN);
 					}
 					else 
 					{
@@ -48,7 +48,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_declare(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TDE);
+						CREATE_TOKEN(tokenized, TDE);
 					}
 					else 
 					{
@@ -66,7 +66,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_wend(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TWE);
+						CREATE_TOKEN(tokenized, TWE);
 					}
 					else 
 					{
@@ -80,7 +80,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_end(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TEND);
+						CREATE_TOKEN(tokenized, TEND);
 					}
 					else 
 					{
@@ -93,7 +93,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_lend(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TLE);
+						CREATE_TOKEN(tokenized, TLE);
 					}
 					else 
 					{
@@ -105,7 +105,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_else(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TEND);
+						CREATE_TOKEN(tokenized, TEND);
 					}
 					else 
 					{
@@ -118,7 +118,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_identifier(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TEND);
+						CREATE_TOKEN(tokenized, TEND);
 					}
 					else 
 					{
@@ -132,7 +132,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_if(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TIF);
+						CREATE_TOKEN(tokenized, TIF);
 					}
 					else 
 					{
@@ -146,7 +146,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_fend(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TIN);
+						CREATE_TOKEN(tokenized, TIN);
 					}
 					else 
 					{
@@ -164,7 +164,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_write(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TWW);
+						CREATE_TOKEN(tokenized, TWW);
 					}
 					else 
 					{
@@ -178,7 +178,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_while(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TWH);
+						CREATE_TOKEN(tokenized, TWH);
 					}
 					else 
 					{
@@ -198,7 +198,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_read(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TWH);
+						CREATE_TOKEN(tokenized, TWH);
 					}
 					else 
 					{
@@ -211,7 +211,7 @@ TOKEN tokenizer(WORD word)
 				{
 					if(parse_comment(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TCC);
+						CREATE_TOKEN(tokenized, TCC);
 					}
 					else 
 					{
@@ -220,13 +220,18 @@ TOKEN tokenizer(WORD word)
 					return tokenized;
 				}
 			case BREAKLINE:
+				if(current == S0)
+				{
+					CREATE_TOKEN(tokenized, TNU);
+					return tokenized;
+				}
 				break;
 			default:
 				if(isNumber(c) == TRUE)
 				{
 					if(parse_number(word) == TRUE)
 					{
-						CREATE_TOKEN(tokenized, TOKENS_ID.TIN);
+						CREATE_TOKEN(tokenized, TIN);
 					}
 					else 
 					{
@@ -552,7 +557,6 @@ BOOL parse_declare(WORD word)
 	{
 		switch(c)
 		{
-			printf("%d\n", c);
 			case 'd':
 				if(current == S0) 
 				{
