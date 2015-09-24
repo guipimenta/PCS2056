@@ -2,3 +2,5 @@
 *.o
 *~
 bin/*
+analisador_lexico/bin/*
+analisador_lexico/obj/*

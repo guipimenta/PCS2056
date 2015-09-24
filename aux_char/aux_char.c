@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <aux_char.h>
-#include <bool.h>
+#include "../headers/aux_char.h"
+#include "../headers/bool.h"
 #include <string.h>
 
 /*
@@ -27,7 +27,8 @@ BINARY_TABLE BO_OP_TABLE = {
 	"||",
 	"<=",
 	"==",
-	">="
+	">=",
+	"!="
 };
 
 BOOL isOperator(const unsigned char c)

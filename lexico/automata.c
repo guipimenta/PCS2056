@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <automata.h>
-#include <aux_char.h>
+#include "../headers/automata.h"
+#include "../headers/aux_char.h"
 
 /*
 * TRANSITIONS TABLE

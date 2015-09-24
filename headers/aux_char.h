@@ -6,7 +6,7 @@
 
 #ifndef AUX_CHAR_H
 #define AUX_CHAR_H
-#include <bool.h>
+#include "bool.h"
 
 
 #define OPSIZE  10

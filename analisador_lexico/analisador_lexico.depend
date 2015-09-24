@@ -1,0 +1,29 @@
+# depslib dependency file v1.0
+1443121131 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\aux_char\aux_char.c
+	<stdio.h>
+	"../headers/aux_char.h"
+	"../headers/bool.h"
+	<string.h>
+
+1443121106 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\aux_char.h
+	"bool.h"
+
+1443117054 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\bool.h
+
+1443121143 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\automata.c
+	<stdio.h>
+	"../headers/automata.h"
+	"../headers/aux_char.h"
+
+1443120796 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\automata.h
+
+1443121164 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tokenizer.c
+	<stdio.h>
+	"../headers/tokenizer.h"
+	"../headers/bool.h"
+	"../headers/aux_char.h"
+	"../headers/automata.h"
+	<string.h>
+
+1443117267 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tokenizer.h
+

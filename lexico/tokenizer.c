@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include <tokenizer.h>
-#include <bool.h>
-#include <aux_char.h>
-#include <automata.h>
+#include "../headers/tokenizer.h"
+#include "../headers/bool.h"
+#include "../headers/aux_char.h"
+#include "../headers/automata.h"
 #include <string.h>
 
 extern TRANS_TABLE trans_table;
