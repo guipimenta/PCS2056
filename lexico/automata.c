@@ -35,19 +35,16 @@
 */
 
 TRANS_TABLE trans_table = {
-	[IS0]  = {IS0,  {{'b', ISBB}, {'e', ISUE}, 
-					{'#', ISIS},TEND}},
-	[ISBB] = {ISBB, {{'e', ISBE}, TEND}},
-	[ISBE] = {ISBE, {{'g', ISBG}, TEND}},
-	[ISBG] = {ISBG, {{'i', ISBI}, TEND}},
-	[ISBI] = {ISBI, {{'n', ISBN}, TEND}},
-	[ISBN] = {ISBN, {{'\n', ISF}, TEND}},
-
-	[ISEN] = {ISEN, {{'d', ISED}, TEND}},
-	[ISED] = {ISED, {{'\n', ISF}, TEND}},
-
-	[ISUE] = {ISUE, {{'n', ISEN}, TEND}},
-
-	[ISIS] = {ISIS, {{LL, ISIS}, {'\n', ISF}, TEND}},
-	[ISF]  = {ISF, {{'\r', ISF}, {'\n', ISF}, {'\t', ISF}, {' ', ISF}, {32, ISF}, {10, ISF}, TEND}}
+/*	[<ROW NUMBER>] {<STATEID>, { {TRIGGER, NEXT_STATE}, ... }}*/
+	[S0]   = {S0,  { {'#',  SV1}, {DD, SN1},   {LL, SI1}, {'/', SSU}, {'"', SS1}, {OP, SO1} }},
+	[SV1]  = {SV1, { {DD,   SV1}, {LL, SV1},   {AN, S0}  		  							}},
+	[SI1]  = {SI1, { {LL,   SI1}, {DD, SI1},   {AN, S0}  									}},
+	[SN1]  = {SN1, { {DD,   SN1}, {'.', SN2},  {AN, S0}  									}},
+	[SN2]  = {SN2, { {DD,   SN2}, {AN, S0}			   										}},
+	[SSU]  = {SSU, { {'/',  SC1}, {AN, S0}													}},
+	[SC1]  = {SC1, { {'\n', S0},  {AN, SC1}													}},
+	[SS1]  = {SS1, { {'"',  S0},  {'\'', SS2}, {AN, S0}										}},
+	[SS2]  = {SS2, { {AN,   SS1}															}},
+	[SO1]  = {SO1, { {OP,   SO2}, {AN, S0}													}},
+	[SO2]  = {S0,  { {AN, S0}																}}
 };

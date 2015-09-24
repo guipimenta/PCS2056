@@ -9,8 +9,12 @@
 #include <bool.h>
 
 
-/*ASCII CODE TABLE*/
+#define OPSIZE  10
+#define BOPSIZE 5
 
+/*DEFINE SPECIAL OPERATORS*/
+
+/*ASCII CODE TABLE*/
 #define UA 65
 #define UZ 90
 #define LA 97
@@ -26,6 +30,20 @@
 #define DD 302
 #define ND 303
 
+/*ANY CODE*/
+#define AN 305
+
+/*OPERATOR CODE*/
+#define OP 306
+#define NO 307
+
+typedef char UNARY_OPERATOR;
+typedef UNARY_OPERATOR UNARY_TABLE[OPSIZE];
+
+typedef char* BINARY_OPERATOR;
+typedef BINARY_OPERATOR BINARY_TABLE[OPSIZE];
+
+
 
 /*
 * DIGIT
@@ -33,10 +51,13 @@
 * A macro that creates a new symbol LL
 * Given a char X, DIGIT will return if X is a Letter (LL)
 */
-#define LETTER(X) (isLetter(X) ? LL : NL)
+#define LETTER(X) 	(isLetter(X) 	? LL : NL)
+#define DIGIT(X)  	(isNumber(X) 	? DD : ND)
+#define UNARY(X) 	(isOperator(X) 	? OP : NO)
 
 /*FUNCTIONS HEADERS*/
 BOOL isLetter(const unsigned char c);
 BOOL isNumber(const unsigned char c);
+BOOL isOperator(const unsigned char c);
 
 #endif

@@ -30,7 +30,7 @@ extern TRANS_TABLE trans_table;
 STATE next_state(STATE current, char c) 
 {
 	int i = 0;
-	while(trans_table[current].transitions[i].next != ISERR)
+	while(trans_table[current].transitions[i].trigger != AN)
 	{
 		if(trans_table[current].transitions[i].trigger == c ||
 			trans_table[current].transitions[i].trigger == LETTER(c) )
@@ -39,7 +39,7 @@ STATE next_state(STATE current, char c)
 		}
 		i++;
 	}
-	return ISERR;
+	return S0;
 }
 
 
@@ -58,17 +58,13 @@ TOKEN tokenize(WORD word)
 {
 	char c;
 	int i = 0;
-	STATE current = IS0;
+	STATE current = S0;
 	STATE next;
 	c = word[i]; 
-	while(c != '\0')
+	while(TRUE)
 	{
 		next = next_state(current, c);
-		if (next == ISERR)
-		{
-			return create_token(next, word);
-		}
-		if (next == ISF)
+		if (next == S0)
 		{
 			return create_token(current, word);
 		}
@@ -96,13 +92,7 @@ int main()
 		printf(">> ");
 		fgets(to_token, sizeof(to_token), stdin);
 		t = tokenize(to_token);
-		if(t.id == ISERR)
-			printf("Parsing error: %s", to_token);
-		else{
-
-			printf("Token: %d\nWord: %s\n", t.id, t.tvalue);
-		}
+		printf("Token: %d\nWord: %s\n", t.id, t.tvalue);
 	}
-	printf("%d\n\n", trans_table[ISBB].id);
 	return 0;
 }
