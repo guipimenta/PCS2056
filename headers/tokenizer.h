@@ -1,9 +1,20 @@
+#include "../headers/automata.h"
+
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
 
 #define WMAX	1000
 
-typedef char 	WORD[WMAX];
+typedef char 	TOKEN_VALUE[WMAX];
+
+typedef enum {VARIABLE,
+              IDENTIFIER,
+              RESERVED_WORD,
+              INTEGER,
+              FLOAT,
+              STRING,
+              SIMPLE_OPERATOR,
+              DOUBLE_OPERATOR} TOKEN_CLASS;
 
 /*
 * Tokens contains a single identification number
@@ -16,11 +27,15 @@ typedef char 	WORD[WMAX];
 *	  ISERR   |	   <error state> (not part of language)
 */
 typedef struct {
-		int id;
-		WORD tvalue;	
+		TOKEN_CLASS id;
+		int table_index;
 } TOKEN;
 
-TOKEN create_token(int id, WORD tvalue);
+void read_file(char* file_name);
+
+// ACTIONS FUNCITONS
+void identifier_first_char(STATE current_state, STATE next_state, char current_char, char next_char);
+void identifier_loop(STATE current_state, STATE next_state, char current_char, char next_char);
 
 
 #endif

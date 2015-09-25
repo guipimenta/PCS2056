@@ -3,21 +3,8 @@
 	#define TMAX 1000
 	#define SMAX 1000
 	#define WMAX 1000
-	typedef int STATE;
 
-	typedef struct {
-		int trigger;
-		STATE next;
-	} TRANSITION;
-
-	typedef struct {
-		STATE id;
-		TRANSITION transitions[TMAX];
-	} AUTOMATA;
-
-	typedef AUTOMATA TRANS_TABLE[SMAX];
-	
-	enum {
+	typedef enum states {
 		S0,		//initial state
 		SV1,	//variable state
 		SI1,	//identifier state
@@ -29,6 +16,20 @@
 		SS2,	//string state 2
 		SO1,	//operator state 1
 		SO2		//operator state 2
-	};
+	} STATE;
+
+	typedef struct {
+		int trigger;
+		STATE next;
+		void (*action)(STATE, STATE, char, char);
+	} TRANSITION;
+
+	typedef struct {
+		STATE id;
+		TRANSITION transitions[TMAX];
+	} AUTOMATA;
+
+	typedef AUTOMATA TRANS_TABLE[SMAX];
+
 
 #endif
