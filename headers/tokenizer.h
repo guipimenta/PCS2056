@@ -1,4 +1,5 @@
-#include "../headers/automata.h"
+#include "automata.h"
+#include "bool.h"
 
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
@@ -34,8 +35,7 @@ typedef struct {
 void read_file(char* file_name);
 
 // ACTIONS FUNCITONS
-void identifier_first_char(STATE current_state, STATE next_state, char current_char, char next_char);
-void identifier_loop(STATE current_state, STATE next_state, char current_char, char next_char);
-
+BOOL identifier_first_char(STATE current_state, STATE next_state, char current_char, char next_char);
+BOOL identifier_loop(STATE current_state, STATE next_state, char current_char, char next_char);
 
 #endif

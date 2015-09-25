@@ -1,5 +1,7 @@
 #ifndef AUTOMATA_H
 #define AUTOMATA_H
+	#include "bool.h"
+
 	#define TMAX 1000
 	#define SMAX 1000
 	#define WMAX 1000
@@ -21,7 +23,7 @@
 	typedef struct {
 		int trigger;
 		STATE next;
-		void (*action)(STATE, STATE, char, char);
+		BOOL (*action)(STATE, STATE, char, char);
 	} TRANSITION;
 
 	typedef struct {
@@ -30,6 +32,5 @@
 	} AUTOMATA;
 
 	typedef AUTOMATA TRANS_TABLE[SMAX];
-
 
 #endif

@@ -7,7 +7,7 @@
 
 extern TRANS_TABLE trans_table;
 
-STATE next_state(STATE current, char current_char, char next_char);
+STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_token);
 
 void tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class);
 
@@ -26,7 +26,8 @@ void read_file(char* file_name) {
 	char current_char = 0;
 	char next_char = 0;
 	STATE current = S0;
-	STATE next;
+	STATE next = S0;
+	BOOL token_end = FALSE;
 
 	while (1) {
 		current_char = next_char;
@@ -35,8 +36,8 @@ void read_file(char* file_name) {
 
 		next_char = getc(f);
 		if(current_char) {
-			next = next_state(current, current_char, next_char);
-			// if(token_found) {
+			next = next_state(current, current_char, next_char, &token_end);
+			// if(token_end) {
 			// 	fseek(f, -1, SEEK_CUR); //go back 1 cursor position to read again char that ended the last token
 			// }
 		}
@@ -66,7 +67,7 @@ void read_file(char* file_name) {
 * can be created without adding many transactions on TRANS_TABLE
 */
 
-STATE next_state(STATE current, char current_char, char next_char)
+STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_token)
 {
 	int i = 0;
 	while(trans_table[current].transitions[i].trigger != AN)
@@ -75,7 +76,7 @@ STATE next_state(STATE current, char current_char, char next_char)
 			trans_table[current].transitions[i].trigger == LETTER(current_char) )
 		{
 			if(trans_table[current].transitions[i].action != NULL)
-				trans_table[current].transitions[i].action(current, trans_table[current].transitions[i].next, current_char, next_char);
+				*end_of_token = trans_table[current].transitions[i].action(current, trans_table[current].transitions[i].next, current_char, next_char);
 			return trans_table[current].transitions[i].next;
 		}
 		i++;
@@ -128,7 +129,7 @@ void tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
 }
 
 // ACTIONS FUNCTIONS
-void identifier_first_char(STATE current_state, STATE next_state, char current_char, char next_char) {
+BOOL identifier_first_char(STATE current_state, STATE next_state, char current_char, char next_char) {
 	printf("identifier_first_char\n");
 	identifier_array_index = 0;
 	identifier_value[identifier_array_index] = current_char;
@@ -137,9 +138,11 @@ void identifier_first_char(STATE current_state, STATE next_state, char current_c
 		identifier_value[++identifier_array_index] = '\0';
 		tokenize(identifier_value, IDENTIFIER);
 	}
+
+	return FALSE;
 }
 
-void identifier_loop(STATE current_state, STATE next_state, char current_char, char next_char) {
+BOOL identifier_loop(STATE current_state, STATE next_state, char current_char, char next_char) {
 	printf("identifier_loop\n");
 	identifier_value[++identifier_array_index] = current_char;
 
@@ -147,9 +150,11 @@ void identifier_loop(STATE current_state, STATE next_state, char current_char, c
 		identifier_value[++identifier_array_index] = '\0';
 		tokenize(identifier_value, IDENTIFIER);
 	}
+
+	return FALSE;
 }
 
-// void identifier_end(STATE current_state, STATE next_state, char current_char, char next_char) {
+// BOOL identifier_end(STATE current_state, STATE next_state, char current_char, char next_char) {
 // 	printf("identifier_end\n");
 // 	identifier_value[++identifier_array_index] = '\0';
 // 	tokenize(identifier_value, IDENTIFIER);

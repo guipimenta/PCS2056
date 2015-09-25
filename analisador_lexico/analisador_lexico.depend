@@ -1,23 +1,25 @@
 # depslib dependency file v1.0
-1443121131 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\aux_char\aux_char.c
+1443156600 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\aux_char\aux_char.c
 	<stdio.h>
 	"../headers/aux_char.h"
 	"../headers/bool.h"
 	<string.h>
 
-1443121106 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\aux_char.h
+1443157011 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\aux_char.h
 	"bool.h"
 
-1443117054 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\bool.h
+1443157002 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\bool.h
 
-1443121143 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\automata.c
+1443180811 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\automata.c
 	<stdio.h>
 	"../headers/automata.h"
+	"../headers/tokenizer.h"
 	"../headers/aux_char.h"
 
-1443120796 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\automata.h
+1443182196 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\automata.h
+	"bool.h"
 
-1443121164 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tokenizer.c
+1443181919 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tokenizer.c
 	<stdio.h>
 	"../headers/tokenizer.h"
 	"../headers/bool.h"
@@ -25,5 +27,11 @@
 	"../headers/automata.h"
 	<string.h>
 
-1443117267 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tokenizer.h
+1443182207 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tokenizer.h
+	"automata.h"
+	"bool.h"
+
+1443146989 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\main.c
+	"../headers/tokenizer.h"
+	<stdio.h>
 

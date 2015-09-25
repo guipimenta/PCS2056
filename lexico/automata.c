@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "../headers/automata.h"
+#include "../headers/tokenizer.h"
 #include "../headers/aux_char.h"
 
 /*
@@ -36,8 +37,8 @@
 
 TRANS_TABLE trans_table = {
 /*	[<ROW NUMBER>] {<STATEID>, { {TRIGGER, NEXT_STATE}, ... }}*/
-	[S0]   = {S0,  { {'#',  SV1}, {DD, SN1},   {LL, SI1}, {'/', SSU}, {'"', SS1}, {OP, SO1} }},
-	[SV1]  = {SV1, { {DD,   SV1}, {LL, SV1},   {AN, S0}  		  							}},
+	[S0]   = {S0,  { {'#',  SV1}, {DD, SN1},   {LL, SI1, identifier_first_char}, {'/', SSU}, {'"', SS1}, {OP, SO1} }},
+	[SV1]  = {SV1, { {DD,   SV1}, {LL, SV1, identifier_loop},   {AN, S0}  		  							}},
 	[SI1]  = {SI1, { {LL,   SI1}, {DD, SI1},   {AN, S0}  									}},
 	[SN1]  = {SN1, { {DD,   SN1}, {'.', SN2},  {AN, S0}  									}},
 	[SN2]  = {SN2, { {DD,   SN2}, {AN, S0}			   										}},
