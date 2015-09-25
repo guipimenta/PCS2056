@@ -7,18 +7,18 @@
 	#define WMAX 1000
 
 	typedef enum states {
-		S0,		//initial state
-		SVAR,	//variable state
-		SIDENT,	//identifier state
-		SINT,	//number state 1
-		SFLOAT1,	//number state 2
-		SFLOAT2,
-		SSU,	//
-		SCOM,	//comment state
-		SSTR1,	//string state 1
-		SSTR2,	//string state 2
-		SO1,	//operator state 1
-		SO2		//operator state 2
+		S0,				//initial state
+		SVAR,			//variable state
+		SIDENT,		//identifier state
+		SINT,			//integer state 1
+		SFLOAT1,	//float state 1
+		SFLOAT2,	//float state 2
+		SCOMM1,		// comment state 1
+		SCOMM2,		//comment state 2
+		SSTR1,		//string state 1
+		SSTR2,		//string state 2
+		SSYMB1,		//symbol state 1
+		SSYMB2		//symbol state 2
 	} STATE;
 
 	typedef struct {

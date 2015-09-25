@@ -1,35 +1,36 @@
 # depslib dependency file v1.0
-1443190512 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\aux_char\aux_char.c
+1443209213 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\aux_char\aux_char.c
 	<stdio.h>
 	"../headers/aux_char.h"
 	"../headers/bool.h"
 	<string.h>
 	<ctype.h>
 
-1443187242 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\aux_char.h
+1443209235 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\aux_char.h
 	"bool.h"
 
 1443157002 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\bool.h
 
-1443205659 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\automata.c
+1443212483 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\automata.c
 	<stdio.h>
 	"../headers/automata.h"
 	"../headers/tokenizer.h"
 	"../headers/aux_char.h"
 
-1443204021 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\automata.h
+1443209183 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\automata.h
 	"bool.h"
 
-1443204682 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tokenizer.c
+1443213510 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tokenizer.c
 	<stdio.h>
 	"../headers/tokenizer.h"
 	"../headers/bool.h"
 	"../headers/aux_char.h"
 	"../headers/aux_number.h"
 	"../headers/automata.h"
+	"../headers/tables.h"
 	<string.h>
 
-1443203218 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tokenizer.h
+1443210644 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tokenizer.h
 	"automata.h"
 	"bool.h"
 
@@ -42,4 +43,12 @@
 	<math.h>
 
 1443196596 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\aux_number.h
+
+1443213173 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tables.h
+
+1443213188 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tables.c
+	<stdio.h>
+	<string.h>
+	"../headers/tables.h"
+	"../headers/bool.h"
 

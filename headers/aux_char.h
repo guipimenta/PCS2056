@@ -9,8 +9,7 @@
 #include "bool.h"
 
 
-#define OPSIZE  10
-#define BOPSIZE 5
+#define SBSIZE  19
 
 /*DEFINE SPECIAL OPERATORS*/
 
@@ -35,18 +34,14 @@
 #define NW 305
 
 /*OPERATOR CODE*/
-#define OP 306
-#define NO 307
+#define SB 306
+#define NS 307
 
 /*ANY CODE*/
 #define AN 320
 
-typedef char UNARY_OPERATOR;
-typedef UNARY_OPERATOR UNARY_TABLE[OPSIZE];
-
-typedef char* BINARY_OPERATOR;
-typedef BINARY_OPERATOR BINARY_TABLE[OPSIZE];
-
+typedef char POSSIBLE_SYMBOL;
+typedef POSSIBLE_SYMBOL POSSIBLE_SYMBOLS_TABLE[SBSIZE];
 
 
 /*
@@ -57,13 +52,13 @@ typedef BINARY_OPERATOR BINARY_TABLE[OPSIZE];
 */
 #define LETTER(X) 	(isLetter(X) 	? LL : NL)
 #define DIGIT(X)  	(isNumber(X) 	? DD : ND)
-#define UNARY(X) 	(isOperator(X) 	? OP : NO)
+#define SYMBOL(X) 	(isPossibleSymbol(X) 	? SB : NS)
 #define WHITESPACE(X)  (isWhiteSpace(X)  ? WS : NW)
 
 /*FUNCTIONS HEADERS*/
 BOOL isLetter(const unsigned char c);
 BOOL isNumber(const unsigned char c);
-BOOL isOperator(const unsigned char c);
+BOOL isPossibleSymbol(const unsigned char c);
 BOOL isWhiteSpace(const unsigned char c);
 
 #endif

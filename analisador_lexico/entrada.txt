@@ -1,8 +1,13 @@
 begin
-#abc
+#abc=35
+&&
+&
+!)
+(function);
 2
 8498
 23.762
 "string test"
+//kjs jkd fjsn 23uiee4r **( ¨@@ )
 if
 else

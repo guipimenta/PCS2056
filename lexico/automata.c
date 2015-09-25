@@ -37,16 +37,16 @@
 
 TRANS_TABLE trans_table = {
 /*	[<ROW NUMBER>] {<STATEID>, { {TRIGGER, NEXT_STATE}, ... }}*/
-	[S0]   			= {S0,  			{ {'#',  SVAR, variable_first_char}, {DD, SINT, number_first_char},   {LL, SIDENT, identifier_first_char}, {'/', SSU}, {'"', SSTR1, string_beginning}, {OP, SO1}, {AN, S0} }},
-	[SVAR]  		= {SVAR, 			{ {DD,   SVAR, variable_loop}, {LL, SVAR, variable_loop},   {AN, S0, variable_end}  		  							}},
-	[SIDENT]  	= {SIDENT, 		{ {LL,   SIDENT, identifier_loop}, {DD, SIDENT, identifier_loop}, {AN, S0, identifier_end} 									}},
-	[SINT]  		= {SINT, 			{ {DD,   SINT, number_loop}, {'.', SFLOAT1, float_number},  {AN, S0, integer_end}  									}},
-	[SFLOAT1]  	= {SFLOAT1,		{ {DD,   SFLOAT2, float_first_char}, {AN, S0}			   										}},
-	[SFLOAT2]  	= {SFLOAT2, 	{ {DD,   SFLOAT2, float_loop}, {AN, S0, float_end}			   										}},
-	[SSU]  			=	{SSU, 			{ {'/',  SCOM}, {AN, S0}													}},
-	[SCOM]  		=	{SCOM, 			{ {'\n', S0},  {AN, SCOM}													}},
-	[SSTR1]  		=	{SSTR1, 		{ {'"',  S0, string_end},  {'\\', SSTR2}, {AN, SSTR1, string_loop}										}},
-	[SSTR2]  		=	{SSTR2, 		{ {AN,   SSTR1, string_escaped_char}															}},
-	[SO1]  			=	{SO1, 			{ {OP,   SO2}, {AN, S0}													}},
-	[SO2]  			=	{S0,  			{ {AN, S0}																}}
+	[S0]   			= {S0,  			{ {'#', SVAR, variable_first_char}, {DD, SINT, number_first_char},   {LL, SIDENT, identifier_first_char}, {'/', SCOMM1}, {'"', SSTR1, string_beginning}, {SB, SSYMB1, symbol_first_char}, {AN, S0} }},
+	[SVAR]  		= {SVAR, 			{ {DD, SVAR, variable_loop}, {LL, SVAR, variable_loop},   {AN, S0, variable_end}  		  							}},
+	[SIDENT]  	= {SIDENT, 		{ {LL, SIDENT, identifier_loop}, {DD, SIDENT, identifier_loop}, {AN, S0, identifier_end} 									}},
+	[SINT]  		= {SINT, 			{ {DD, SINT, number_loop}, {'.', SFLOAT1, float_number},  {AN, S0, integer_end}  									}},
+	[SFLOAT1]  	= {SFLOAT1,		{ {DD, SFLOAT2, float_first_char}, {AN, S0}			   										}},
+	[SFLOAT2]  	= {SFLOAT2, 	{ {DD, SFLOAT2, float_loop}, {AN, S0, float_end}			   										}},
+	[SCOMM1]  	=	{SCOMM1, 		{ {'/', SCOMM2}, {AN, S0}													}},
+	[SCOMM2]  	=	{SCOMM2, 		{ {'\n', S0},  {AN, SCOMM2}													}},
+	[SSTR1]  		=	{SSTR1, 		{ {'"', S0, string_end},  {'\\', SSTR2}, {AN, SSTR1, string_loop}										}},
+	[SSTR2]  		=	{SSTR2, 		{ {AN, SSTR1, string_escaped_char}															}},
+	[SSYMB1]  	=	{SSYMB1, 		{ {SB, SSYMB2, double_symbol}, {LL, S0, single_symbol_end}, {DD, S0, single_symbol_end}, {WS, S0, single_symbol_end}, {AN, S0, symbol_error}													}},
+	[SSYMB2] 		=	{S0,  			{ {AN, S0, double_symbol_end}																}}
 };

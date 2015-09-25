@@ -5,9 +5,9 @@
 #include <ctype.h>
 
 /*
-* UNIARY OPERATORS
+* POSSIBLE SYMBOLS
 */
-UNARY_TABLE OP_UN_TABLE = {
+POSSIBLE_SYMBOLS_TABLE SB_TABLE = {
 	'>',
 	'<',
 	'=',
@@ -17,19 +17,16 @@ UNARY_TABLE OP_UN_TABLE = {
 	'-',
 	'/',
 	'*',
-	'!'
-};
-
-/*
-* BINARY OPERATORS
-*/
-BINARY_TABLE BO_OP_TABLE = {
-	"&&",
-	"||",
-	"<=",
-	"==",
-	">=",
-	"!="
+	'!',
+	'(',
+	')',
+	'{',
+	'}',
+	'[',
+	']',
+	',',
+	'&',
+	'|'
 };
 
 BOOL isWhiteSpace(const unsigned char c) {
@@ -43,13 +40,13 @@ BOOL isWhiteSpace(const unsigned char c) {
 	}
 }
 
-BOOL isOperator(const unsigned char c)
+BOOL isPossibleSymbol(const unsigned char c)
 {
 	int i;
 
-	for(i = 0; i < OPSIZE; i++)
+	for(i = 0; i < SBSIZE; i++)
 	{
-		if (c == OP_UN_TABLE[i])
+		if (c == SB_TABLE[i])
 		{
 			return TRUE;
 		}

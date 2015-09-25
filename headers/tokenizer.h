@@ -14,8 +14,8 @@ typedef enum {VARIABLE,
               INTEGER,
               FLOAT,
               STRING,
-              SIMPLE_OPERATOR,
-              DOUBLE_OPERATOR} TOKEN_CLASS;
+              SINGLE_SYMBOL,
+              DOUBLE_SYMBOL} TOKEN_CLASS;
 
 /*
 * Tokens contains a single identification number
@@ -60,5 +60,12 @@ BOOL string_beginning(STATE current_state, STATE next_state, char current_char, 
 BOOL string_loop(STATE current_state, STATE next_state, char current_char, char next_char);
 BOOL string_escaped_char(STATE current_state, STATE next_state, char current_char, char next_char);
 BOOL string_end(STATE current_state, STATE next_state, char current_char, char next_char);
+
+// SYMBOL ACTIONS
+BOOL symbol_first_char(STATE current_state, STATE next_state, char current_char, char next_char);
+BOOL single_symbol_end(STATE current_state, STATE next_state, char current_char, char next_char);
+BOOL double_symbol(STATE current_state, STATE next_state, char current_char, char next_char);
+BOOL double_symbol_end(STATE current_state, STATE next_state, char current_char, char next_char);
+BOOL symbol_error(STATE current_state, STATE next_state, char current_char, char next_char);
 
 #endif
