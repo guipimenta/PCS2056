@@ -30,12 +30,16 @@
 #define DD 302
 #define ND 303
 
-/*ANY CODE*/
-#define AN 305
+/*LETTER CODE*/
+#define WS 304
+#define NW 305
 
 /*OPERATOR CODE*/
 #define OP 306
 #define NO 307
+
+/*ANY CODE*/
+#define AN 320
 
 typedef char UNARY_OPERATOR;
 typedef UNARY_OPERATOR UNARY_TABLE[OPSIZE];
@@ -54,10 +58,12 @@ typedef BINARY_OPERATOR BINARY_TABLE[OPSIZE];
 #define LETTER(X) 	(isLetter(X) 	? LL : NL)
 #define DIGIT(X)  	(isNumber(X) 	? DD : ND)
 #define UNARY(X) 	(isOperator(X) 	? OP : NO)
+#define WHITESPACE(X)  (isWhiteSpace(X)  ? WS : NW)
 
 /*FUNCTIONS HEADERS*/
 BOOL isLetter(const unsigned char c);
 BOOL isNumber(const unsigned char c);
 BOOL isOperator(const unsigned char c);
+BOOL isWhiteSpace(const unsigned char c);
 
 #endif

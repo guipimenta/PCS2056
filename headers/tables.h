@@ -10,7 +10,7 @@
   char identifiers_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
 
   int integers_table_index;
-  int floatss_table_index;
+  int floats_table_index;
   int variables_table_index;
   int strings_table_index;
   int identifiers_table_index;

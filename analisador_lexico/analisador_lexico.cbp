@@ -41,6 +41,9 @@
 		<Unit filename="../lexico/automata.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../lexico/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../lexico/tokenizer.c">
 			<Option compilerVar="CC" />
 		</Unit>

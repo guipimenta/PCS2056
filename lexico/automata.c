@@ -37,15 +37,16 @@
 
 TRANS_TABLE trans_table = {
 /*	[<ROW NUMBER>] {<STATEID>, { {TRIGGER, NEXT_STATE}, ... }}*/
-	[S0]   = {S0,  { {'#',  SV1}, {DD, SN1},   {LL, SI1, identifier_first_char}, {'/', SSU}, {'"', SS1}, {OP, SO1} }},
-	[SV1]  = {SV1, { {DD,   SV1}, {LL, SV1, identifier_loop},   {AN, S0}  		  							}},
-	[SI1]  = {SI1, { {LL,   SI1}, {DD, SI1},   {AN, S0}  									}},
-	[SN1]  = {SN1, { {DD,   SN1}, {'.', SN2},  {AN, S0}  									}},
-	[SN2]  = {SN2, { {DD,   SN2}, {AN, S0}			   										}},
-	[SSU]  = {SSU, { {'/',  SC1}, {AN, S0}													}},
-	[SC1]  = {SC1, { {'\n', S0},  {AN, SC1}													}},
-	[SS1]  = {SS1, { {'"',  S0},  {'\'', SS2}, {AN, S0}										}},
-	[SS2]  = {SS2, { {AN,   SS1}															}},
-	[SO1]  = {SO1, { {OP,   SO2}, {AN, S0}													}},
-	[SO2]  = {S0,  { {AN, S0}																}}
+	[S0]   			= {S0,  			{ {'#',  SVAR, variable_first_char}, {DD, SINT, number_first_char},   {LL, SIDENT, identifier_first_char}, {'/', SSU}, {'"', SSTR1, string_beginning}, {OP, SO1}, {AN, S0} }},
+	[SVAR]  		= {SVAR, 			{ {DD,   SVAR, variable_loop}, {LL, SVAR, variable_loop},   {AN, S0, variable_end}  		  							}},
+	[SIDENT]  	= {SIDENT, 		{ {LL,   SIDENT, identifier_loop}, {DD, SIDENT, identifier_loop}, {AN, S0, identifier_end} 									}},
+	[SINT]  		= {SINT, 			{ {DD,   SINT, number_loop}, {'.', SFLOAT1, float_number},  {AN, S0, integer_end}  									}},
+	[SFLOAT1]  	= {SFLOAT1,		{ {DD,   SFLOAT2, float_first_char}, {AN, S0}			   										}},
+	[SFLOAT2]  	= {SFLOAT2, 	{ {DD,   SFLOAT2, float_loop}, {AN, S0, float_end}			   										}},
+	[SSU]  			=	{SSU, 			{ {'/',  SCOM}, {AN, S0}													}},
+	[SCOM]  		=	{SCOM, 			{ {'\n', S0},  {AN, SCOM}													}},
+	[SSTR1]  		=	{SSTR1, 		{ {'"',  S0, string_end},  {'\\', SSTR2}, {AN, SSTR1, string_loop}										}},
+	[SSTR2]  		=	{SSTR2, 		{ {AN,   SSTR1, string_escaped_char}															}},
+	[SO1]  			=	{SO1, 			{ {OP,   SO2}, {AN, S0}													}},
+	[SO2]  			=	{S0,  			{ {AN, S0}																}}
 };

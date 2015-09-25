@@ -2,6 +2,7 @@
 #include "../headers/tokenizer.h"
 #include "../headers/bool.h"
 #include "../headers/aux_char.h"
+#include "../headers/aux_number.h"
 #include "../headers/automata.h"
 #include <string.h>
 
@@ -14,6 +15,12 @@ void tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class);
 //GLOBAL VARIABLES
 char identifier_value[150];
 int identifier_array_index;
+char variable_value[150];
+int variable_array_index;
+TOKEN_VALUE token_value;
+int token_array_index;
+int float_decimal_count;
+int integer_value;
 
 void read_file(char* file_name) {
 
@@ -37,9 +44,18 @@ void read_file(char* file_name) {
 		next_char = getc(f);
 		if(current_char) {
 			next = next_state(current, current_char, next_char, &token_end);
-			// if(token_end) {
-			// 	fseek(f, -1, SEEK_CUR); //go back 1 cursor position to read again char that ended the last token
-			// }
+			// printf("current_state: %d, next_state: %d\n", current, next);
+			// printf("current_char: %c, next_char: %c\n", current_char, next_char);
+			if(next != -1) {
+				if(token_end) {
+					next_char = current_char;
+					fseek(f, -1, SEEK_CUR); //go back 1 cursor position to read again char that ended the last token
+				}
+			}
+			else {
+				printf("ERRO!!\n");
+				break;
+			}
 		}
 		current = next;
 	}
@@ -72,16 +88,29 @@ STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_
 	int i = 0;
 	while(trans_table[current].transitions[i].trigger != AN)
 	{
+		// printf("current_state: %d, next_state: %d\n", current, trans_table[current].transitions[i].next);
+		// printf("current_char: %c, next_char: %c, trigger: %d\n", current_char, next_char, trans_table[current].transitions[i].trigger);
 		if(trans_table[current].transitions[i].trigger == current_char ||
-			trans_table[current].transitions[i].trigger == LETTER(current_char) )
+			trans_table[current].transitions[i].trigger == LETTER(current_char) ||
+			trans_table[current].transitions[i].trigger == DIGIT(current_char) ||
+			trans_table[current].transitions[i].trigger == UNARY(current_char) ||
+			trans_table[current].transitions[i].trigger == WHITESPACE(current_char))
 		{
 			if(trans_table[current].transitions[i].action != NULL)
 				*end_of_token = trans_table[current].transitions[i].action(current, trans_table[current].transitions[i].next, current_char, next_char);
+			else
+				*end_of_token = FALSE;
 			return trans_table[current].transitions[i].next;
 		}
 		i++;
 	}
-	return S0;
+
+	if(trans_table[current].transitions[i].action != NULL)
+		*end_of_token = trans_table[current].transitions[i].action(current, trans_table[current].transitions[i].next, current_char, next_char);
+	else
+		*end_of_token = FALSE;
+
+	return trans_table[current].transitions[i].next;
 }
 
 
@@ -129,6 +158,8 @@ void tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
 }
 
 // ACTIONS FUNCTIONS
+
+//IDENTIFIER ACTIONS
 BOOL identifier_first_char(STATE current_state, STATE next_state, char current_char, char next_char) {
 	printf("identifier_first_char\n");
 	identifier_array_index = 0;
@@ -154,10 +185,166 @@ BOOL identifier_loop(STATE current_state, STATE next_state, char current_char, c
 	return FALSE;
 }
 
-// BOOL identifier_end(STATE current_state, STATE next_state, char current_char, char next_char) {
-// 	printf("identifier_end\n");
-// 	identifier_value[++identifier_array_index] = '\0';
-// 	tokenize(identifier_value, IDENTIFIER);
+BOOL identifier_end(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("identifier_end\n");
+	identifier_value[++identifier_array_index] = '\0';
+	tokenize(identifier_value, IDENTIFIER);
 
-// 	return TRUE;
-// }
+	return TRUE;
+}
+//-----------END OF IDENTIFIER ACTIONS---------------------------------------------------------------------------------
+
+// VARIABLE ACTIONS
+BOOL variable_first_char(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("identifier_first_char\n");
+	variable_array_index = 0;
+	variable_value[variable_array_index] = current_char;
+
+	if(next_char == EOF) {
+		variable_value[++variable_array_index] = '\0';
+		tokenize(variable_value, VARIABLE);
+	}
+
+	return FALSE;
+}
+
+BOOL variable_loop(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("identifier_loop\n");
+	variable_value[++variable_array_index] = current_char;
+
+	if(next_char == EOF) {
+		variable_value[++variable_array_index] = '\0';
+		tokenize(variable_value, VARIABLE);
+	}
+
+	return FALSE;
+}
+
+BOOL variable_end(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("identifier_end\n");
+	variable_value[++variable_array_index] = '\0';
+	tokenize(variable_value, VARIABLE);
+
+	return TRUE;
+}
+//-----------END OF VARIABLE ACTIONS---------------------------------------------------------------------------------
+
+// NUMBER ACTIONS
+BOOL number_first_char(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("number_first_char\n");
+	token_array_index = 0;
+	token_value[token_array_index] = current_char;
+
+	if(next_char == EOF) {
+		token_value[++token_array_index] = '\0';
+		tokenize(token_value, INTEGER);
+	}
+
+	return FALSE;
+}
+
+BOOL number_loop(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("number_loop\n");
+	token_value[++token_array_index] = current_char;
+
+	if(next_char == EOF){
+		token_value[++token_array_index] = '\0';
+		tokenize(token_value, INTEGER);
+	}
+
+	return FALSE;
+}
+
+BOOL integer_end(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("integer_end\n");
+	token_value[++token_array_index] = '\0';
+	tokenize(token_value, INTEGER);
+
+	return TRUE;
+}
+
+BOOL float_number(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("float_number\n");
+
+	token_value[++token_array_index] = current_char;
+
+	return FALSE;
+}
+
+BOOL float_first_char(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("float_first_char\n");
+	token_value[++token_array_index] = current_char;
+
+	if(next_char == EOF){
+		token_value[++token_array_index] = '\0';
+		tokenize(token_value, FLOAT);
+	}
+
+	return FALSE;
+}
+
+BOOL float_loop(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("float_loop\n");
+	token_value[++token_array_index] = current_char;
+
+	if(next_char == EOF){
+		token_value[++token_array_index] = '\0';
+		tokenize(token_value, FLOAT);
+	}
+
+	return FALSE;
+}
+
+BOOL float_end(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("float_end\n");
+	
+	token_value[++token_array_index] = '\0';
+	tokenize(token_value, FLOAT);
+
+	return TRUE;
+}
+//-----------END OF NUMBER ACTIONS---------------------------------------------------------------------------------
+
+// STRING ACTIONS
+BOOL string_beginning(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("string_beginning\n");
+	token_array_index = -1;
+
+	if(next_char == EOF) {
+		printf("ERRO DE STRING SEM FECHAR ASPAS!\n");
+	}
+
+	return FALSE;
+}
+
+BOOL string_loop(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("string_loop\n");
+	token_value[++token_array_index] = current_char;
+
+	if(next_char == EOF) {
+		printf("ERRO DE STRING SEM FECHAR ASPAS!\n");
+	}
+
+	return FALSE;
+}
+
+BOOL string_escaped_char(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("string_escaped_char\n");
+	token_value[++token_array_index] = current_char;
+
+	if(next_char == EOF) {
+		printf("ERRO DE STRING SEM FECHAR ASPAS!\n");
+	}
+
+	return FALSE;
+}
+
+BOOL string_end(STATE current_state, STATE next_state, char current_char, char next_char) {
+	printf("string_end\n");
+	
+	token_value[++token_array_index] = '\0';
+	tokenize(token_value, STRING);
+
+	return FALSE; //doesn't return true because is string
+}
+//-----------END OF STRING ACTIONS---------------------------------------------------------------------------------

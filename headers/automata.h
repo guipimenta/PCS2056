@@ -8,14 +8,15 @@
 
 	typedef enum states {
 		S0,		//initial state
-		SV1,	//variable state
-		SI1,	//identifier state
-		SN1,	//number state 1
-		SN2,	//number state 2
+		SVAR,	//variable state
+		SIDENT,	//identifier state
+		SINT,	//number state 1
+		SFLOAT1,	//number state 2
+		SFLOAT2,
 		SSU,	//
-		SC1,	//comment state
-		SS1,	//string state 1
-		SS2,	//string state 2
+		SCOM,	//comment state
+		SSTR1,	//string state 1
+		SSTR2,	//string state 2
 		SO1,	//operator state 1
 		SO2		//operator state 2
 	} STATE;

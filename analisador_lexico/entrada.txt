@@ -1,4 +1,8 @@
 begin
 #abc
+2
+8498
+23.762
+"string test"
 if
 else

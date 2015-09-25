@@ -2,6 +2,7 @@
 #include "../headers/aux_char.h"
 #include "../headers/bool.h"
 #include <string.h>
+#include <ctype.h>
 
 /*
 * UNIARY OPERATORS
@@ -31,10 +32,21 @@ BINARY_TABLE BO_OP_TABLE = {
 	"!="
 };
 
+BOOL isWhiteSpace(const unsigned char c) {
+	if(isspace(c))
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
 BOOL isOperator(const unsigned char c)
 {
 	int i;
-	
+
 	for(i = 0; i < OPSIZE; i++)
 	{
 		if (c == OP_UN_TABLE[i])
@@ -52,7 +64,7 @@ BOOL isLetter(const unsigned char c)
 	{
 		return TRUE;
 	}
-	else 
+	else
 	{
 		return FALSE;
 	}
@@ -64,7 +76,7 @@ BOOL isNumber(const unsigned char c)
 	{
 		return TRUE;
 	}
-	else 
+	else
 	{
 		return FALSE;
 	}
