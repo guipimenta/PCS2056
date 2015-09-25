@@ -6,6 +6,7 @@
 #include "../headers/automata.h"
 #include "../headers/tables.h"
 #include <string.h>
+#include <stdlib.h>
 
 extern TRANS_TABLE trans_table;
 
@@ -108,6 +109,15 @@ STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_
 	return trans_table[current].transitions[i].next;
 }
 
+TOKEN make_token(TOKEN_CLASS token_class, int table_index) {
+	TOKEN result_token;
+
+	result_token.id = token_class;
+	result_token.table_index = table_index;
+
+	return result_token;
+}
+
 
 /*
 * PARAMETERS: a single WORD for lexical analysis
@@ -122,34 +132,39 @@ STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_
 */
 void tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
 {
-	printf("t_class: %d, t_value: %s\n", t_class, t_value);
+	int table_index = -1;
+	float fToken = 0;
+	TOKEN token_read;
 
 	switch(t_class) {
 		case VARIABLE:
-
+			table_index = insert_into_variables_table(t_value);
 			break;
 		case IDENTIFIER:
-
+			table_index = insert_into_identifiers_table(t_value);
 			break;
 		case RESERVED_WORD:
-
+			table_index = is_in_reserved_words_table(t_value);
 			break;
 		case INTEGER:
-
+			table_index = insert_into_integers_table(strtol(t_value, NULL, 0));
 			break;
 		case FLOAT:
-
+			table_index = insert_into_floats_table(strtof(t_value, NULL));
 			break;
 		case STRING:
-
+			table_index = insert_into_strings_table(t_value);
 			break;
 		case SINGLE_SYMBOL:
-
+			table_index = is_in_single_symbols_table(t_value[0]);
 			break;
 		case DOUBLE_SYMBOL:
-
+			table_index = is_in_double_symbols_table(t_value);
 			break;
 	}
+
+	token_read = make_token(t_class, table_index);
+	//TODO: pass token to syntatic part
 }
 
 // ACTIONS FUNCTIONS
@@ -161,7 +176,10 @@ BOOL identifier_first_char(STATE current_state, STATE next_state, char current_c
 
 	if(next_char == EOF) {
 		token_value[++token_array_index] = '\0';
-		tokenize(token_value, IDENTIFIER);
+		if(is_in_reserved_words_table(token_value) > -1)
+			tokenize(token_value, RESERVED_WORD);
+		else
+			tokenize(token_value, IDENTIFIER);
 	}
 
 	return FALSE;
@@ -172,7 +190,10 @@ BOOL identifier_loop(STATE current_state, STATE next_state, char current_char, c
 
 	if(next_char == EOF) {
 		token_value[++token_array_index] = '\0';
-		tokenize(token_value, IDENTIFIER);
+		if(is_in_reserved_words_table(token_value) > -1)
+			tokenize(token_value, RESERVED_WORD);
+		else
+			tokenize(token_value, IDENTIFIER);
 	}
 
 	return FALSE;
@@ -180,7 +201,10 @@ BOOL identifier_loop(STATE current_state, STATE next_state, char current_char, c
 
 BOOL identifier_end(STATE current_state, STATE next_state, char current_char, char next_char) {
 	token_value[++token_array_index] = '\0';
-	tokenize(token_value, IDENTIFIER);
+	if(is_in_reserved_words_table(token_value) > -1)
+			tokenize(token_value, RESERVED_WORD);
+		else
+			tokenize(token_value, IDENTIFIER);
 
 	return TRUE;
 }
@@ -342,7 +366,7 @@ BOOL symbol_first_char(STATE current_state, STATE next_state, char current_char,
 }
 
 BOOL single_symbol_end(STATE current_state, STATE next_state, char current_char, char next_char) {
-	
+
 	if(is_in_single_symbols_table(token_value[token_array_index]) > -1) {
 		token_value[++token_array_index] = '\0';
 		tokenize(token_value, SINGLE_SYMBOL);
@@ -381,7 +405,7 @@ BOOL double_symbol(STATE current_state, STATE next_state, char current_char, cha
 
 BOOL double_symbol_end(STATE current_state, STATE next_state, char current_char, char next_char) {
 	char single_symbol_aux[2];
-	
+
 	token_value[++token_array_index] = '\0';
 	if(is_in_double_symbols_table(token_value) > -1) {
 		tokenize(token_value, DOUBLE_SYMBOL);
