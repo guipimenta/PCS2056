@@ -8,18 +8,6 @@
   #define RW_TABLE_SIZE 16
 
 
-  int integers_table[TABLE_MAX_SIZE][1];
-  float floats_table[TABLE_MAX_SIZE][1];
-  char variables_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
-  char strings_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
-  char identifiers_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
-
-  static int integers_table_index = 0;
-  static int floats_table_index = 0;
-  static int variables_table_index = 0;
-  static int strings_table_index = 0;
-  static int identifiers_table_index = 0;
-
   // TABLE SEARCH FUNCTIONS
   int is_in_double_symbols_table(char* symbol);
   int is_in_single_symbols_table(char symbol);
@@ -46,5 +34,15 @@
   void print_strings_table();
   void print_integers_table();
   void print_floats_table();
+
+  //TABLES GETTERS FUNCTIONS
+  char* get_reserved_word(int table_index);
+  char* get_identifier(int table_index);
+  char* get_string(int table_index);
+  char* get_variable(int table_index);
+  char get_single_symbol(int table_index);
+  char* get_double_symbol(int table_index);
+  int get_integer(int table_index);
+  float get_float(int table_index);
 
 #endif

@@ -10,9 +10,13 @@
 
 extern TRANS_TABLE trans_table;
 
+
+
 STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_token);
 
 void tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class);
+TOKEN make_token(TOKEN_CLASS token_class, int table_index);
+// void print_token(TOKEN token);
 
 //GLOBAL VARIABLES
 TOKEN_VALUE token_value;
@@ -112,11 +116,61 @@ STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_
 TOKEN make_token(TOKEN_CLASS token_class, int table_index) {
 	TOKEN result_token;
 
-	result_token.id = token_class;
+	result_token.token_class = token_class;
 	result_token.table_index = table_index;
 
 	return result_token;
 }
+
+// void print_token(TOKEN token) {
+// 	char token_class[50];
+// 	TOKEN_VALUE token_value;
+// 	printf("\n");
+// 	printf("%d\n", token.table_index);
+// 	switch(token.token_class) {
+// 		case VARIABLE:
+// 			strcpy(token_class, "Variable");
+// 			strcpy(token_value, get_variable(token.table_index));
+// 			break;
+// 		case IDENTIFIER:
+// 			strcpy(token_class, "Identifier");
+// 			strcpy(token_value, get_identifier(token.table_index));
+// 			break;
+// 		case RESERVED_WORD:
+// 			strcpy(token_class, "Reserved Word");
+// 			strcpy(token_value, get_reserved_word(token.table_index));
+// 			break;
+// 		case INTEGER:
+// 			strcpy(token_class, "Integer");
+// 			printf("%d\n", get_integer(token.table_index));
+// 			sprintf(token_value, "%d", get_integer(token.table_index));
+// 			break;
+// 		case FLOAT:
+// 			strcpy(token_class, "Float");
+// 			printf("%f\n", get_float(token.table_index));
+// 			sprintf(token_value, "%f", get_float(token.table_index));
+// 			break;
+// 		case STRING:
+// 			strcpy(token_class, "String");
+// 			strcpy(token_value, get_string(token.table_index));
+// 			break;
+// 		case SINGLE_SYMBOL:
+// 			strcpy(token_class, "Single Symbol");
+// 			token_value[0] = get_single_symbol(token.table_index);
+// 			token_value[1] = '\0';
+// 			break;
+// 		case DOUBLE_SYMBOL:
+// 			strcpy(token_class, "Double Symbol");
+// 			strcpy(token_value, get_double_symbol(token.table_index));
+// 			break;
+// 	}
+
+// 	printf("TOKEN CLASS: %s\n", token_class);
+// 	printf("TOKEN VALUE: %s\n", token_value);
+
+// 	printf("\n\n");
+
+// }
 
 
 /*
@@ -133,37 +187,51 @@ TOKEN make_token(TOKEN_CLASS token_class, int table_index) {
 void tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
 {
 	int table_index = -1;
-	float fToken = 0;
 	TOKEN token_read;
+	char token_class[50];
 
 	switch(t_class) {
 		case VARIABLE:
 			table_index = insert_into_variables_table(t_value);
+			strcpy(token_class, "Variable");
 			break;
 		case IDENTIFIER:
 			table_index = insert_into_identifiers_table(t_value);
+			strcpy(token_class, "Identifier");
 			break;
 		case RESERVED_WORD:
 			table_index = is_in_reserved_words_table(t_value);
+			strcpy(token_class, "Reserved Word");
 			break;
 		case INTEGER:
 			table_index = insert_into_integers_table(strtol(t_value, NULL, 0));
+			strcpy(token_class, "Integer");
 			break;
 		case FLOAT:
 			table_index = insert_into_floats_table(strtof(t_value, NULL));
+			strcpy(token_class, "Float");
 			break;
 		case STRING:
 			table_index = insert_into_strings_table(t_value);
+			strcpy(token_class, "String");
 			break;
 		case SINGLE_SYMBOL:
 			table_index = is_in_single_symbols_table(t_value[0]);
+			strcpy(token_class, "Single Symbol");
 			break;
 		case DOUBLE_SYMBOL:
 			table_index = is_in_double_symbols_table(t_value);
+			strcpy(token_class, "Double Symbol");
 			break;
 	}
 
 	token_read = make_token(t_class, table_index);
+
+	printf("\n");
+	printf("TOKEN VALUE: %s\n", t_value);
+	printf("TOKEN CLASS: %s\n", token_class);
+	printf("\n");
+
 	//TODO: pass token to syntatic part
 }
 
@@ -314,7 +382,7 @@ BOOL string_beginning(STATE current_state, STATE next_state, char current_char, 
 	token_array_index = -1;
 
 	if(next_char == EOF) {
-		printf("ERRO DE STRING SEM FECHAR ASPAS!\n");
+		printf("STRING ERROR: STRING QUOTES NOT CLOSED!\n");
 	}
 
 	return FALSE;
@@ -324,7 +392,7 @@ BOOL string_loop(STATE current_state, STATE next_state, char current_char, char 
 	token_value[++token_array_index] = current_char;
 
 	if(next_char == EOF) {
-		printf("ERRO DE STRING SEM FECHAR ASPAS!\n");
+		printf("STRING ERROR: STRING QUOTES NOT CLOSED!\n");
 	}
 
 	return FALSE;
@@ -334,7 +402,7 @@ BOOL string_escaped_char(STATE current_state, STATE next_state, char current_cha
 	token_value[++token_array_index] = current_char;
 
 	if(next_char == EOF) {
-		printf("ERRO DE STRING SEM FECHAR ASPAS!\n");
+		printf("STRING ERROR: STRING QUOTES NOT CLOSED!\n");
 	}
 
 	return FALSE;

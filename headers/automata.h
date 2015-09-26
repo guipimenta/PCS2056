@@ -17,6 +17,7 @@
 		SCOMM2,		//comment state 2
 		SSTR1,		//string state 1
 		SSTR2,		//string state 2
+		SSTR3,		//string state 3
 		SSYMB1,		//symbol state 1
 		SSYMB2		//symbol state 2
 	} STATE;
