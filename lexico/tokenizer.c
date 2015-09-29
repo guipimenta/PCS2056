@@ -21,7 +21,7 @@ int token_array_index;
 void read_file(char* file_name) {
 
 	FILE *f;
-	f = fopen("entrada.txt", "r");
+	f = fopen(file_name, "r");
 	if (f == NULL) {
         printf("Erro ao abrir o arquivo\n");
         return;
@@ -32,7 +32,7 @@ void read_file(char* file_name) {
 	STATE next = S0;
 	BOOL token_end = FALSE;
 
-	while (1) {
+	while (TRUE) {
 		current_char = next_char;
 		if(current_char == EOF)
 			break;
@@ -42,15 +42,11 @@ void read_file(char* file_name) {
 			next = next_state(current, current_char, next_char, &token_end);
 			// printf("current_state: %d, next_state: %d\n", current, next);
 			// printf("current_char: %c, next_char: %c\n", current_char, next_char);
-			if(next != -1) {
+			if(next != SERROR) {
 				if(token_end) {
 					next_char = current_char;
 					fseek(f, -1, SEEK_CUR); //go back 1 cursor position to read again char that ended the last token
 				}
-			}
-			else {
-				printf("ERRO!!\n");
-				break;
 			}
 		}
 		current = next;

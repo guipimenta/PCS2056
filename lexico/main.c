@@ -2,11 +2,11 @@
 #include "../headers/tables.h"
 #include <stdio.h>
 
-int main()
+int main(int argc, char **argv)
 {
-  printf("Hello World!\n");
+  printf("Reading file: %s \n", argv[1]);
 
-  read_file("entrada.txt");
+  read_file(argv[1]);
 
   print_reserved_words_table();
   print_single_symbols_table();
