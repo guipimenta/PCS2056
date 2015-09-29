@@ -11,16 +11,16 @@
 
 1443157002 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\bool.h
 
-1443212483 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\automata.c
+1443233128 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\automata.c
 	<stdio.h>
 	"../headers/automata.h"
 	"../headers/tokenizer.h"
 	"../headers/aux_char.h"
 
-1443209183 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\automata.h
+1443229546 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\automata.h
 	"bool.h"
 
-1443217945 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tokenizer.c
+1443236609 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tokenizer.c
 	<stdio.h>
 	"../headers/tokenizer.h"
 	"../headers/bool.h"
@@ -29,8 +29,9 @@
 	"../headers/automata.h"
 	"../headers/tables.h"
 	<string.h>
+	<stdlib.h>
 
-1443220433 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tokenizer.h
+1443233999 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tokenizer.h
 	"automata.h"
 	"bool.h"
 
@@ -45,9 +46,9 @@
 
 1443196596 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\aux_number.h
 
-1443219545 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tables.h
+1443238434 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\headers\tables.h
 
-1443219689 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tables.c
+1443238450 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador lexico\pcs2056\lexico\tables.c
 	<stdio.h>
 	<string.h>
 	"../headers/tables.h"

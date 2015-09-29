@@ -4,6 +4,18 @@
 #include "../headers/tables.h"
 #include "../headers/bool.h"
 
+int integers_table[TABLE_MAX_SIZE][1];
+float floats_table[TABLE_MAX_SIZE][1];
+char variables_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
+char strings_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
+char identifiers_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
+
+int integers_table_index = 0;
+int floats_table_index = 0;
+int variables_table_index = 0;
+int strings_table_index = 0;
+int identifiers_table_index = 0;
+
 /*
 * SINGLE SYMBOLS
 */
@@ -328,4 +340,41 @@ void print_floats_table() {
     printf("    %3d  -  %f\n", i, floats_table[i][0]);
   }
   printf("\n\n");
+}
+
+//TABLES GETTERS FUNCTIONS
+char* get_reserved_word(int table_index) {
+  return reserved_words_table[table_index];
+}
+
+char* get_identifier(int table_index) {
+  return identifiers_table[table_index];
+}
+
+char* get_string(int table_index) {
+  return strings_table[table_index];
+}
+
+char* get_variable(int table_index) {
+  return variables_table[table_index];
+}
+
+char get_single_symbol(int table_index) {
+  return single_symbols_table[table_index];
+}
+
+char* get_double_symbol(int table_index) {
+  return double_symbols_table[table_index];
+}
+
+int get_integer(int table_index) {
+  int ret_value;
+
+  ret_value = integers_table[table_index][0];
+
+  return ret_value;
+}
+
+float get_float(int table_index) {
+  return floats_table[table_index][0];
 }

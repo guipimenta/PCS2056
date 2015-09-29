@@ -28,7 +28,7 @@ typedef enum {VARIABLE,
 *	  ISERR   |	   <error state> (not part of language)
 */
 typedef struct {
-		TOKEN_CLASS id;
+		TOKEN_CLASS token_class;
 		int table_index;
 } TOKEN;
 
