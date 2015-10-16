@@ -30,6 +30,8 @@ typedef enum {VARIABLE,
 typedef struct {
 		TOKEN_CLASS token_class;
 		int table_index;
+    int row;
+    int column;
 } TOKEN;
 
 void read_file(char* file_name);

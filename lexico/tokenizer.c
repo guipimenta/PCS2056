@@ -15,12 +15,14 @@ extern TRANS_TABLE trans_table;
 STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_token);
 
 void tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class);
-TOKEN make_token(TOKEN_CLASS token_class, int table_index);
+TOKEN make_token(TOKEN_CLASS token_class, int table_index, int row, int column);
 // void print_token(TOKEN token);
 
 //GLOBAL VARIABLES
 TOKEN_VALUE token_value;
 int token_array_index;
+int current_row;
+int current_column;
 
 void read_file(char* file_name) {
 
@@ -36,6 +38,9 @@ void read_file(char* file_name) {
 	STATE next = S0;
 	BOOL token_end = FALSE;
 
+	current_row = 0;
+	current_column = 0;
+
 	while (TRUE) {
 		current_char = next_char;
 		if(current_char == EOF)
@@ -43,12 +48,18 @@ void read_file(char* file_name) {
 
 		next_char = getc(f);
 		if(current_char) {
-			next = next_state(current, current_char, next_char, &token_end);
+			current_column++;
 			// printf("current_state: %d, next_state: %d\n", current, next);
-			// printf("current_char: %c, next_char: %c\n", current_char, next_char);
+			// printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
+			next = next_state(current, current_char, next_char, &token_end);
 			if(next != SERROR) {
 				if(token_end) {
 					next_char = current_char;
+					if(current_char == '\n') {
+						current_column = 0;
+						current_row++;
+					}
+					current_column--;
 					fseek(f, -1, SEEK_CUR); //go back 1 cursor position to read again char that ended the last token
 				}
 			}
@@ -109,11 +120,13 @@ STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_
 	return trans_table[current].transitions[i].next;
 }
 
-TOKEN make_token(TOKEN_CLASS token_class, int table_index) {
+TOKEN make_token(TOKEN_CLASS token_class, int table_index, int row, int column) {
 	TOKEN result_token;
 
 	result_token.token_class = token_class;
 	result_token.table_index = table_index;
+	result_token.row = row;
+	result_token.column = column;
 
 	return result_token;
 }
@@ -221,11 +234,13 @@ void tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
 			break;
 	}
 
-	token_read = make_token(t_class, table_index);
+	token_read = make_token(t_class, table_index, current_row, current_column - token_array_index - 1);
 
 	printf("\n");
 	printf("TOKEN VALUE: %s\n", t_value);
 	printf("TOKEN CLASS: %s\n", token_class);
+	printf("TOKEN LINE: %d\n", current_row);
+	printf("TOKEN COLUMN: %d\n", current_column - token_array_index - 1	);
 	printf("\n");
 
 	//TODO: pass token to syntatic part
@@ -239,6 +254,7 @@ BOOL identifier_first_char(STATE current_state, STATE next_state, char current_c
 	token_value[token_array_index] = current_char;
 
 	if(next_char == EOF) {
+		current_column++;
 		token_value[++token_array_index] = '\0';
 		if(is_in_reserved_words_table(token_value) > -1)
 			tokenize(token_value, RESERVED_WORD);
@@ -253,6 +269,7 @@ BOOL identifier_loop(STATE current_state, STATE next_state, char current_char, c
 	token_value[++token_array_index] = current_char;
 
 	if(next_char == EOF) {
+		current_column++;
 		token_value[++token_array_index] = '\0';
 		if(is_in_reserved_words_table(token_value) > -1)
 			tokenize(token_value, RESERVED_WORD);
@@ -280,6 +297,7 @@ BOOL variable_first_char(STATE current_state, STATE next_state, char current_cha
 	token_value[token_array_index] = current_char;
 
 	if(next_char == EOF) {
+		current_column++;
 		token_value[++token_array_index] = '\0';
 		tokenize(token_value, VARIABLE);
 	}
@@ -291,6 +309,7 @@ BOOL variable_loop(STATE current_state, STATE next_state, char current_char, cha
 	token_value[++token_array_index] = current_char;
 
 	if(next_char == EOF) {
+		current_column++;
 		token_value[++token_array_index] = '\0';
 		tokenize(token_value, VARIABLE);
 	}
@@ -312,6 +331,7 @@ BOOL number_first_char(STATE current_state, STATE next_state, char current_char,
 	token_value[token_array_index] = current_char;
 
 	if(next_char == EOF) {
+		current_column++;
 		token_value[++token_array_index] = '\0';
 		tokenize(token_value, INTEGER);
 	}
@@ -323,6 +343,7 @@ BOOL number_loop(STATE current_state, STATE next_state, char current_char, char 
 	token_value[++token_array_index] = current_char;
 
 	if(next_char == EOF){
+		current_column++;
 		token_value[++token_array_index] = '\0';
 		tokenize(token_value, INTEGER);
 	}
@@ -347,6 +368,7 @@ BOOL float_first_char(STATE current_state, STATE next_state, char current_char, 
 	token_value[++token_array_index] = current_char;
 
 	if(next_char == EOF){
+		current_column++;
 		token_value[++token_array_index] = '\0';
 		tokenize(token_value, FLOAT);
 	}
@@ -358,6 +380,7 @@ BOOL float_loop(STATE current_state, STATE next_state, char current_char, char n
 	token_value[++token_array_index] = current_char;
 
 	if(next_char == EOF){
+		current_column++;
 		token_value[++token_array_index] = '\0';
 		tokenize(token_value, FLOAT);
 	}
@@ -418,6 +441,7 @@ BOOL symbol_first_char(STATE current_state, STATE next_state, char current_char,
 	token_value[token_array_index] = current_char;
 
 	if(next_char == EOF) {
+		current_column++;
 		if(is_in_single_symbols_table(token_value[token_array_index]) > -1) {
 			token_value[++token_array_index] = '\0';
 			tokenize(token_value, SINGLE_SYMBOL);
@@ -446,6 +470,7 @@ BOOL double_symbol(STATE current_state, STATE next_state, char current_char, cha
 	token_value[++token_array_index] = current_char;
 
 	if(next_char == EOF) {
+		current_column++;
 		token_value[++token_array_index] = '\0';
 		if(is_in_double_symbols_table(token_value) > -1) {
 			tokenize(token_value, DOUBLE_SYMBOL);
@@ -455,6 +480,7 @@ BOOL double_symbol(STATE current_state, STATE next_state, char current_char, cha
 			single_symbol_aux[0] = token_value[0];
 			single_symbol_aux[1] = '\0';
 			tokenize(single_symbol_aux, SINGLE_SYMBOL);
+			current_column++;
 			single_symbol_aux[0] = token_value[1];
 			single_symbol_aux[1] = '\0';
 			tokenize(single_symbol_aux, SINGLE_SYMBOL);
@@ -479,6 +505,7 @@ BOOL double_symbol_end(STATE current_state, STATE next_state, char current_char,
 		single_symbol_aux[0] = token_value[0];
 		single_symbol_aux[1] = '\0';
 		tokenize(single_symbol_aux, SINGLE_SYMBOL);
+		current_column++;
 		single_symbol_aux[0] = token_value[1];
 		single_symbol_aux[1] = '\0';
 		tokenize(single_symbol_aux, SINGLE_SYMBOL);

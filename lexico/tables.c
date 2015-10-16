@@ -61,16 +61,16 @@ char* reserved_words_table[RW_TABLE_SIZE] = {
   "fend",
   "else",
   "lend",
-  "function",
+  "def",
   "declare",
   "program",
   "while",
   "wend",
-  "int",
+  "integer",
   "float",
   "string",
-  "read",
-  "write"
+  "input",
+  "output"
 };
 
 

@@ -37,11 +37,15 @@
 		<Unit filename="../headers/automata.h" />
 		<Unit filename="../headers/aux_char.h" />
 		<Unit filename="../headers/bool.h" />
+		<Unit filename="../headers/tables.h" />
 		<Unit filename="../headers/tokenizer.h" />
 		<Unit filename="../lexico/automata.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../lexico/main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../lexico/tables.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../lexico/tokenizer.c">
