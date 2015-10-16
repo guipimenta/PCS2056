@@ -19,7 +19,8 @@
 		SSTR2,		//string state 2
 		SSTR3,		//string state 3
 		SSYMB1,		//symbol state 1
-		SSYMB2		//symbol state 2
+		SSYMB2,		//symbol state 2
+		SERROR
 	} STATE;
 
 	typedef struct {
