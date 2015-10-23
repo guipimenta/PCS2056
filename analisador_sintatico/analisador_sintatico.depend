@@ -1,0 +1,48 @@
+# depslib dependency file v1.0
+1445568572 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\aux_char\aux_char.c
+	<stdio.h>
+	"../headers/aux_char.h"
+	"../headers/bool.h"
+	<string.h>
+	<ctype.h>
+
+1445568572 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\aux_char.h
+	"bool.h"
+
+1445533605 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\bool.h
+
+1445645461 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\lexico\main.c
+	"../headers/syntatic.h"
+	"../headers/tables.h"
+	<stdio.h>
+
+1445611328 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\syntatic.h
+
+1445568572 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\tables.h
+
+1445645409 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\lexico\tables.c
+	<stdio.h>
+	<string.h>
+	"../headers/tables.h"
+	"../headers/bool.h"
+
+1445644838 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\lexico\tokenizer.c
+	<stdio.h>
+	"../headers/tokenizer.h"
+	"../headers/bool.h"
+	"../headers/aux_char.h"
+	"../headers/tables.h"
+	<string.h>
+	<stdlib.h>
+
+1445643664 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\tokenizer.h
+	"bool.h"
+
+1445645483 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\sintatico\syntatic.c
+	<stdio.h>
+	"../headers/bool.h"
+	"../headers/tokenizer.h"
+
+1445632631 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\automata.h
+	"bool.h"
+

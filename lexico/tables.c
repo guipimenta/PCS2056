@@ -194,8 +194,9 @@ int insert_into_identifiers_table(char* identifier) {
 
   ret_value = is_in_identifiers_table(identifier);
   if(ret_value == -1) {
-    strcpy(identifiers_table[identifiers_table_index++], identifier);
+    strcpy(identifiers_table[identifiers_table_index], identifier);
     ret_value = identifiers_table_index;
+    identifiers_table_index++;
   }
 
   return ret_value;
@@ -207,8 +208,9 @@ int insert_into_variables_table(char* variable) {
 
   ret_value = is_in_variables_table(variable);
   if(ret_value == -1) {
-    strcpy(variables_table[variables_table_index++], variable);
+    strcpy(variables_table[variables_table_index], variable);
     ret_value = variables_table_index;
+    variables_table_index++;
   }
 
   return ret_value;
@@ -220,8 +222,9 @@ int insert_into_strings_table(char* string) {
 
   ret_value = is_in_strings_table(string);
   if(ret_value == -1) {
-    strcpy(strings_table[strings_table_index++], string);
+    strcpy(strings_table[strings_table_index], string);
     ret_value = strings_table_index;
+    strings_table_index++;
   }
 
   return ret_value;
@@ -233,8 +236,9 @@ int insert_into_integers_table(int integer) {
 
   ret_value = is_in_integers_table(integer);
   if(ret_value == -1) {
-    integers_table[integers_table_index++][0] = integer;
+    integers_table[integers_table_index][0] = integer;
     ret_value = integers_table_index;
+    integers_table_index++;
   }
 
   return ret_value;
@@ -246,8 +250,9 @@ int insert_into_floats_table(float float_number) {
 
   ret_value = is_in_floats_table(float_number);
   if(ret_value == -1) {
-    floats_table[floats_table_index++][0] = float_number;
+    floats_table[floats_table_index][0] = float_number;
     ret_value = floats_table_index;
+    floats_table_index++;
   }
 
   return ret_value;
