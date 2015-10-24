@@ -42,8 +42,6 @@ BOOL string_end(STATE current_state, STATE next_state, char current_char, char n
 // SYMBOL ACTIONS
 BOOL symbol_first_char(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram);
 BOOL single_symbol_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram);
-BOOL double_symbol(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram);
-BOOL double_symbol_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram);
 BOOL symbol_error(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram);
 
 /*
@@ -88,11 +86,9 @@ TRANS_TABLE trans_table = {
 	[SFLOAT2]  	= {SFLOAT2, 	{ {DD, SFLOAT2, float_loop}, {AN, S0, float_end}			   										}},
 	[SCOMM1]  	=	{SCOMM1, 		{ {'/', SCOMM2}, {AN, S0}													}},
 	[SCOMM2]  	=	{SCOMM2, 		{ {'\n', S0},  {AN, SCOMM2}													}},
-	[SSTR1]  		=	{SSTR1, 		{ {'"', SSTR3},  {'\\', SSTR2}, {AN, SSTR1, string_loop}										}},
+	[SSTR1]  		=	{SSTR1, 		{ {'"', S0, string_end},  {'\\', SSTR2}, {AN, SSTR1, string_loop}										}},
 	[SSTR2]  		=	{SSTR2, 		{ {AN, SSTR1, string_escaped_char}															}},
-	[SSTR3]			= {SSTR3,			{ {AN, S0, string_end}											}},
-	[SSYMB1]  	=	{SSYMB1, 		{ {SB, SSYMB2, double_symbol}, {LL, S0, single_symbol_end}, {DD, S0, single_symbol_end}, {WS, S0, single_symbol_end}, {AN, S0, symbol_error}													}},
-	[SSYMB2] 		=	{S0,  			{ {AN, S0, double_symbol_end}																}},
+	[SSYMB1]  	=	{SSYMB1, 		{ {SB, S0, single_symbol_end}, {LL, S0, single_symbol_end}, {DD, S0, single_symbol_end}, {WS, S0, single_symbol_end}, {AN, S0, symbol_error}													}},
 	[SERROR]	=	{SERROR, {{AN, S0}}}
 };
 
@@ -124,15 +120,21 @@ BOOL get_token(FILE *f, TOKEN *token_found, BOOL *endOfProgram) {
 		next_char = getc(f);
 		if(current_char) {
 			current_column++;
-			// printf("current_state: %d, next_state: %d\n", current, next);
-			// printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
 			next = next_state(current, current_char, next_char, &token_end, endOfProgram);
+			// printf("current_state: %d, next_state: %d, tokenFound: %d\n", current, next, tokenFound);
+			// printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
+			if(current_char == '\n') {
+				current_column = 0;
+				current_row++;
+			}
 			if(next != SERROR) {
 				if(token_end) {
+					// printf("current_state: %d, next_state: %d\n", current, next);
+					// printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
 					next_char = current_char;
 					if(current_char == '\n') {
-						current_column = 0;
-						current_row++;
+						// current_column = 0;
+						current_row--;
 					}
 					current_column--;
 					fseek(f, -1, SEEK_CUR); //go back 1 cursor position to read again char that ended the last token
@@ -142,12 +144,6 @@ BOOL get_token(FILE *f, TOKEN *token_found, BOOL *endOfProgram) {
 		current = next;
 
 		if(tokenFound) {
-			// printf("\n");
-			// printf("TOKEN VALUE: %d\n", global_token.table_index);
-			// printf("TOKEN CLASS: %d\n", global_token.token_class);
-			// printf("TOKEN LINE: %d\n", global_token.row);
-			// printf("TOKEN COLUMN: %d\n", global_token.column);
-			// printf("\n");
 			token_found->token_class = global_token.token_class;
 			token_found->table_index = global_token.table_index;
 			token_found->row = global_token.row;
@@ -253,10 +249,6 @@ void print_token(TOKEN token) {
 			token_value[0] = get_single_symbol(token.table_index);
 			token_value[1] = '\0';
 			break;
-		case DOUBLE_SYMBOL:
-			strcpy(token_class, "Double Symbol");
-			strcpy(token_value, get_double_symbol(token.table_index));
-			break;
 	}
 
 	printf("TOKEN CLASS: %s\n", token_class);
@@ -315,10 +307,6 @@ TOKEN tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
 		case SINGLE_SYMBOL:
 			table_index = is_in_single_symbols_table(t_value[0]);
 			strcpy(token_class, "Single Symbol");
-			break;
-		case DOUBLE_SYMBOL:
-			table_index = is_in_double_symbols_table(t_value);
-			strcpy(token_class, "Double Symbol");
 			break;
 	}
 
@@ -536,11 +524,13 @@ BOOL string_escaped_char(STATE current_state, STATE next_state, char current_cha
 }
 
 BOOL string_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
+	current_column--;
 	token_value[++token_array_index] = '\0';
 	global_token = tokenize(token_value, STRING);
+	current_column++;
 	tokenFound = TRUE;
 
-	return FALSE; //doesn't return true because is string
+	return FALSE;
 }
 //-----------END OF STRING ACTIONS---------------------------------------------------------------------------------
 
@@ -572,63 +562,6 @@ BOOL single_symbol_end(STATE current_state, STATE next_state, char current_char,
 		tokenFound = TRUE;
 	} else {
 		printf("SYMBOL ERROR: %c IS NOT IN SINGLE SYMBOLS TABLE!\n", token_value[token_array_index]);
-	}
-
-	return TRUE;
-}
-
-BOOL double_symbol(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	char single_symbol_aux[2];
-	token_value[++token_array_index] = current_char;
-
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		current_column++;
-		token_value[++token_array_index] = '\0';
-		if(is_in_double_symbols_table(token_value) > -1) {
-			global_token = tokenize(token_value, DOUBLE_SYMBOL);
-			tokenFound = TRUE;
-		} //in case there are two single symbols next to each other
-		else if((is_in_single_symbols_table(token_value[0]) > -1) &&
-							(is_in_single_symbols_table(token_value[1]) > -1)) {
-			single_symbol_aux[0] = token_value[0];
-			single_symbol_aux[1] = '\0';
-			global_token = tokenize(single_symbol_aux, SINGLE_SYMBOL);
-			current_column++;
-			single_symbol_aux[0] = token_value[1];
-			single_symbol_aux[1] = '\0';
-			global_token = tokenize(single_symbol_aux, SINGLE_SYMBOL);
-			tokenFound = TRUE;
-		}
-		else {
-			printf("SYMBOL ERROR: %s IS NOT IN DOUBLE SYMBOLS TABLE!\n", token_value);
-		}
-	}
-
-	return FALSE;
-}
-
-BOOL double_symbol_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	char single_symbol_aux[2];
-
-	token_value[++token_array_index] = '\0';
-	if(is_in_double_symbols_table(token_value) > -1) {
-		global_token = tokenize(token_value, DOUBLE_SYMBOL);
-		tokenFound = TRUE;
-	} //in case there are two single symbols next to each other
-	else if((is_in_single_symbols_table(token_value[0]) > -1) &&
-						(is_in_single_symbols_table(token_value[1]) > -1)) {
-		single_symbol_aux[0] = token_value[0];
-		single_symbol_aux[1] = '\0';
-		global_token = tokenize(single_symbol_aux, SINGLE_SYMBOL);
-		current_column++;
-		single_symbol_aux[0] = token_value[1];
-		single_symbol_aux[1] = '\0';
-		global_token = tokenize(single_symbol_aux, SINGLE_SYMBOL);
-		tokenFound = TRUE;
-	}
-	else {
-		printf("SYMBOL ERROR: %s IS NOT IN DOUBLE SYMBOLS TABLE!\n", token_value);
 	}
 
 	return TRUE;

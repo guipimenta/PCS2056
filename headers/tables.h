@@ -3,13 +3,12 @@
   #define TABLE_MAX_SIZE    1000
   #define STRING_MAX_SIZE   100
 
-  #define SS_TABLE_SIZE 17
+  #define SS_TABLE_SIZE 20
   #define DS_TABLE_SIZE 6
   #define RW_TABLE_SIZE 16
 
 
   // TABLE SEARCH FUNCTIONS
-  int is_in_double_symbols_table(char* symbol);
   int is_in_single_symbols_table(char symbol);
   int is_in_reserved_words_table(char* identifier);
   int is_in_integers_table(int integer);
@@ -28,7 +27,6 @@
   //PRINT TABLE FUNCTIONS
   void print_reserved_words_table();
   void print_single_symbols_table();
-  void print_double_symbols_table();
   void print_identifiers_table();
   void print_variables_table();
   void print_strings_table();
@@ -41,7 +39,6 @@
   char* get_string(int table_index);
   char* get_variable(int table_index);
   char get_single_symbol(int table_index);
-  char* get_double_symbol(int table_index);
   int get_integer(int table_index);
   float get_float(int table_index);
 

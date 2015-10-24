@@ -36,20 +36,23 @@ char single_symbols_table[SS_TABLE_SIZE] = {
   '}',
   '[',
   ']',
-  ','
+  ',',
+  '"',
+  '|',
+  '&'
 };
 
 /*
 * DOUBLE SYMBOLS
 */
-char* double_symbols_table[DS_TABLE_SIZE] = {
-  "&&",
-  "||",
-  "<=",
-  "==",
-  ">=",
-  "!="
-};
+// char* double_symbols_table[DS_TABLE_SIZE] = {
+//   "&&",
+//   "||",
+//   "<=",
+//   "==",
+//   ">=",
+//   "!="
+// };
 
 /*
 * RESERVED WORDS SYMBOLS
@@ -81,20 +84,6 @@ int is_in_single_symbols_table(char symbol) {
 
   for(i=0; i < SS_TABLE_SIZE; i++) {
     if(symbol == single_symbols_table[i]) {
-      ret_value = i;
-      break;
-    }
-  }
-
-  return ret_value;
-}
-
-int is_in_double_symbols_table(char* symbol) {
-  int i = 0;
-  int ret_value = -1;
-
-  for(i=0; i < DS_TABLE_SIZE; i++) {
-    if(strcmp(symbol, double_symbols_table[i]) == 0) {
       ret_value = i;
       break;
     }
@@ -281,17 +270,6 @@ void print_single_symbols_table() {
   printf("\n\n");
 }
 
-void print_double_symbols_table() {
-  int i;
-
-  printf("-----DOUBLE SYMBOLS TABLE-----\n");
-
-  for(i=0; i < DS_TABLE_SIZE; i++) {
-    printf("    %2d  -  %s\n", i, double_symbols_table[i]);
-  }
-  printf("\n\n");
-}
-
 void print_identifiers_table() {
   int i;
 
@@ -366,10 +344,6 @@ char* get_variable(int table_index) {
 
 char get_single_symbol(int table_index) {
   return single_symbols_table[table_index];
-}
-
-char* get_double_symbol(int table_index) {
-  return double_symbols_table[table_index];
 }
 
 int get_integer(int table_index) {
