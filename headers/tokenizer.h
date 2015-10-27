@@ -1,8 +1,6 @@
-#include "bool.h"
-
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
-
+#include "bool.h"
 #define TMAX 1000
 #define SMAX 1000
 #define WMAX 1000
@@ -30,8 +28,8 @@ typedef enum {
 *	  ISERR   |	   <error state> (not part of language)
 */
 typedef struct {
-		TOKEN_CLASS token_class;
-		int table_index;
+	TOKEN_CLASS token_class;
+	int table_index;
     int row;
     int column;
 } TOKEN;
