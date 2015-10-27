@@ -93,7 +93,8 @@ void read_file(char* file_name) {
     while (!endOfProgram) {
         wasTokenFound = get_token(input_file, &token,  &endOfProgram);
         if (wasTokenFound) {
-            print_token(token);
+            // printf("%s\n", get_token_value(token.token_class, token.table_index));
+          print_token(token);
         }
     }
 

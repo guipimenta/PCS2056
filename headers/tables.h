@@ -11,8 +11,8 @@
   // TABLE SEARCH FUNCTIONS
   int is_in_single_symbols_table(char symbol);
   int is_in_reserved_words_table(char* identifier);
-  int is_in_integers_table(int integer);
-  int is_in_floats_table(float float_number);
+  int is_in_integers_table(char* integer);
+  int is_in_floats_table(char* float_number);
   int is_in_identifiers_table(char* identifier);
   int is_in_variables_table(char* variable);
   int is_in_strings_table(char* string);
@@ -21,8 +21,8 @@
   int insert_into_identifiers_table(char* identifier);
   int insert_into_variables_table(char* variable);
   int insert_into_strings_table(char* string);
-  int insert_into_integers_table(int integer);
-  int insert_into_floats_table(float float_number);
+  int insert_into_integers_table(char* integer);
+  int insert_into_floats_table(char* float_number);
 
   //PRINT TABLE FUNCTIONS
   void print_reserved_words_table();
@@ -39,7 +39,7 @@
   char* get_string(int table_index);
   char* get_variable(int table_index);
   char get_single_symbol(int table_index);
-  int get_integer(int table_index);
-  float get_float(int table_index);
+  char* get_integer(int table_index);
+  char* get_float(int table_index);
 
 #endif

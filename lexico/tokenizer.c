@@ -233,12 +233,11 @@ void print_token(TOKEN token) {
 			break;
 		case INTEGER:
 			strcpy(token_class, "Integer");
-			sprintf(token_value, "%d", get_integer(token.table_index));
+			strcpy(token_value, get_integer(token.table_index));
 			break;
 		case FLOAT:
 			strcpy(token_class, "Float");
-			printf("%f\n", get_float(token.table_index));
-			sprintf(token_value, "%f", get_float(token.table_index));
+			strcpy(token_value, get_float(token.table_index));
 			break;
 		case STRING:
 			strcpy(token_class, "String");
@@ -258,6 +257,37 @@ void print_token(TOKEN token) {
 
 
 	printf("\n\n");
+
+}
+
+char* get_token_value(TOKEN_CLASS token_class, int table_index) {
+	char* token_value = (char *)malloc(sizeof(char)*WMAX);
+	switch(token_class) {
+		case VARIABLE:
+			strcpy(token_value, get_variable(table_index));
+			break;
+		case IDENTIFIER:
+			strcpy(token_value, get_identifier(table_index));
+			break;
+		case RESERVED_WORD:
+			strcpy(token_value, get_reserved_word(table_index));
+			break;
+		case INTEGER:
+			strcpy(token_value, get_integer(table_index));
+			break;
+		case FLOAT:
+			strcpy(token_value, get_float(table_index));
+			break;
+		case STRING:
+			strcpy(token_value, get_string(table_index));
+			break;
+		case SINGLE_SYMBOL:
+			token_value[0] = get_single_symbol(table_index);
+			token_value[1] = '\0';
+			break;
+	}
+
+	return token_value;
 
 }
 
@@ -293,11 +323,11 @@ TOKEN tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
 			strcpy(token_class, "Reserved Word");
 			break;
 		case INTEGER:
-			table_index = insert_into_integers_table(strtol(t_value, NULL, 0));
+			table_index = insert_into_integers_table(t_value);
 			strcpy(token_class, "Integer");
 			break;
 		case FLOAT:
-			table_index = insert_into_floats_table(strtof(t_value, NULL));
+			table_index = insert_into_floats_table(t_value);
 			strcpy(token_class, "Float");
 			break;
 		case STRING:

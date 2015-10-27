@@ -2,5 +2,8 @@
 *.o
 *~
 bin/*
-analisador_lexico/bin/*
-analisador_lexico/obj/*
+analisador_sintatico/bin/*
+analisador_sintatico/obj/*
+*.cbp
+*.depend
+*.layout

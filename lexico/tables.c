@@ -4,8 +4,8 @@
 #include "../headers/tables.h"
 #include "../headers/bool.h"
 
-int integers_table[TABLE_MAX_SIZE][1];
-float floats_table[TABLE_MAX_SIZE][1];
+char integers_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
+char floats_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
 char variables_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
 char strings_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
 char identifiers_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
@@ -106,12 +106,12 @@ int is_in_reserved_words_table(char* identifier) {
   return ret_value;
 }
 
-int is_in_integers_table(int integer) {
+int is_in_integers_table(char* integer) {
   int i = 0;
   int ret_value = -1;
 
   for(i=0; i < integers_table_index; i++) {
-    if(integer == integers_table[i][0]) {
+    if(strcmp(integer, integers_table[i]) == 0) {
       ret_value = i;
       break;
     }
@@ -120,12 +120,12 @@ int is_in_integers_table(int integer) {
   return ret_value;
 }
 
-int is_in_floats_table(float float_number) {
+int is_in_floats_table(char* float_number) {
   int i = 0;
   int ret_value = -1;
 
   for(i=0; i < floats_table_index; i++) {
-    if(float_number == floats_table[i][0]) {
+    if(strcmp(float_number, floats_table[i]) == 0) {
       ret_value = i;
       break;
     }
@@ -219,13 +219,13 @@ int insert_into_strings_table(char* string) {
   return ret_value;
 }
 
-int insert_into_integers_table(int integer) {
+int insert_into_integers_table(char* integer) {
   int ret_value;
 
 
   ret_value = is_in_integers_table(integer);
   if(ret_value == -1) {
-    integers_table[integers_table_index][0] = integer;
+    strcpy(integers_table[integers_table_index], integer);
     ret_value = integers_table_index;
     integers_table_index++;
   }
@@ -233,13 +233,13 @@ int insert_into_integers_table(int integer) {
   return ret_value;
 }
 
-int insert_into_floats_table(float float_number) {
+int insert_into_floats_table(char* float_number) {
   int ret_value;
 
 
   ret_value = is_in_floats_table(float_number);
   if(ret_value == -1) {
-    floats_table[floats_table_index][0] = float_number;
+    strcpy(floats_table[floats_table_index], float_number);
     ret_value = floats_table_index;
     floats_table_index++;
   }
@@ -309,7 +309,7 @@ void print_integers_table() {
   printf("-----INTEGERS TABLE-----\n");
 
   for(i=0; i < integers_table_index; i++) {
-    printf("    %3d  -  %d\n", i, integers_table[i][0]);
+    printf("    %3d  -  %s\n", i, integers_table[i]);
   }
   printf("\n\n");
 }
@@ -320,7 +320,7 @@ void print_floats_table() {
   printf("-----FLOATS TABLE-----\n");
 
   for(i=0; i < floats_table_index; i++) {
-    printf("    %3d  -  %f\n", i, floats_table[i][0]);
+    printf("    %3d  -  %s\n", i, floats_table[i]);
   }
   printf("\n\n");
 }
@@ -346,14 +346,10 @@ char get_single_symbol(int table_index) {
   return single_symbols_table[table_index];
 }
 
-int get_integer(int table_index) {
-  int ret_value;
-
-  ret_value = integers_table[table_index][0];
-
-  return ret_value;
+char* get_integer(int table_index) {
+  return integers_table[table_index];
 }
 
-float get_float(int table_index) {
-  return floats_table[table_index][0];
+char* get_float(int table_index) {
+  return floats_table[table_index];
 }

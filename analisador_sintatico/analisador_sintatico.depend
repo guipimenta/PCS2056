@@ -18,15 +18,15 @@
 
 1445611328 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\syntatic.h
 
-1445695457 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\tables.h
+1445913902 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\tables.h
 
-1445696200 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\lexico\tables.c
+1445912958 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\lexico\tables.c
 	<stdio.h>
 	<string.h>
 	"../headers/tables.h"
 	"../headers/bool.h"
 
-1445699180 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\lexico\tokenizer.c
+1445914557 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\lexico\tokenizer.c
 	<stdio.h>
 	"../headers/tokenizer.h"
 	"../headers/bool.h"
@@ -35,11 +35,12 @@
 	<string.h>
 	<stdlib.h>
 
-1445699325 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\tokenizer.h
+1445914339 c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\headers\tokenizer.h
 	"bool.h"
 
-1445652871 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\sintatico\syntatic.c
+1445913749 source:c:\users\tazevedo\documents\poli\2015-3\compiladores\analisador sintatico\pcs2056\sintatico\syntatic.c
 	<stdio.h>
+	<stdlib.h>
 	"../headers/bool.h"
 	"../headers/tokenizer.h"
 
