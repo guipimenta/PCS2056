@@ -16,6 +16,6 @@ int main(int argc, char **argv)
   // print_strings_table();
   // print_integers_table();
   // print_floats_table();
-
+  system("pause");
   return 0;
 }

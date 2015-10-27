@@ -605,3 +605,4 @@ BOOL symbol_error(STATE current_state, STATE next_state, char current_char, char
 }
 //-----------END OF SYMBOL ACTIONS---------------------------------------------------------------------------------
 
+

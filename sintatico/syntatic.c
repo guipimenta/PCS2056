@@ -2,12 +2,27 @@
 #include <stdlib.h>
 #include "../headers/bool.h"
 #include "../headers/tokenizer.h"
+#include "../headers/syntatic.h"
 
 typedef enum {
-  SUBMACHINE_1,
-  SUBMACHINE_2,
-  SUBMACHINE_COUNT
+	SUBMACHINE_PROGRAM_ID,
+	SUBMACHINE_2,
+	SUBMACHINE_COUNT
 } sub_machine;
+
+STRUCTURED_AUTOMATA_LIST SUBMACHINE_LIST = {
+	[SUBMACHINE_PROGRAM_ID] = {
+		Q0,
+		{
+			[Q0] = { { RESERVED_WORD, "program" }, FALSE, Q1 },
+			[Q1] = { { RESERVED_WORD, "begin" }, FALSE, Q2 }
+		}
+	}
+};
+
+
+
+
 
 typedef struct {
   sub_machine sm;
@@ -89,6 +104,8 @@ void read_file(char* file_name) {
     TOKEN token;
     BOOL wasTokenFound = FALSE;
     BOOL endOfProgram = FALSE;
+	//STRUCTURED_AUTOMATA current = sub_machine_list[SUBMACHINE_PROGRAM];
+
 
     while (!endOfProgram) {
         wasTokenFound = get_token(input_file, &token,  &endOfProgram);
@@ -99,4 +116,8 @@ void read_file(char* file_name) {
     }
 
     fclose(input_file);
+}
+
+void run_automata(STRUCTURED_AUTOMATA automata, TOKEN token) {
+	
 }
