@@ -8,11 +8,25 @@
 #include "../headers/tokenizer.h"
 #include "../headers/bool.h"
 
+// Just the end of the rows
+#define EOR_TRANSITION { FALSE, { RESERVED_WORD, "END OF ROW"}, EOR, SUBMACHINE_NULL }
+#define EMPTY_VALUE ""
+#define TRIGGER_NULL	0
+
 void read_file(char* file_name);
 
 typedef enum {
 	SUBMACHINE_PROGRAM,
 	SUBMACHINE_DEF_FUNCTION,
+	SUBMACHINE_DECLARATION,
+	SUBMACHINE_COMMANDS,
+	SUBMACHINE_ATTRIBUTION,
+	SUBMACHINE_CALL_FUNCTION,
+	SUBMACHINE_IF_CONDITION,
+	SUBMACHINE_ITERATION,
+	SUBMACHINE_ARITH_EXP,
+	SUBMACHINE_BOOL_EXP,
+	SUBMACHINE_OUTPUT,
 	SUBMACHINE_NULL
 } sub_machine;
 
@@ -27,6 +41,12 @@ typedef enum sub_machine_states {
 	Q3,
 	Q4,
 	Q5,
+	Q6,
+	Q7,
+	Q8,
+	Q9,
+	Q10,
+	Q11,
 	QF,
 	EOR
 } SUB_MACHINE_STATES;
@@ -44,8 +64,8 @@ typedef struct {
 //	- and a next state that can be any of the default states
 //	- the ID of the next submachine to run (in case of a sub-machine transition)
 typedef struct {
-	STRUCTURED_AUTOMATA_TOKEN trigger;
 	BOOL is_submachine_transition;
+	STRUCTURED_AUTOMATA_TOKEN trigger;
 	SUB_MACHINE_STATES next_state;
 	sub_machine next_submachime;
 } STRUCTURED_AUTOMATA_TRANSITION;
@@ -72,15 +92,11 @@ typedef struct stack {
 typedef node Stack;
 
 // Function that calculates next state
-BOOL run_automata(STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack );
+BOOL run_automata(STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack);
 
 // function that compares a structured_automata_token and token
 // return true if they are equals
 BOOL compare_token_values(STRUCTURED_AUTOMATA_TOKEN t1, TOKEN t2);
 
 void print_stack_pair(sm_stack_pair pair);
-
-// Just the end of the rows
-#define EOR_TRANSITION { { RESERVED_WORD, "END OF ROW"}, FALSE, EOR, SUBMACHINE_NULL }
-#define EMPTY_VALUE ""
 #endif

@@ -10,27 +10,180 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
 		SUBMACHINE_PROGRAM,
 		Q0,
 		{
-			[Q0] = { { { RESERVED_WORD, "program"   }, FALSE, Q1, SUBMACHINE_NULL }, EOR_TRANSITION },
-			[Q1] = { { { RESERVED_WORD, "begin"		}, FALSE, Q2, SUBMACHINE_NULL }, EOR_TRANSITION },
-			[Q2] = { { { RESERVED_WORD, "def"		}, TRUE,  Q3, SUBMACHINE_DEF_FUNCTION }, EOR_TRANSITION },
-			[Q3] = { { { RESERVED_WORD, "end"		}, FALSE,  Q0, SUBMACHINE_NULL}, EOR_TRANSITION },
+			[Q0] =  { { FALSE, { RESERVED_WORD, "program"   }, Q1, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+			[Q1] =  { { FALSE, { RESERVED_WORD, "begin"   },   Q2, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q2] =  { { FALSE, { RESERVED_WORD, "declare"   }, Q3, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },               Q4, SUBMACHINE_DEF_FUNCTION },
+                EOR_TRANSITION },
+      [Q3] =  { { TRUE, { TRIGGER_NULL },                Q2, SUBMACHINE_DECLARATION },
+                EOR_TRANSITION },
+			[Q4] =  { { FALSE, { RESERVED_WORD, "end"   },     QF, SUBMACHINE_NULL},
+                { TRUE, { TRIGGER_NULL },                Q4, SUBMACHINE_DEF_FUNCTION},
+                EOR_TRANSITION },
+      [QF] =  { EOR_TRANSITION },
 		}
 	},
 	[SUBMACHINE_DEF_FUNCTION] = {
 		SUBMACHINE_DEF_FUNCTION,
 		Q0,
 		{
-			[Q0] = { { { RESERVED_WORD, "def" }, FALSE, Q1, SUBMACHINE_NULL }, EOR_TRANSITION },
-			[Q1] = { { { IDENTIFIER, EMPTY_VALUE}, FALSE, QF, SUBMACHINE_NULL }, EOR_TRANSITION },
-			[QF] = { EOR_TRANSITION },
+			[Q0] =  { { FALSE, { RESERVED_WORD, "def" },     Q1, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q1] =  { { FALSE, { RESERVED_WORD, "string" },  Q2, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "float" },   Q2, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "integer" }, Q2, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "boolean" }, Q2, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "void" },    Q2, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+			[Q2] =  { { FALSE, { IDENTIFIER, EMPTY_VALUE},   Q3, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q3] =  { { FALSE, { SINGLE_SYMBOL, "(" },       Q4, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "begin" },   Q5, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q4] =  { { FALSE, { RESERVED_WORD, "string" },  Q8, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "float" },   Q8, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "integer" }, Q8, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "boolean" }, Q8, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q5] =  { { FALSE, { RESERVED_WORD, "declare" }, Q6, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             Q7, SUBMACHINE_COMMANDS },
+                EOR_TRANSITION },
+      [Q6] =  { { TRUE,  { TRIGGER_NULL },             Q5, SUBMACHINE_DECLARATION },
+                EOR_TRANSITION },
+      [Q7] =  { { FALSE, { RESERVED_WORD, "end" },     QF, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q8] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q9, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q9] =  { { FALSE, { SINGLE_SYMBOL, "," },       Q4, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, ")" },       Q10, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q10] =  { { FALSE, { RESERVED_WORD, "begin" },  Q5, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+			[QF] =  { EOR_TRANSITION },
 		}
-	}
+	},
+  [SUBMACHINE_DECLARATION] = {
+    SUBMACHINE_DECLARATION,
+    Q0,
+    {
+      [Q0] =  { { FALSE, { RESERVED_WORD, "string" },  Q1, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "float" },   Q1, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "integer" }, Q1, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "boolean" }, Q1, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q1] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q2, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q2] =  { { FALSE, { SINGLE_SYMBOL, "," },       Q3, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, "[" },       Q4, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q3] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q7, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q4] =  { { FALSE, { INTEGER, EMPTY_VALUE },     Q5, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q5] =  { { FALSE, { SINGLE_SYMBOL, "]" },       Q6, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q6] =  { { FALSE, { SINGLE_SYMBOL, "," },       Q8, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q7] =  { { FALSE, { SINGLE_SYMBOL, "," },       Q3, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q8] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q9, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q9] =  { { FALSE, { SINGLE_SYMBOL, "[" },       Q4, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [QF] =  { EOR_TRANSITION },
+    }
+  },
+  [SUBMACHINE_COMMANDS] = {
+    SUBMACHINE_COMMANDS,
+    Q0,
+    {
+      [Q0] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q1, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "if" },      Q2, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "while" },   Q3, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "input" },   Q4, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "output" },  Q5, SUBMACHINE_NULL },
+                { FALSE, { IDENTIFIER, EMPTY_VALUE },  Q6, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "return" },  Q7, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "break" },   Q8, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q1] =  { { FALSE, { SINGLE_SYMBOL, "=" },       Q9, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q2] =  { { TRUE,  { TRIGGER_NULL },             QF, SUBMACHINE_IF_CONDITION },
+                EOR_TRANSITION },
+      [Q3] =  { { TRUE,  { TRIGGER_NULL },             QF, SUBMACHINE_ITERATION },
+                EOR_TRANSITION },
+      [Q4] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q8, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q5] =  { { TRUE,  { TRIGGER_NULL },             QF, SUBMACHINE_OUTPUT },
+                EOR_TRANSITION },
+      [Q6] =  { { FALSE, { SINGLE_SYMBOL, "(" },       Q10, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q7] =  { { FALSE, { IDENTIFIER, EMPTY_VALUE },  Q6, SUBMACHINE_NULL },
+                { FALSE, { VARIABLE, EMPTY_VALUE },    Q8, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             Q8, SUBMACHINE_ARITH_EXP },
+                EOR_TRANSITION },
+      [Q8] =  { { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q9] =  { { TRUE,  { TRIGGER_NULL },             QF, SUBMACHINE_ATTRIBUTION },
+                EOR_TRANSITION },
+      [Q10] = { { FALSE, { VARIABLE, EMPTY_VALUE },    Q11, SUBMACHINE_NULL },
+                { FALSE, { INTEGER, EMPTY_VALUE },     Q11, SUBMACHINE_NULL },
+                { FALSE, { FLOAT, EMPTY_VALUE },       Q11, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "FALSE" },   Q11, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "TRUE" },    Q11, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             Q11, SUBMACHINE_CALL_FUNCTION },
+                EOR_TRANSITION },
+      [Q11] = { { FALSE, { SINGLE_SYMBOL, "," },       Q10, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [QF] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q1, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "if" },      Q2, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "while" },   Q3, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "input" },   Q4, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "output" },  Q5, SUBMACHINE_NULL },
+                { FALSE, { IDENTIFIER, EMPTY_VALUE },  Q6, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "return" },  Q7, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "break" },   Q8, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+    }
+  },
+  [SUBMACHINE_ATTRIBUTION] = {
+    SUBMACHINE_ATTRIBUTION,
+    Q0,
+    {
+      [Q0] =  { { FALSE, { IDENTIFIER, EMPTY_VALUE },  Q2, SUBMACHINE_NULL },
+                { FALSE, { VARIABLE, EMPTY_VALUE },    Q1, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             Q1, SUBMACHINE_ARITH_EXP },
+                EOR_TRANSITION },
+      [Q1] =  { { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q2] =  { { FALSE, { SINGLE_SYMBOL, "(" },       Q3, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q3] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q4, SUBMACHINE_NULL },
+                { FALSE, { INTEGER, EMPTY_VALUE },     Q4, SUBMACHINE_NULL },
+                { FALSE, { FLOAT, EMPTY_VALUE },       Q4, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "FALSE" },   Q4, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "TRUE" },    Q4, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             Q4, SUBMACHINE_CALL_FUNCTION },
+                EOR_TRANSITION },
+      [Q4] =  { { FALSE, { SINGLE_SYMBOL, ")" },       Q1, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, "," },       Q3, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [QF] =  { EOR_TRANSITION },
+    }
+  }
 };
 
 char submachine_debug_names[256][256] = {
 	[SUBMACHINE_PROGRAM] = "Automata Program",
 	[SUBMACHINE_DEF_FUNCTION] = "Automata Definition Function"
 };
+
+BOOL tokenUsed = TRUE;
 
 node * Stack_Get_node(sm_stack_pair sm_pair);
 void Stack_Init(node **top);
@@ -99,26 +252,34 @@ void read_file(char* file_name) {
         printf("Erro ao abrir o arquivo\n");
         return;
     }
+    BOOL endOfProgram = FALSE;
     TOKEN token;
     BOOL wasTokenFound = FALSE;
-    BOOL endOfProgram = FALSE;
-	STRUCTURED_AUTOMATA *automata = &SUBMACHINE_LIST[SUBMACHINE_PROGRAM];
+    STRUCTURED_AUTOMATA *automata = &SUBMACHINE_LIST[SUBMACHINE_PROGRAM];
 
 	Stack *stack;
 	Stack_Init(&stack);
 
     while (!endOfProgram) {
+      if (tokenUsed) {
         wasTokenFound = get_token(input_file, &token,  &endOfProgram);
         if (wasTokenFound) {
-            // printf("%s\n", get_token_value(token.token_class, token.table_index));
           print_token(token);
-		  if (run_automata(&automata, token, &stack) == FALSE) {
-			  #ifdef DEBUG
-			  printf("[DEBUG] Unexpected token!\n");
-			  #endif
-			  break;
-		  }
+          tokenUsed = FALSE;
+    		  if (run_automata(&automata, token, &stack) == FALSE) {
+    			  #ifdef DEBUG
+    			  printf("[DEBUG] Unexpected token!\n");
+    			  #endif
+    			  break;
+    		  }
+        } else {
+          if (endOfProgram && automata->current_state != QF) {
+            #ifdef DEBUG
+            printf("ERRO: Programa incompleto!\n");
+            #endif
+          }
         }
+      }
     }
 
     fclose(input_file);
@@ -126,19 +287,22 @@ void read_file(char* file_name) {
 
 // Receaves a automata and a token
 // Calculate next state
-BOOL run_automata(STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
+BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
 	int state = (*automata)->current_state;
+
 	for (int i = 0; (*automata)->transitions[state][i].next_state != EOR; i++) {
 		STRUCTURED_AUTOMATA_TRANSITION transition = (*automata)->transitions[state][i];
-		if (compare_token_values(transition.trigger, token)) {
-			if (transition.is_submachine_transition == FALSE) {
+		if (transition.is_submachine_transition == FALSE) {
+      if (compare_token_values(transition.trigger, token)) {
 				// this is a non-submachine transition
+        tokenUsed = TRUE;
 				#ifdef DEBUG
 				printf("[DEBUG] Make transition from state: %d to %d \n\n\n", (*automata)->current_state, transition.next_state);
 				#endif
 				(*automata)->current_state = transition.next_state;
 				return TRUE;
-			} else {
+			}
+    } else {
 				// this is a submachine transition
 				sm_stack_pair pair;
 				pair.sm = (*automata)->automata_id;
@@ -154,16 +318,14 @@ BOOL run_automata(STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
 
 				(*automata) = &SUBMACHINE_LIST[transition.next_submachime];
 				run_automata(automata, token, stack);
-				
+
 				return TRUE;
-			}
 		}
 	}
 	// here, no transition was found
 	// lets take a look at the stack
-	
-	if (Stack_Empty(*stack) == FALSE 
-			&& (*automata)->current_state == QF) {
+
+	if (Stack_Empty(*stack) == FALSE && (*automata)->current_state == QF) {
 		// Lets get back to the stacked automata
 		sm_stack_pair pair = Stack_Pop(stack);
 		(*automata) = &SUBMACHINE_LIST[pair.sm];
@@ -181,7 +343,7 @@ BOOL run_automata(STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
 	// case it hits here
 	// unespected token was found
 	return FALSE;
-}
+} 
 
 // Used to compare two tokens
 BOOL compare_token_values(STRUCTURED_AUTOMATA_TOKEN t1, TOKEN t2) {
@@ -191,7 +353,7 @@ BOOL compare_token_values(STRUCTURED_AUTOMATA_TOKEN t1, TOKEN t2) {
 	switch (t2.token_class)
 	{
 		case RESERVED_WORD:
-			if (t2.token_class == t1.class 
+			if (t2.token_class == t1.class
 					&& strcmp(t1.value, t2value) == 0)
 				return TRUE;
 			break;
