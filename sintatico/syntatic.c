@@ -21,7 +21,8 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
 		Q0,
 		{
 			[Q0] = { { { RESERVED_WORD, "def" }, FALSE, Q1, SUBMACHINE_NULL }, EOR_TRANSITION },
-			[Q1] = { { { IDENTIFIER, EMPTY_VALUE}, FALSE, Q2, SUBMACHINE_NULL }, EOR_TRANSITION }
+			[Q1] = { { { IDENTIFIER, EMPTY_VALUE}, FALSE, QF, SUBMACHINE_NULL }, EOR_TRANSITION },
+			[QF] = { EOR_TRANSITION },
 		}
 	}
 };
@@ -111,7 +112,12 @@ void read_file(char* file_name) {
         if (wasTokenFound) {
             // printf("%s\n", get_token_value(token.token_class, token.table_index));
           print_token(token);
-		  run_automata(automata, token, &stack);
+		  if (run_automata(&automata, token, &stack) == FALSE) {
+			  #ifdef DEBUG
+			  printf("[DEBUG] Unexpected token!\n");
+			  #endif
+			  break;
+		  }
         }
     }
 
@@ -120,22 +126,22 @@ void read_file(char* file_name) {
 
 // Receaves a automata and a token
 // Calculate next state
-BOOL run_automata(STRUCTURED_AUTOMATA *automata, TOKEN token, Stack **stack) {
-	int state = automata->current_state;
-	for (int i = 0; automata->transitions[state][i].next_state != EOR; i++) {
-		STRUCTURED_AUTOMATA_TRANSITION transition = automata->transitions[state][i];
+BOOL run_automata(STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
+	int state = (*automata)->current_state;
+	for (int i = 0; (*automata)->transitions[state][i].next_state != EOR; i++) {
+		STRUCTURED_AUTOMATA_TRANSITION transition = (*automata)->transitions[state][i];
 		if (compare_token_values(transition.trigger, token)) {
 			if (transition.is_submachine_transition == FALSE) {
 				// this is a non-submachine transition
 				#ifdef DEBUG
-				printf("[DEBUG] Make transition from state: %d to %d \n\n\n", automata->current_state, transition.next_state);
+				printf("[DEBUG] Make transition from state: %d to %d \n\n\n", (*automata)->current_state, transition.next_state);
 				#endif
-				automata->current_state = transition.next_state;
+				(*automata)->current_state = transition.next_state;
 				return TRUE;
 			} else {
 				// this is a submachine transition
 				sm_stack_pair pair;
-				pair.sm = automata->automata_id;
+				pair.sm = (*automata)->automata_id;
 				pair.state = transition.next_state;
 
 				#ifdef DEBUG
@@ -146,7 +152,7 @@ BOOL run_automata(STRUCTURED_AUTOMATA *automata, TOKEN token, Stack **stack) {
 
 				Stack_Push(pair, stack);
 
-				automata = &SUBMACHINE_LIST[transition.next_submachime];
+				(*automata) = &SUBMACHINE_LIST[transition.next_submachime];
 				run_automata(automata, token, stack);
 				
 				return TRUE;
@@ -155,11 +161,13 @@ BOOL run_automata(STRUCTURED_AUTOMATA *automata, TOKEN token, Stack **stack) {
 	}
 	// here, no transition was found
 	// lets take a look at the stack
-	if (Stack_Empty(*stack) == 0) {
+	
+	if (Stack_Empty(*stack) == FALSE 
+			&& (*automata)->current_state == QF) {
 		// Lets get back to the stacked automata
 		sm_stack_pair pair = Stack_Pop(stack);
-		automata = &SUBMACHINE_LIST[pair.sm];
-		automata->current_state = pair.state;
+		(*automata) = &SUBMACHINE_LIST[pair.sm];
+		(*automata)->current_state = pair.state;
 
 		#ifdef DEBUG
 		printf("[DEBUG] Pop from stack: ");
@@ -167,6 +175,8 @@ BOOL run_automata(STRUCTURED_AUTOMATA *automata, TOKEN token, Stack **stack) {
 		printf("[DEBUG] Changing to automata: %s\n", submachine_debug_names[pair.sm]);
 		printf("[DEBUG] Going into state: %d\n\n", pair.state);
 		#endif
+		run_automata(automata, token, stack);
+		return TRUE;
 	}
 	// case it hits here
 	// unespected token was found
