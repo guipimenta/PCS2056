@@ -5,3 +5,4 @@ bin/*
 *.depend
 *.layout
 *.cbp
+analisador_sintatico/*

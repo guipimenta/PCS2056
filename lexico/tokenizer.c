@@ -48,8 +48,8 @@ BOOL symbol_error(STATE current_state, STATE next_state, char current_char, char
 * TRANSITIONS TABLE
 *
 * A table containg a simple structure:
-* 	       identified by state id, contains transition struct
-*		  that contains a id of the state and a list of possible
+*          identified by state id, contains transition struct
+*     that contains a id of the state and a list of possible
 *         transitions.
 *
 * TRANSITION
@@ -61,12 +61,12 @@ BOOL symbol_error(STATE current_state, STATE next_state, char current_char, char
 *
 * They are integers that indexes the TRANSITION TABLE.
 * Special States:
-*	- ISF: Identifier State Final: after a VALID command, a '\n' will
-*		   trigger a transition to the final state, so that we know
-*			that the WORD parsed is VALID
-*	- ISERR: if the char doesn't trigger any transition, the TEND
-*			 transition will be triggered, and automata will go to
-*			 a invalid state, called ISERR
+* - ISF: Identifier State Final: after a VALID command, a '\n' will
+*      trigger a transition to the final state, so that we know
+*     that the WORD parsed is VALID
+* - ISERR: if the char doesn't trigger any transition, the TEND
+*      transition will be triggered, and automata will go to
+*      a invalid state, called ISERR
 *
 * SPECIAL KEY CODES
 *
@@ -77,19 +77,19 @@ BOOL symbol_error(STATE current_state, STATE next_state, char current_char, char
 */
 
 TRANS_TABLE trans_table = {
-/*	[<ROW NUMBER>] {<STATEID>, { {TRIGGER, NEXT_STATE}, ... }}*/
-	[S0]   			= {S0,  			{ {'#', SVAR, variable_first_char}, {DD, SINT, number_first_char},   {LL, SIDENT, identifier_first_char}, {'/', SCOMM1}, {'"', SSTR1, string_beginning}, {SB, SSYMB1, symbol_first_char}, {WS, S0}, {AN, SERROR, symbol_error} }},
-	[SVAR]  		= {SVAR, 			{ {DD, SVAR, variable_loop}, {LL, SVAR, variable_loop},   {AN, S0, variable_end}  		  							}},
-	[SIDENT]  	= {SIDENT, 		{ {LL, SIDENT, identifier_loop}, {DD, SIDENT, identifier_loop}, {AN, S0, identifier_end} 									}},
-	[SINT]  		= {SINT, 			{ {DD, SINT, number_loop}, {'.', SFLOAT1, float_number},  {AN, S0, integer_end}  									}},
-	[SFLOAT1]  	= {SFLOAT1,		{ {DD, SFLOAT2, float_first_char}, {AN, SERROR}			   										}},
-	[SFLOAT2]  	= {SFLOAT2, 	{ {DD, SFLOAT2, float_loop}, {AN, S0, float_end}			   										}},
-	[SCOMM1]  	=	{SCOMM1, 		{ {'/', SCOMM2}, {AN, S0}													}},
-	[SCOMM2]  	=	{SCOMM2, 		{ {'\n', S0},  {AN, SCOMM2}													}},
-	[SSTR1]  		=	{SSTR1, 		{ {'"', S0, string_end},  {'\\', SSTR2}, {AN, SSTR1, string_loop}										}},
-	[SSTR2]  		=	{SSTR2, 		{ {AN, SSTR1, string_escaped_char}															}},
-	[SSYMB1]  	=	{SSYMB1, 		{ {SB, S0, single_symbol_end}, {LL, S0, single_symbol_end}, {DD, S0, single_symbol_end}, {WS, S0, single_symbol_end}, {AN, S0, symbol_error}													}},
-	[SERROR]	=	{SERROR, {{AN, S0}}}
+/*  [<ROW NUMBER>] {<STATEID>, { {TRIGGER, NEXT_STATE}, ... }}*/
+  [S0]        = {S0,        { {'#', SVAR, variable_first_char}, {DD, SINT, number_first_char},   {LL, SIDENT, identifier_first_char}, {'/', SCOMM1}, {'"', SSTR1, string_beginning}, {SB, SSYMB1, symbol_first_char}, {WS, S0}, {AN, SERROR, symbol_error} }},
+  [SVAR]      = {SVAR,      { {DD, SVAR, variable_loop}, {LL, SVAR, variable_loop},   {AN, S0, variable_end}                      }},
+  [SIDENT]    = {SIDENT,    { {LL, SIDENT, identifier_loop}, {DD, SIDENT, identifier_loop}, {AN, S0, identifier_end}                  }},
+  [SINT]      = {SINT,      { {DD, SINT, number_loop}, {'.', SFLOAT1, float_number},  {AN, S0, integer_end}                   }},
+  [SFLOAT1]   = {SFLOAT1,   { {DD, SFLOAT2, float_first_char}, {AN, SERROR}                           }},
+  [SFLOAT2]   = {SFLOAT2,   { {DD, SFLOAT2, float_loop}, {AN, S0, float_end}                            }},
+  [SCOMM1]    = {SCOMM1,    { {'/', SCOMM2}, {AN, S0}                         }},
+  [SCOMM2]    = {SCOMM2,    { {'\n', S0},  {AN, SCOMM2}                         }},
+  [SSTR1]     = {SSTR1,     { {'"', S0, string_end},  {'\\', SSTR2}, {AN, SSTR1, string_loop}                   }},
+  [SSTR2]     = {SSTR2,     { {AN, SSTR1, string_escaped_char}                              }},
+  [SSYMB1]    = {SSYMB1,    { {SB, S0, single_symbol_end}, {LL, S0, single_symbol_end}, {DD, S0, single_symbol_end}, {WS, S0, single_symbol_end}, {AN, S0, symbol_error}                          }},
+  [SERROR]  = {SERROR, {{AN, S0}}}
 };
 
 //GLOBAL VARIABLES
@@ -104,62 +104,62 @@ char next_char = 0;
 
 BOOL get_token(FILE *f, TOKEN *token_found, BOOL *endOfProgram) {
 
-	STATE current = S0;
-	STATE next = S0;
-	BOOL token_end = FALSE;
+  STATE current = S0;
+  STATE next = S0;
+  BOOL token_end = FALSE;
 
-	tokenFound = FALSE;
+  tokenFound = FALSE;
 
-	while (!tokenFound) {
-		current_char = next_char;
-		if(current_char == EOF) {
-			*endOfProgram = TRUE;
-			break;
-		}
+  while (!tokenFound) {
+    current_char = next_char;
+    if(current_char == EOF) {
+      *endOfProgram = TRUE;
+      break;
+    }
 
-		next_char = getc(f);
-		if(current_char) {
-			current_column++;
-			next = next_state(current, current_char, next_char, &token_end, endOfProgram);
-			// printf("current_state: %d, next_state: %d, tokenFound: %d\n", current, next, tokenFound);
-			// printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
-			if(current_char == '\n') {
-				current_column = 0;
-				current_row++;
-			}
-			if(next != SERROR) {
-				if(token_end) {
-					// printf("current_state: %d, next_state: %d\n", current, next);
-					// printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
-					next_char = current_char;
-					if(current_char == '\n') {
-						// current_column = 0;
-						current_row--;
-					}
-					current_column--;
-					fseek(f, -1, SEEK_CUR); //go back 1 cursor position to read again char that ended the last token
-				}
-			}
-		}
-		current = next;
+    next_char = getc(f);
+    if(current_char) {
+      current_column++;
+      next = next_state(current, current_char, next_char, &token_end, endOfProgram);
+      // printf("current_state: %d, next_state: %d, tokenFound: %d\n", current, next, tokenFound);
+      // printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
+      if(current_char == '\n') {
+        current_column = 0;
+        current_row++;
+      }
+      if(next != SERROR) {
+        if(token_end) {
+          // printf("current_state: %d, next_state: %d\n", current, next);
+          // printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
+          next_char = current_char;
+          if(current_char == '\n') {
+            // current_column = 0;
+            current_row--;
+          }
+          current_column--;
+          fseek(f, -1, SEEK_CUR); //go back 1 cursor position to read again char that ended the last token
+        }
+      }
+    }
+    current = next;
 
-		if(tokenFound) {
-			token_found->token_class = global_token.token_class;
-			token_found->table_index = global_token.table_index;
-			token_found->row = global_token.row;
-			token_found->column = global_token.column;
-		}
-	}
+    if(tokenFound) {
+      token_found->token_class = global_token.token_class;
+      token_found->table_index = global_token.table_index;
+      token_found->row = global_token.row;
+      token_found->column = global_token.column;
+    }
+  }
 
-	return tokenFound;
+  return tokenFound;
 }
 
 
 /*
 * NEXT_STATE
-*	PARAMS:
-*		current: current state ID
-*		c:		 char to search for transactions on TRANS_TABLE
+* PARAMS:
+*   current: current state ID
+*   c:     char to search for transactions on TRANS_TABLE
 *
 * Will search on the TRANS_TABLE for the current state transitions
 *
@@ -170,131 +170,131 @@ BOOL get_token(FILE *f, TOKEN *token_found, BOOL *endOfProgram) {
 *
 * The macro DIGIT takes a char c and returns either is a DD or a LL
 * (all defined in aux_char) so that special rules, like:
-* 	#[a-zA-Z]+
+*   #[a-zA-Z]+
 * can be created without adding many transactions on TRANS_TABLE
 */
 
 STATE next_state(STATE current, char current_char, char next_char, BOOL *end_of_token, BOOL *endOfProgram)
 {
-	int i = 0;
-	while(trans_table[current].transitions[i].trigger != AN)
-	{
-		// printf("current_state: %d, next_state: %d\n", current, trans_table[current].transitions[i].next);
-		// printf("current_char: %c, next_char: %c, trigger: %d\n", current_char, next_char, trans_table[current].transitions[i].trigger);
-		if(trans_table[current].transitions[i].trigger == current_char ||
-			trans_table[current].transitions[i].trigger == LETTER(current_char) ||
-			trans_table[current].transitions[i].trigger == DIGIT(current_char) ||
-			trans_table[current].transitions[i].trigger == SYMBOL(current_char) ||
-			trans_table[current].transitions[i].trigger == WHITESPACE(current_char))
-		{
-			if(trans_table[current].transitions[i].action != NULL)
-				*end_of_token = trans_table[current].transitions[i].action(current, trans_table[current].transitions[i].next, current_char, next_char, endOfProgram);
-			else
-				*end_of_token = FALSE;
-			return trans_table[current].transitions[i].next;
-		}
-		i++;
-	}
+  int i = 0;
+  while(trans_table[current].transitions[i].trigger != AN)
+  {
+    // printf("current_state: %d, next_state: %d\n", current, trans_table[current].transitions[i].next);
+    // printf("current_char: %c, next_char: %c, trigger: %d\n", current_char, next_char, trans_table[current].transitions[i].trigger);
+    if(trans_table[current].transitions[i].trigger == current_char ||
+      trans_table[current].transitions[i].trigger == LETTER(current_char) ||
+      trans_table[current].transitions[i].trigger == DIGIT(current_char) ||
+      trans_table[current].transitions[i].trigger == SYMBOL(current_char) ||
+      trans_table[current].transitions[i].trigger == WHITESPACE(current_char))
+    {
+      if(trans_table[current].transitions[i].action != NULL)
+        *end_of_token = trans_table[current].transitions[i].action(current, trans_table[current].transitions[i].next, current_char, next_char, endOfProgram);
+      else
+        *end_of_token = FALSE;
+      return trans_table[current].transitions[i].next;
+    }
+    i++;
+  }
 
-	if(trans_table[current].transitions[i].action != NULL)
-		*end_of_token = trans_table[current].transitions[i].action(current, trans_table[current].transitions[i].next, current_char, next_char, endOfProgram);
-	else
-		*end_of_token = FALSE;
+  if(trans_table[current].transitions[i].action != NULL)
+    *end_of_token = trans_table[current].transitions[i].action(current, trans_table[current].transitions[i].next, current_char, next_char, endOfProgram);
+  else
+    *end_of_token = FALSE;
 
-	return trans_table[current].transitions[i].next;
+  return trans_table[current].transitions[i].next;
 }
 
 TOKEN make_token(TOKEN_CLASS token_class, int table_index, int row, int column) {
-	TOKEN result_token;
+  TOKEN result_token;
 
-	result_token.token_class = token_class;
-	result_token.table_index = table_index;
-	result_token.row = row;
-	result_token.column = column;
+  result_token.token_class = token_class;
+  result_token.table_index = table_index;
+  result_token.row = row;
+  result_token.column = column;
 
-	return result_token;
+  return result_token;
 }
 
 void print_token(TOKEN token) {
-	char token_class[50];
-	TOKEN_VALUE token_value;
-	switch(token.token_class) {
-		case VARIABLE:
-			strcpy(token_class, "Variable");
-			strcpy(token_value, get_variable(token.table_index));
-			break;
-		case IDENTIFIER:
-			strcpy(token_class, "Identifier");
-			strcpy(token_value, get_identifier(token.table_index));
-			break;
-		case RESERVED_WORD:
-			strcpy(token_class, "Reserved Word");
-			strcpy(token_value, get_reserved_word(token.table_index));
-			break;
-		case INTEGER:
-			strcpy(token_class, "Integer");
-			strcpy(token_value, get_integer(token.table_index));
-			break;
-		case FLOAT:
-			strcpy(token_class, "Float");
-			strcpy(token_value, get_float(token.table_index));
-			break;
-		case STRING:
-			strcpy(token_class, "String");
-			strcpy(token_value, get_string(token.table_index));
-			break;
-		case SINGLE_SYMBOL:
-			strcpy(token_class, "Single Symbol");
-			token_value[0] = get_single_symbol(token.table_index);
-			token_value[1] = '\0';
-			break;
-	}
+  char token_class[50];
+  TOKEN_VALUE token_value;
+  switch(token.token_class) {
+    case VARIABLE:
+      strcpy(token_class, "Variable");
+      strcpy(token_value, get_variable(token.table_index));
+      break;
+    case IDENTIFIER:
+      strcpy(token_class, "Identifier");
+      strcpy(token_value, get_identifier(token.table_index));
+      break;
+    case RESERVED_WORD:
+      strcpy(token_class, "Reserved Word");
+      strcpy(token_value, get_reserved_word(token.table_index));
+      break;
+    case INTEGER:
+      strcpy(token_class, "Integer");
+      strcpy(token_value, get_integer(token.table_index));
+      break;
+    case FLOAT:
+      strcpy(token_class, "Float");
+      strcpy(token_value, get_float(token.table_index));
+      break;
+    case STRING:
+      strcpy(token_class, "String");
+      strcpy(token_value, get_string(token.table_index));
+      break;
+    case SINGLE_SYMBOL:
+      strcpy(token_class, "Single Symbol");
+      token_value[0] = get_single_symbol(token.table_index);
+      token_value[1] = '\0';
+      break;
+  }
 
-	printf("TOKEN CLASS: %s\n", token_class);
-	printf("TOKEN VALUE: %s\n", token_value);
-	printf("TOKEN LINE: %d\n", token.row);
-	printf("TOKEN COLUMN: %d\n", token.column);
+  printf("TOKEN CLASS: %s\n", token_class);
+  printf("TOKEN VALUE: %s\n", token_value);
+  printf("TOKEN LINE: %d\n", token.row);
+  printf("TOKEN COLUMN: %d\n", token.column);
 
 
-	printf("\n\n");
+  printf("\n\n");
 
 }
 
 char* get_token_value(TOKEN_CLASS token_class, int table_index) {
-	char* token_value = (char *)malloc(sizeof(char)*WMAX);
-	switch(token_class) {
-		case VARIABLE:
-			strcpy(token_value, get_variable(table_index));
-			break;
-		case IDENTIFIER:
-			strcpy(token_value, get_identifier(table_index));
-			break;
-		case RESERVED_WORD:
-			strcpy(token_value, get_reserved_word(table_index));
-			break;
-		case INTEGER:
-			strcpy(token_value, get_integer(table_index));
-			break;
-		case FLOAT:
-			strcpy(token_value, get_float(table_index));
-			break;
-		case STRING:
-			strcpy(token_value, get_string(table_index));
-			break;
-		case SINGLE_SYMBOL:
-			token_value[0] = get_single_symbol(table_index);
-			token_value[1] = '\0';
-			break;
-	}
+  char* token_value = (char *)malloc(sizeof(char)*WMAX);
+  switch(token_class) {
+    case VARIABLE:
+      strcpy(token_value, get_variable(table_index));
+      break;
+    case IDENTIFIER:
+      strcpy(token_value, get_identifier(table_index));
+      break;
+    case RESERVED_WORD:
+      strcpy(token_value, get_reserved_word(table_index));
+      break;
+    case INTEGER:
+      strcpy(token_value, get_integer(table_index));
+      break;
+    case FLOAT:
+      strcpy(token_value, get_float(table_index));
+      break;
+    case STRING:
+      strcpy(token_value, get_string(table_index));
+      break;
+    case SINGLE_SYMBOL:
+      token_value[0] = get_single_symbol(table_index);
+      token_value[1] = '\0';
+      break;
+  }
 
-	return token_value;
+  return token_value;
 
 }
 
 
 /*
 * PARAMETERS: a single WORD for lexical analysis
-* RETURNS:	  a TOKEN of the parsed WORD or error token ISERR
+* RETURNS:    a TOKEN of the parsed WORD or error token ISERR
 *
 * TOKENIZE
 *
@@ -305,303 +305,303 @@ char* get_token_value(TOKEN_CLASS token_class, int table_index) {
 */
 TOKEN tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
 {
-	int table_index = -1;
-	TOKEN token_read;
-	char token_class[50];
+  int table_index = -1;
+  TOKEN token_read;
+  char token_class[50];
 
-	switch(t_class) {
-		case VARIABLE:
-			table_index = insert_into_variables_table(t_value);
-			strcpy(token_class, "Variable");
-			break;
-		case IDENTIFIER:
-			table_index = insert_into_identifiers_table(t_value);
-			strcpy(token_class, "Identifier");
-			break;
-		case RESERVED_WORD:
-			table_index = is_in_reserved_words_table(t_value);
-			strcpy(token_class, "Reserved Word");
-			break;
-		case INTEGER:
-			table_index = insert_into_integers_table(t_value);
-			strcpy(token_class, "Integer");
-			break;
-		case FLOAT:
-			table_index = insert_into_floats_table(t_value);
-			strcpy(token_class, "Float");
-			break;
-		case STRING:
-			table_index = insert_into_strings_table(t_value);
-			strcpy(token_class, "String");
-			break;
-		case SINGLE_SYMBOL:
-			table_index = is_in_single_symbols_table(t_value[0]);
-			strcpy(token_class, "Single Symbol");
-			break;
-	}
+  switch(t_class) {
+    case VARIABLE:
+      table_index = insert_into_variables_table(t_value);
+      strcpy(token_class, "Variable");
+      break;
+    case IDENTIFIER:
+      table_index = insert_into_identifiers_table(t_value);
+      strcpy(token_class, "Identifier");
+      break;
+    case RESERVED_WORD:
+      table_index = is_in_reserved_words_table(t_value);
+      strcpy(token_class, "Reserved Word");
+      break;
+    case INTEGER:
+      table_index = insert_into_integers_table(t_value);
+      strcpy(token_class, "Integer");
+      break;
+    case FLOAT:
+      table_index = insert_into_floats_table(t_value);
+      strcpy(token_class, "Float");
+      break;
+    case STRING:
+      table_index = insert_into_strings_table(t_value);
+      strcpy(token_class, "String");
+      break;
+    case SINGLE_SYMBOL:
+      table_index = is_in_single_symbols_table(t_value[0]);
+      strcpy(token_class, "Single Symbol");
+      break;
+  }
 
-	token_read = make_token(t_class, table_index, current_row, current_column - token_array_index - 1);
+  token_read = make_token(t_class, table_index, current_row, current_column - token_array_index - 1);
 
-	// printf("\n");
-	// printf("TOKEN VALUE: %d\n", table_index);
-	// printf("TOKEN CLASS: %s\n", token_class);
-	// printf("TOKEN LINE: %d\n", current_row);
-	// printf("TOKEN COLUMN: %d\n", current_column - token_array_index - 1	);
-	// printf("\n");
+  // printf("\n");
+  // printf("TOKEN VALUE: %d\n", table_index);
+  // printf("TOKEN CLASS: %s\n", token_class);
+  // printf("TOKEN LINE: %d\n", current_row);
+  // printf("TOKEN COLUMN: %d\n", current_column - token_array_index - 1  );
+  // printf("\n");
 
-	return token_read;
+  return token_read;
 }
 
 // ACTIONS FUNCTIONS
 
 //IDENTIFIER ACTIONS
 BOOL identifier_first_char(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_array_index = 0;
-	token_value[token_array_index] = current_char;
+  token_array_index = 0;
+  token_value[token_array_index] = current_char;
 
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		current_column++;
-		token_value[++token_array_index] = '\0';
-		if(is_in_reserved_words_table(token_value) > -1)
-			tokenize(token_value, RESERVED_WORD);
-		else
-			tokenize(token_value, IDENTIFIER);
-		tokenFound = TRUE;
-	}
+  if(next_char == EOF) {
+    *endOfProgram = TRUE;
+    current_column++;
+    token_value[++token_array_index] = '\0';
+    if(is_in_reserved_words_table(token_value) > -1)
+      tokenize(token_value, RESERVED_WORD);
+    else
+      tokenize(token_value, IDENTIFIER);
+    tokenFound = TRUE;
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL identifier_loop(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = current_char;
+  token_value[++token_array_index] = current_char;
 
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		current_column++;
-		token_value[++token_array_index] = '\0';
-		if(is_in_reserved_words_table(token_value) > -1)
-			global_token = tokenize(token_value, RESERVED_WORD);
-		else
-			global_token = tokenize(token_value, IDENTIFIER);
-		tokenFound = TRUE;
-	}
+  if(next_char == EOF) {
+    *endOfProgram = TRUE;
+    current_column++;
+    token_value[++token_array_index] = '\0';
+    if(is_in_reserved_words_table(token_value) > -1)
+      global_token = tokenize(token_value, RESERVED_WORD);
+    else
+      global_token = tokenize(token_value, IDENTIFIER);
+    tokenFound = TRUE;
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL identifier_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = '\0';
-	if(is_in_reserved_words_table(token_value) > -1)
-		global_token = tokenize(token_value, RESERVED_WORD);
-	else
-		global_token = tokenize(token_value, IDENTIFIER);
-	tokenFound = TRUE;
+  token_value[++token_array_index] = '\0';
+  if(is_in_reserved_words_table(token_value) > -1)
+    global_token = tokenize(token_value, RESERVED_WORD);
+  else
+    global_token = tokenize(token_value, IDENTIFIER);
+  tokenFound = TRUE;
 
-	return TRUE;
+  return TRUE;
 }
 //-----------END OF IDENTIFIER ACTIONS---------------------------------------------------------------------------------
 
 // VARIABLE ACTIONS
 BOOL variable_first_char(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_array_index = 0;
-	token_value[token_array_index] = current_char;
+  token_array_index = 0;
+  token_value[token_array_index] = current_char;
 
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		current_column++;
-		token_value[++token_array_index] = '\0';
-		global_token = tokenize(token_value, VARIABLE);
-		tokenFound = TRUE;
-	}
+  if(next_char == EOF) {
+    *endOfProgram = TRUE;
+    current_column++;
+    token_value[++token_array_index] = '\0';
+    global_token = tokenize(token_value, VARIABLE);
+    tokenFound = TRUE;
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL variable_loop(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = current_char;
+  token_value[++token_array_index] = current_char;
 
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		current_column++;
-		token_value[++token_array_index] = '\0';
-		global_token = tokenize(token_value, VARIABLE);
-		tokenFound = TRUE;
-	}
+  if(next_char == EOF) {
+    *endOfProgram = TRUE;
+    current_column++;
+    token_value[++token_array_index] = '\0';
+    global_token = tokenize(token_value, VARIABLE);
+    tokenFound = TRUE;
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL variable_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = '\0';
-	global_token = tokenize(token_value, VARIABLE);
-	tokenFound = TRUE;
+  token_value[++token_array_index] = '\0';
+  global_token = tokenize(token_value, VARIABLE);
+  tokenFound = TRUE;
 
-	return TRUE;
+  return TRUE;
 }
 //-----------END OF VARIABLE ACTIONS---------------------------------------------------------------------------------
 
 // NUMBER ACTIONS
 BOOL number_first_char(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_array_index = 0;
-	token_value[token_array_index] = current_char;
+  token_array_index = 0;
+  token_value[token_array_index] = current_char;
 
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		current_column++;
-		token_value[++token_array_index] = '\0';
-		global_token = tokenize(token_value, INTEGER);
-		tokenFound = TRUE;
-	}
+  if(next_char == EOF) {
+    *endOfProgram = TRUE;
+    current_column++;
+    token_value[++token_array_index] = '\0';
+    global_token = tokenize(token_value, INTEGER);
+    tokenFound = TRUE;
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL number_loop(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = current_char;
+  token_value[++token_array_index] = current_char;
 
-	if(next_char == EOF){
-		current_column++;
-		token_value[++token_array_index] = '\0';
-		global_token = tokenize(token_value, INTEGER);
-		tokenFound = TRUE;
-	}
+  if(next_char == EOF){
+    current_column++;
+    token_value[++token_array_index] = '\0';
+    global_token = tokenize(token_value, INTEGER);
+    tokenFound = TRUE;
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL integer_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = '\0';
-	global_token = tokenize(token_value, INTEGER);
-	tokenFound = TRUE;
+  token_value[++token_array_index] = '\0';
+  global_token = tokenize(token_value, INTEGER);
+  tokenFound = TRUE;
 
-	return TRUE;
+  return TRUE;
 }
 
 BOOL float_number(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = current_char;
+  token_value[++token_array_index] = current_char;
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL float_first_char(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = current_char;
+  token_value[++token_array_index] = current_char;
 
-	if(next_char == EOF){
-		current_column++;
-		token_value[++token_array_index] = '\0';
-		global_token = tokenize(token_value, FLOAT);
-		tokenFound = TRUE;
-	}
+  if(next_char == EOF){
+    current_column++;
+    token_value[++token_array_index] = '\0';
+    global_token = tokenize(token_value, FLOAT);
+    tokenFound = TRUE;
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL float_loop(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = current_char;
+  token_value[++token_array_index] = current_char;
 
-	if(next_char == EOF){
-		current_column++;
-		token_value[++token_array_index] = '\0';
-		global_token = tokenize(token_value, FLOAT);
-		tokenFound = TRUE;
-	}
+  if(next_char == EOF){
+    current_column++;
+    token_value[++token_array_index] = '\0';
+    global_token = tokenize(token_value, FLOAT);
+    tokenFound = TRUE;
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL float_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = '\0';
-	global_token = tokenize(token_value, FLOAT);
-	tokenFound = TRUE;
+  token_value[++token_array_index] = '\0';
+  global_token = tokenize(token_value, FLOAT);
+  tokenFound = TRUE;
 
-	return TRUE;
+  return TRUE;
 }
 //-----------END OF NUMBER ACTIONS---------------------------------------------------------------------------------
 
 // STRING ACTIONS
 BOOL string_beginning(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_array_index = -1;
+  token_array_index = -1;
 
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		printf("STRING ERROR: STRING QUOTES NOT CLOSED!\n");
-	}
+  if(next_char == EOF) {
+    *endOfProgram = TRUE;
+    printf("STRING ERROR: STRING QUOTES NOT CLOSED!\n");
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL string_loop(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = current_char;
+  token_value[++token_array_index] = current_char;
 
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		printf("STRING ERROR: STRING QUOTES NOT CLOSED!\n");
-	}
+  if(next_char == EOF) {
+    *endOfProgram = TRUE;
+    printf("STRING ERROR: STRING QUOTES NOT CLOSED!\n");
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL string_escaped_char(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_value[++token_array_index] = current_char;
+  token_value[++token_array_index] = current_char;
 
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		printf("STRING ERROR: STRING QUOTES NOT CLOSED!\n");
-	}
+  if(next_char == EOF) {
+    *endOfProgram = TRUE;
+    printf("STRING ERROR: STRING QUOTES NOT CLOSED!\n");
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL string_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	current_column--;
-	token_value[++token_array_index] = '\0';
-	global_token = tokenize(token_value, STRING);
-	current_column++;
-	tokenFound = TRUE;
+  current_column--;
+  token_value[++token_array_index] = '\0';
+  global_token = tokenize(token_value, STRING);
+  current_column++;
+  tokenFound = TRUE;
 
-	return FALSE;
+  return FALSE;
 }
 //-----------END OF STRING ACTIONS---------------------------------------------------------------------------------
 
 // SYMBOL ACTIONS
 BOOL symbol_first_char(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
-	token_array_index = 0;
-	token_value[token_array_index] = current_char;
+  token_array_index = 0;
+  token_value[token_array_index] = current_char;
 
-	if(next_char == EOF) {
-		*endOfProgram = TRUE;
-		current_column++;
-		if(is_in_single_symbols_table(token_value[token_array_index]) > -1) {
-			token_value[++token_array_index] = '\0';
-			global_token = tokenize(token_value, SINGLE_SYMBOL);
-			tokenFound = TRUE;
-		} else {
-			printf("SYMBOL ERROR: %c IS NOT IN SINGLE SYMBOLS TABLE!\n", token_value[token_array_index]);
-		}
-	}
+  if(next_char == EOF) {
+    *endOfProgram = TRUE;
+    current_column++;
+    if(is_in_single_symbols_table(token_value[token_array_index]) > -1) {
+      token_value[++token_array_index] = '\0';
+      global_token = tokenize(token_value, SINGLE_SYMBOL);
+      tokenFound = TRUE;
+    } else {
+      printf("SYMBOL ERROR: %c IS NOT IN SINGLE SYMBOLS TABLE!\n", token_value[token_array_index]);
+    }
+  }
 
-	return FALSE;
+  return FALSE;
 }
 
 BOOL single_symbol_end(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
 
-	if(is_in_single_symbols_table(token_value[token_array_index]) > -1) {
-		token_value[++token_array_index] = '\0';
-		global_token = tokenize(token_value, SINGLE_SYMBOL);
-		tokenFound = TRUE;
-	} else {
-		printf("SYMBOL ERROR: %c IS NOT IN SINGLE SYMBOLS TABLE!\n", token_value[token_array_index]);
-	}
+  if(is_in_single_symbols_table(token_value[token_array_index]) > -1) {
+    token_value[++token_array_index] = '\0';
+    global_token = tokenize(token_value, SINGLE_SYMBOL);
+    tokenFound = TRUE;
+  } else {
+    printf("SYMBOL ERROR: %c IS NOT IN SINGLE SYMBOLS TABLE!\n", token_value[token_array_index]);
+  }
 
-	return TRUE;
+  return TRUE;
 }
 
 BOOL symbol_error(STATE current_state, STATE next_state, char current_char, char next_char, BOOL *endOfProgram) {
 
-	printf("SYMBOL ERROR: %c IS NOT A POSSIBLE SYMBOL OF THE LANGUAGE!\n", current_char);
+  printf("SYMBOL ERROR: %c IS NOT A POSSIBLE SYMBOL OF THE LANGUAGE!\n", current_char);
 
-	return FALSE; //doesn't return true because is string
+  return FALSE; //doesn't return true because is string
 }
 //-----------END OF SYMBOL ACTIONS---------------------------------------------------------------------------------
 

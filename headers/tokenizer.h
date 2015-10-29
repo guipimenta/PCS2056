@@ -5,7 +5,7 @@
 #define SMAX 1000
 #define WMAX 1000
 
-typedef char 	TOKEN_VALUE[WMAX];
+typedef char  TOKEN_VALUE[WMAX];
 
 typedef enum {
   VARIABLE,
@@ -22,16 +22,16 @@ typedef enum {
 /*
 * Tokens contains a single identification number
 * and it's value, string representation for a token
-*	TOKEN ID  |   TOKEN VALUE
-*	------------------------------------------------------
-*     ISBN 	  |    begin
-*	  ISED	  |	   end
-*	  ISIS	  |	   #<identifier> (any sequence of letters)
-*	  ISERR   |	   <error state> (not part of language)
+* TOKEN ID  |   TOKEN VALUE
+* ------------------------------------------------------
+*     ISBN    |    begin
+*   ISED    |    end
+*   ISIS    |    #<identifier> (any sequence of letters)
+*   ISERR   |    <error state> (not part of language)
 */
 typedef struct {
-	TOKEN_CLASS token_class;
-	int table_index;
+  TOKEN_CLASS token_class;
+  int table_index;
     int row;
     int column;
 } TOKEN;
