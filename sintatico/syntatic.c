@@ -155,7 +155,8 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
     SUBMACHINE_ATTRIBUTION,
     Q0,
     {
-      [Q0] =  { { TRUE,  { TRIGGER_NULL },             Q1, SUBMACHINE_ARITH_EXP },
+      [Q0] =  { { FALSE, { STRING, EMPTY_VALUE },      Q1, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             Q1, SUBMACHINE_ARITH_EXP },
                 EOR_TRANSITION },
       [Q1] =  { { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
                 EOR_TRANSITION },
@@ -416,6 +417,35 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
                 { FALSE, { SINGLE_SYMBOL, "&" },       Q4, SUBMACHINE_NULL },
                 { FALSE, { SINGLE_SYMBOL, "|" },       Q5, SUBMACHINE_NULL },
                 EOR_TRANSITION },
+    }
+  },
+  [SUBMACHINE_OUTPUT] = {
+    SUBMACHINE_OUTPUT,
+    Q0,
+    {
+      [Q0] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q1, SUBMACHINE_NULL },
+                { FALSE, { STRING, EMPTY_VALUE },      Q1, SUBMACHINE_NULL },
+                { FALSE, { IDENTIFIER, EMPTY_VALUE },  Q2, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             Q1, SUBMACHINE_ARITH_EXP },
+                EOR_TRANSITION },
+      [Q1] =  { { FALSE, { SINGLE_SYMBOL, "," },       Q0, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q2] =  { { FALSE, { SINGLE_SYMBOL, "," },       Q0, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, "(" },       Q3, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [Q3] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q4, SUBMACHINE_NULL },
+                { FALSE, { INTEGER, EMPTY_VALUE },     Q4, SUBMACHINE_NULL },
+                { FALSE, { FLOAT, EMPTY_VALUE },       Q4, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "FALSE" },   Q4, SUBMACHINE_NULL },
+                { FALSE, { RESERVED_WORD, "TRUE" },    Q4, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             Q4, SUBMACHINE_CALL_FUNCTION },
+                EOR_TRANSITION },
+      [Q4] =  { { FALSE, { SINGLE_SYMBOL, "," },       Q3, SUBMACHINE_NULL },
+                { FALSE, { SINGLE_SYMBOL, ")" },       Q1, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [QF] =  { EOR_TRANSITION },
     }
   }
 };
