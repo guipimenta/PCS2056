@@ -155,24 +155,9 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
     SUBMACHINE_ATTRIBUTION,
     Q0,
     {
-      [Q0] =  { { FALSE, { IDENTIFIER, EMPTY_VALUE },  Q2, SUBMACHINE_NULL },
-                { FALSE, { VARIABLE, EMPTY_VALUE },    Q1, SUBMACHINE_NULL },
-                { TRUE,  { TRIGGER_NULL },             Q1, SUBMACHINE_ARITH_EXP },
+      [Q0] =  { { TRUE,  { TRIGGER_NULL },             Q1, SUBMACHINE_ARITH_EXP },
                 EOR_TRANSITION },
       [Q1] =  { { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
-                EOR_TRANSITION },
-      [Q2] =  { { FALSE, { SINGLE_SYMBOL, "(" },       Q3, SUBMACHINE_NULL },
-                { FALSE, { SINGLE_SYMBOL, ";" },       QF, SUBMACHINE_NULL },
-                EOR_TRANSITION },
-      [Q3] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q4, SUBMACHINE_NULL },
-                { FALSE, { INTEGER, EMPTY_VALUE },     Q4, SUBMACHINE_NULL },
-                { FALSE, { FLOAT, EMPTY_VALUE },       Q4, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "FALSE" },   Q4, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "TRUE" },    Q4, SUBMACHINE_NULL },
-                { TRUE,  { TRIGGER_NULL },             Q4, SUBMACHINE_CALL_FUNCTION },
-                EOR_TRANSITION },
-      [Q4] =  { { FALSE, { SINGLE_SYMBOL, ")" },       Q1, SUBMACHINE_NULL },
-                { FALSE, { SINGLE_SYMBOL, "," },       Q3, SUBMACHINE_NULL },
                 EOR_TRANSITION },
       [QF] =  { EOR_TRANSITION },
     }
@@ -204,6 +189,20 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
   },
   [SUBMACHINE_ARITH_EXP] = {
     SUBMACHINE_ARITH_EXP,
+    Q0,
+    {
+      [Q0] =  { { FALSE, { SINGLE_SYMBOL, "(" },       Q1, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             QF, SUBMACHINE_ARITH_EXP_SPEC },
+                EOR_TRANSITION },
+      [Q1] =  { { TRUE,  { TRIGGER_NULL },             Q2, SUBMACHINE_ARITH_EXP_SPEC },
+                EOR_TRANSITION },
+      [Q2] =  { { FALSE, { SINGLE_SYMBOL, ")" },       QF, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [QF] =  { EOR_TRANSITION },
+    }
+  },
+  [SUBMACHINE_ARITH_EXP_SPEC] = {
+    SUBMACHINE_ARITH_EXP_SPEC,
     Q0,
     {
       [Q0] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q2, SUBMACHINE_NULL },
@@ -263,6 +262,20 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
   },
   [SUBMACHINE_BOOL_EXP] = {
     SUBMACHINE_BOOL_EXP,
+    Q0,
+    {
+      [Q0] =  { { FALSE, { SINGLE_SYMBOL, "(" },       Q1, SUBMACHINE_NULL },
+                { TRUE,  { TRIGGER_NULL },             QF, SUBMACHINE_BOOL_EXP_SPEC },
+                EOR_TRANSITION },
+      [Q1] =  { { TRUE,  { TRIGGER_NULL },             Q2, SUBMACHINE_BOOL_EXP_SPEC },
+                EOR_TRANSITION },
+      [Q2] =  { { FALSE, { SINGLE_SYMBOL, ")" },       QF, SUBMACHINE_NULL },
+                EOR_TRANSITION },
+      [QF] =  { EOR_TRANSITION },
+    }
+  },
+  [SUBMACHINE_BOOL_EXP_SPEC] = {
+    SUBMACHINE_BOOL_EXP_SPEC,
     Q0,
     {
       [Q0] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q2, SUBMACHINE_NULL },
@@ -512,10 +525,12 @@ void read_file(char* file_name) {
             break;
           }
         } else {
-          if (endOfProgram && automata->current_state != QF) {
-            #ifdef DEBUG
-            printf("ERRO: Programa incompleto!\n");
-            #endif
+          if (endOfProgram) {
+            if(automata->current_state != QF) {
+              printf("ERRO: Programa incompleto!\n");
+            } else {
+              printf("Program recognized! No errors occured!\n");
+            }
           }
         }
       }
@@ -530,9 +545,7 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
   int state = (*automata)->current_state;
   for (int i = 0; (*automata)->transitions[state][i].next_state != EOR; i++) {
     STRUCTURED_AUTOMATA_TRANSITION transition = (*automata)->transitions[state][i];
-    printf("current_state: %d, next_state: %d\n", state, (*automata)->transitions[state][i].next_state);
     if (transition.is_submachine_transition == FALSE) {
-      printf("tigger: %s, token: %s\n", transition.trigger.value, get_token_value(token.token_class, token.table_index));
       if (compare_token_values(transition.trigger, token)) {
         // this is a non-submachine transition
         tokenUsed = TRUE;
@@ -561,6 +574,7 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
         Stack_Push(pair, stack);
 
         (*automata) = &SUBMACHINE_LIST[transition.next_submachine];
+        (*automata)->current_state = Q0;
         run_automata(automata, token, stack);
 
         return TRUE;

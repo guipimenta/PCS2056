@@ -5,7 +5,7 @@
 
   #define SS_TABLE_SIZE 20
   #define DS_TABLE_SIZE 6
-  #define RW_TABLE_SIZE 16
+  #define RW_TABLE_SIZE 23
 
 
   // TABLE SEARCH FUNCTIONS

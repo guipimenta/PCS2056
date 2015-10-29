@@ -58,22 +58,29 @@ char single_symbols_table[SS_TABLE_SIZE] = {
 * RESERVED WORDS SYMBOLS
 */
 char* reserved_words_table[RW_TABLE_SIZE] = {
+  "program",
+  "declare",
   "begin",
   "end",
+  "boolean",
+  "integer",
+  "float",
+  "string",
+  "void",
   "if",
   "fend",
   "else",
   "lend",
   "def",
-  "declare",
-  "program",
   "while",
   "wend",
-  "integer",
-  "float",
-  "string",
   "input",
-  "output"
+  "output",
+  "then",
+  "TRUE",
+  "FALSE",
+  "break",
+  "return"
 };
 
 
