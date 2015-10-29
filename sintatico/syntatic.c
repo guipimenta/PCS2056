@@ -474,6 +474,8 @@ void Stack_Display(node **head);
 sm_stack_pair Stack_Pop(node **top);
 int Stack_Empty(node *temp);
 
+void semantico_tbd();
+
 void Stack_Init(node **top) {
   *top = NULL;
 }
@@ -546,7 +548,9 @@ void read_file(char* file_name) {
       if (tokenUsed) {
         wasTokenFound = get_token(input_file, &token,  &endOfProgram);
         if (wasTokenFound) {
-          print_token(token);
+          #ifdef DEBUG
+          // print_token(token);
+          #endif
           tokenUsed = FALSE;
           if (run_automata(&automata, token, &stack) == FALSE) {
             #ifdef DEBUG
@@ -583,6 +587,8 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
         printf("[DEBUG] Make transition from state: %d to %d (%s) \n\n\n", (*automata)->current_state, transition.next_state,
                                                                             submachine_debug_names[(*automata)->automata_id]);
         #endif
+        
+        semantico_tbd();
         (*automata)->current_state = transition.next_state;
         return TRUE;
       }
@@ -605,6 +611,7 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
 
         (*automata) = &SUBMACHINE_LIST[transition.next_submachine];
         (*automata)->current_state = Q0;
+        semantico_tbd();
         run_automata(automata, token, stack);
 
         return TRUE;
@@ -615,7 +622,7 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
   // lets take a look at the stack
 
   if (Stack_Empty(*stack) == FALSE && (*automata)->current_state == QF) {
-    //First we re-initialize the automata thay just finished
+    //First we re-initialize the automata that just finished
     (*automata)->current_state = Q0;
     // Lets get back to the stacked automata
     sm_stack_pair pair = Stack_Pop(stack);
@@ -659,4 +666,8 @@ BOOL compare_token_values(STRUCTURED_AUTOMATA_TOKEN t1, TOKEN t2) {
 
 void print_stack_pair(sm_stack_pair pair) {
   printf("(%d,%d)\n", pair.sm, pair.state);
+}
+
+void semantico_tbd() {
+  printf("TODO\n");
 }

@@ -10,6 +10,9 @@ begin
 
     while #i < #n then
       #fib = #a + #b;
+      if #a == #b then
+        output "hello";
+      fend
       #a = #b;
       #b = #fib;
     wend
