@@ -461,7 +461,9 @@ char submachine_debug_names[256][256] = {
   [SUBMACHINE_ITERATION] = "Automata Iteration",
   [SUBMACHINE_CONDITION] = "Automata Condition",
   [SUBMACHINE_ARITH_EXP] = "Automata Arithmetic Expression",
+  [SUBMACHINE_ARITH_EXP_SPEC] = "Automata Arithmetic Expression Specification",
   [SUBMACHINE_BOOL_EXP] = "Automata Boolean Expression",
+  [SUBMACHINE_BOOL_EXP_SPEC] = "Automata Boolean Expression Specification",
   [SUBMACHINE_OUTPUT] = "Automata Output",
 };
 
@@ -539,6 +541,7 @@ void read_file(char* file_name) {
     BOOL endOfProgram = FALSE;
     TOKEN token;
     BOOL wasTokenFound = FALSE;
+    BOOL lexicError = FALSE;
     STRUCTURED_AUTOMATA *automata = &SUBMACHINE_LIST[SUBMACHINE_PROGRAM];
 
   Stack *stack;
@@ -546,24 +549,28 @@ void read_file(char* file_name) {
 
     while (!endOfProgram) {
       if (tokenUsed) {
-        wasTokenFound = get_token(input_file, &token,  &endOfProgram);
-        if (wasTokenFound) {
-          #ifdef DEBUG
-          // print_token(token);
-          #endif
-          tokenUsed = FALSE;
-          if (run_automata(&automata, token, &stack) == FALSE) {
-            #ifdef DEBUG
-            printf("[DEBUG] Unexpected token!\n");
-            #endif
-            break;
-          }
+        lexicError = get_token(input_file, &token, &wasTokenFound, &endOfProgram);
+        if (lexicError) {
+          break;
         } else {
-          if (endOfProgram) {
-            if(automata->current_state != QF) {
-              printf("ERRO: Programa incompleto!\n");
-            } else {
-              printf("Program recognized! No errors occured!\n");
+          if (wasTokenFound) {
+            #ifdef DEBUG
+            print_token(token);
+            #endif
+            tokenUsed = FALSE;
+            if (run_automata(&automata, token, &stack) == FALSE) {
+              #ifdef DEBUG
+              printf("[DEBUG] Unexpected token!\n");
+              #endif
+              break;
+            }
+          } else {
+            if (endOfProgram) {
+              if(automata->current_state != QF) {
+                printf("ERRO: Programa incompleto!\n");
+              } else {
+                printf("Program recognized! No errors occured!\n");
+              }
             }
           }
         }
@@ -579,7 +586,13 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
   int state = (*automata)->current_state;
   for (int i = 0; (*automata)->transitions[state][i].next_state != EOR; i++) {
     STRUCTURED_AUTOMATA_TRANSITION transition = (*automata)->transitions[state][i];
+    #ifdef DEBUG
+    printf("[DEBUG] current_state: %d, next_state: %d\n", (*automata)->current_state, transition.next_state);
+    #endif
     if (transition.is_submachine_transition == FALSE) {
+      #ifdef DEBUG
+      printf("[DEBUG] trigger: %s, token_value: %s\n", transition.trigger.value, get_token_value(token.token_class, token.table_index));
+      #endif
       if (compare_token_values(transition.trigger, token)) {
         // this is a non-submachine transition
         tokenUsed = TRUE;
@@ -587,8 +600,8 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
         printf("[DEBUG] Make transition from state: %d to %d (%s) \n\n\n", (*automata)->current_state, transition.next_state,
                                                                             submachine_debug_names[(*automata)->automata_id]);
         #endif
-        
-        semantico_tbd();
+
+        // semantico_tbd();
         (*automata)->current_state = transition.next_state;
         return TRUE;
       }
@@ -611,7 +624,7 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
 
         (*automata) = &SUBMACHINE_LIST[transition.next_submachine];
         (*automata)->current_state = Q0;
-        semantico_tbd();
+        // semantico_tbd();
         run_automata(automata, token, stack);
 
         return TRUE;

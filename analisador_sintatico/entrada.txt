@@ -2,7 +2,7 @@ program
 begin
   def integer fibonacci (integer #n)
   begin
-    declare integer #i, #a, #b, #fib;
+    declare #i, #a, #b, #fib;
 
     #i = 0;
     #a = 0;

@@ -38,7 +38,8 @@ typedef struct {
 
 typedef enum states {
   S0,       //initial state
-  SVAR,     //variable state
+  SVAR1,     //variable state
+  SVAR2,
   SIDENT,   //identifier state
   SINT,     //integer state 1
   SFLOAT1,  //float state 1
@@ -64,7 +65,7 @@ typedef struct {
 
 typedef AUTOMATA TRANS_TABLE[SMAX];
 
-BOOL get_token(FILE *f, TOKEN *token_found, BOOL *endOfProgram);
+BOOL get_token(FILE *f, TOKEN *token_found, BOOL *tokenFound, BOOL *endOfProgram);
 void print_token(TOKEN token);
 char* get_token_value(TOKEN_CLASS token_class, int table_index);
 
