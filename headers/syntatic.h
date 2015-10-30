@@ -97,7 +97,7 @@ typedef struct stack {
 typedef node Stack;
 
 // Function that calculates next state
-BOOL run_automata(STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack);
+BOOL run_automata(STRUCTURED_AUTOMATA **automata, TOKEN *token, Stack **stack);
 
 // function that compares a structured_automata_token and token
 // return true if they are equals

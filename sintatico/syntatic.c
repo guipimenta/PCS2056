@@ -478,6 +478,165 @@ int Stack_Empty(node *temp);
 
 void semantico_tbd();
 
+void read_file(char* file_name) {
+
+    FILE *input_file;
+    input_file = fopen(file_name, "r");
+    if (input_file == NULL) {
+        printf("Erro ao abrir o arquivo\n");
+        return;
+    }
+    BOOL endOfProgram = FALSE;
+    TOKEN token;
+    BOOL wasTokenFound = FALSE;
+    BOOL lexicError = FALSE;
+    STRUCTURED_AUTOMATA *automata = &SUBMACHINE_LIST[SUBMACHINE_PROGRAM];
+
+  Stack *stack;
+  Stack_Init(&stack);
+
+    while (!endOfProgram) {
+      if (tokenUsed) {
+        lexicError = get_token(input_file, &token, &wasTokenFound, &endOfProgram);
+        if (lexicError) {
+          break;
+        } else {
+          if (wasTokenFound) {
+            #ifdef DEBUG
+            print_token(token);
+            #endif
+            tokenUsed = FALSE;
+            if (run_automata(&automata, &token, &stack) == FALSE) {
+              #ifdef DEBUG
+              printf("[DEBUG] Unexpected token %s on line %d!\n", get_token_value(token.token_class, token.table_index), token.row+1);
+              #endif
+              break;
+            }
+          } else {
+            if (endOfProgram) {
+              if(automata->current_state != QF) {
+                printf("ERRO: Programa incompleto!\n");
+              } else {
+                printf("Program recognized! No errors occured!\n");
+              }
+            }
+          }
+        }
+      }
+    }
+
+    fclose(input_file);
+}
+
+// Receaves a automata and a token
+// Calculate next state
+BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN *token, Stack **stack) {
+  int state = (*automata)->current_state;
+  for (int i = 0; (*automata)->transitions[state][i].next_state != EOR; i++) {
+    STRUCTURED_AUTOMATA_TRANSITION transition = (*automata)->transitions[state][i];
+    // #ifdef DEBUG
+    // printf("[DEBUG] current_state: %d, next_state: %d\n", (*automata)->current_state, transition.next_state);
+    // #endif
+    if (transition.is_submachine_transition == FALSE) {
+      // #ifdef DEBUG
+      // printf("[DEBUG] trigger: %s, token_value: %s\n", transition.trigger.value, get_token_value(token->token_class, token->table_index));
+      // #endif
+      if (compare_token_values(transition.trigger, *token)) {
+        // this is a non-submachine transition
+        tokenUsed = TRUE;
+        #ifdef DEBUG
+        printf("[DEBUG] Make transition from state: %d to %d (%s) \n\n\n", (*automata)->current_state, transition.next_state,
+                                                                            submachine_debug_names[(*automata)->automata_id]);
+        #endif
+
+        // semantico_tbd();
+        (*automata)->current_state = transition.next_state;
+        return TRUE;
+      }
+    } else {
+      if(transition.next_submachine == SUBMACHINE_NULL) { //empty transition
+        (*automata)->current_state = transition.next_state;
+      } else {
+        // this is a submachine transition
+        sm_stack_pair pair;
+        pair.sm = (*automata)->automata_id;
+        pair.state = transition.next_state;
+
+        #ifdef DEBUG
+        printf("[DEBUG] Pushed to stack: ");
+        print_stack_pair(pair);
+        printf("[DEBUG] Chaging to automata: %s\n\n\n", submachine_debug_names[transition.next_submachine]);
+        #endif
+
+        Stack_Push(pair, stack);
+
+        (*automata) = &SUBMACHINE_LIST[transition.next_submachine];
+        (*automata)->current_state = Q0;
+        // semantico_tbd();
+        // if (run_automata(automata, token, stack) == FALSE) {
+        //   return FALSE;
+        // }
+
+        return run_automata(automata, token, stack);
+      }
+    }
+  }
+  // here, no transition was found
+  // lets take a look at the stack
+
+  if (Stack_Empty(*stack) == FALSE && (*automata)->current_state == QF) {
+    //First we re-initialize the automata that just finished
+    (*automata)->current_state = Q0;
+    // Lets get back to the stacked automata
+    sm_stack_pair pair = Stack_Pop(stack);
+    (*automata) = &SUBMACHINE_LIST[pair.sm];
+    (*automata)->current_state = pair.state;
+
+    #ifdef DEBUG
+    printf("[DEBUG] Pop from stack: ");
+    print_stack_pair(pair);
+    printf("[DEBUG] Changing to automata: %s\n", submachine_debug_names[pair.sm]);
+    printf("[DEBUG] Going into state: %d\n\n", pair.state);
+    #endif
+    // if (run_automata(automata, token, stack) == FALSE) {
+    //   return FALSE;
+    // }
+    return run_automata(automata, token, stack);
+  }
+  // case it hits here
+  // unespected token was found
+  return FALSE;
+}
+
+// Used to compare two tokens
+BOOL compare_token_values(STRUCTURED_AUTOMATA_TOKEN t1, TOKEN t2) {
+  // some tokens can be compared only by class
+  // others must be compared with class and value
+  char *t2value = get_token_value(t2.token_class, t2.table_index);
+  switch (t2.token_class)
+  {
+    case RESERVED_WORD:
+    case SINGLE_SYMBOL:
+      if (t2.token_class == t1.class
+          && strcmp(t1.value, t2value) == 0)
+        return TRUE;
+      break;
+    default:
+      if (t2.token_class == t1.class)
+        return TRUE;
+      break;
+  }
+  return FALSE;
+}
+
+void print_stack_pair(sm_stack_pair pair) {
+  printf("(%d,%d)\n", pair.sm, pair.state);
+}
+
+void semantico_tbd() {
+  printf("TODO\n");
+}
+
 void Stack_Init(node **top) {
   *top = NULL;
 }
@@ -528,159 +687,4 @@ void Stack_Display(node **head) {
       temp = temp->next;
     }
   }
-}
-
-void read_file(char* file_name) {
-
-    FILE *input_file;
-    input_file = fopen(file_name, "r");
-    if (input_file == NULL) {
-        printf("Erro ao abrir o arquivo\n");
-        return;
-    }
-    BOOL endOfProgram = FALSE;
-    TOKEN token;
-    BOOL wasTokenFound = FALSE;
-    BOOL lexicError = FALSE;
-    STRUCTURED_AUTOMATA *automata = &SUBMACHINE_LIST[SUBMACHINE_PROGRAM];
-
-  Stack *stack;
-  Stack_Init(&stack);
-
-    while (!endOfProgram) {
-      if (tokenUsed) {
-        lexicError = get_token(input_file, &token, &wasTokenFound, &endOfProgram);
-        if (lexicError) {
-          break;
-        } else {
-          if (wasTokenFound) {
-            #ifdef DEBUG
-            print_token(token);
-            #endif
-            tokenUsed = FALSE;
-            if (run_automata(&automata, token, &stack) == FALSE) {
-              #ifdef DEBUG
-              printf("[DEBUG] Unexpected token!\n");
-              #endif
-              break;
-            }
-          } else {
-            if (endOfProgram) {
-              if(automata->current_state != QF) {
-                printf("ERRO: Programa incompleto!\n");
-              } else {
-                printf("Program recognized! No errors occured!\n");
-              }
-            }
-          }
-        }
-      }
-    }
-
-    fclose(input_file);
-}
-
-// Receaves a automata and a token
-// Calculate next state
-BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN token, Stack **stack) {
-  int state = (*automata)->current_state;
-  for (int i = 0; (*automata)->transitions[state][i].next_state != EOR; i++) {
-    STRUCTURED_AUTOMATA_TRANSITION transition = (*automata)->transitions[state][i];
-    #ifdef DEBUG
-    printf("[DEBUG] current_state: %d, next_state: %d\n", (*automata)->current_state, transition.next_state);
-    #endif
-    if (transition.is_submachine_transition == FALSE) {
-      #ifdef DEBUG
-      printf("[DEBUG] trigger: %s, token_value: %s\n", transition.trigger.value, get_token_value(token.token_class, token.table_index));
-      #endif
-      if (compare_token_values(transition.trigger, token)) {
-        // this is a non-submachine transition
-        tokenUsed = TRUE;
-        #ifdef DEBUG
-        printf("[DEBUG] Make transition from state: %d to %d (%s) \n\n\n", (*automata)->current_state, transition.next_state,
-                                                                            submachine_debug_names[(*automata)->automata_id]);
-        #endif
-
-        // semantico_tbd();
-        (*automata)->current_state = transition.next_state;
-        return TRUE;
-      }
-    } else {
-      if(transition.next_submachine == SUBMACHINE_NULL) { //empty transition
-        (*automata)->current_state = transition.next_state;
-      } else {
-        // this is a submachine transition
-        sm_stack_pair pair;
-        pair.sm = (*automata)->automata_id;
-        pair.state = transition.next_state;
-
-        #ifdef DEBUG
-        printf("[DEBUG] Pushed to stack: ");
-        print_stack_pair(pair);
-        printf("[DEBUG] Chaging to automata: %s\n\n\n", submachine_debug_names[transition.next_submachine]);
-        #endif
-
-        Stack_Push(pair, stack);
-
-        (*automata) = &SUBMACHINE_LIST[transition.next_submachine];
-        (*automata)->current_state = Q0;
-        // semantico_tbd();
-        run_automata(automata, token, stack);
-
-        return TRUE;
-      }
-    }
-  }
-  // here, no transition was found
-  // lets take a look at the stack
-
-  if (Stack_Empty(*stack) == FALSE && (*automata)->current_state == QF) {
-    //First we re-initialize the automata that just finished
-    (*automata)->current_state = Q0;
-    // Lets get back to the stacked automata
-    sm_stack_pair pair = Stack_Pop(stack);
-    (*automata) = &SUBMACHINE_LIST[pair.sm];
-    (*automata)->current_state = pair.state;
-
-    #ifdef DEBUG
-    printf("[DEBUG] Pop from stack: ");
-    print_stack_pair(pair);
-    printf("[DEBUG] Changing to automata: %s\n", submachine_debug_names[pair.sm]);
-    printf("[DEBUG] Going into state: %d\n\n", pair.state);
-    #endif
-    run_automata(automata, token, stack);
-    return TRUE;
-  }
-  // case it hits here
-  // unespected token was found
-  return FALSE;
-}
-
-// Used to compare two tokens
-BOOL compare_token_values(STRUCTURED_AUTOMATA_TOKEN t1, TOKEN t2) {
-  // some tokens can be compared only by class
-  // others must be compared with class and value
-  char *t2value = get_token_value(t2.token_class, t2.table_index);
-  switch (t2.token_class)
-  {
-    case RESERVED_WORD:
-    case SINGLE_SYMBOL:
-      if (t2.token_class == t1.class
-          && strcmp(t1.value, t2value) == 0)
-        return TRUE;
-      break;
-    default:
-      if (t2.token_class == t1.class)
-        return TRUE;
-      break;
-  }
-  return FALSE;
-}
-
-void print_stack_pair(sm_stack_pair pair) {
-  printf("(%d,%d)\n", pair.sm, pair.state);
-}
-
-void semantico_tbd() {
-  printf("TODO\n");
 }
