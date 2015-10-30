@@ -8,7 +8,7 @@ begin
     #a = 0;
     #b = 1;
 
-    while #i < #n then
+    while #i < #n 
       #fib = #a + #b;
       if #a == #b then
         output "hello";
