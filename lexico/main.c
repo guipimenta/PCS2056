@@ -6,7 +6,7 @@ int main(int argc, char **argv)
 {
   //printf("Reading file: %s \n", argv[1]);
 
-  read_file("ENTRADA.txt");
+  read_file(argv[1]);
 
   // print_reserved_words_table();
   // print_single_symbols_table();
