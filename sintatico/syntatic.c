@@ -512,14 +512,14 @@ void read_file(char* file_name) {
               #endif
               break;
             }
-          } else {
-            if (endOfProgram) {
-              if(automata->current_state != QF) {
-                printf("ERRO: Programa incompleto!\n");
-              } else {
-                printf("Program recognized! No errors occured!\n");
-              }
-            }
+			if (endOfProgram) {
+				if (automata->current_state != QF) {
+					printf("ERRO: Programa incompleto!\n");
+				}
+				else {
+					printf("Program recognized! No errors occured!\n");
+				}
+			}
           }
         }
       }

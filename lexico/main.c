@@ -1,12 +1,12 @@
 #include "../headers/syntatic.h"
 #include "../headers/tables.h"
 #include <stdio.h>
-
+#include <string.h>
 int main(int argc, char **argv)
 {
   //printf("Reading file: %s \n", argv[1]);
-
-  read_file(argv[1]);
+  read_file("entrada.txt");
+	
 
   // print_reserved_words_table();
   // print_single_symbols_table();
@@ -16,6 +16,6 @@ int main(int argc, char **argv)
   // print_strings_table();
   // print_integers_table();
   // print_floats_table();
-  // system("pause");
+   system("pause");
   return 0;
 }
