@@ -549,7 +549,7 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN *token, Stack **stack) 
                                                                             submachine_debug_names[(*automata)->automata_id]);
         #endif
 
-        // semantico_tbd();
+        semantico_tbd();
         (*automata)->current_state = transition.next_state;
         return TRUE;
       }
@@ -572,10 +572,7 @@ BOOL run_automata (STRUCTURED_AUTOMATA **automata, TOKEN *token, Stack **stack) 
 
         (*automata) = &SUBMACHINE_LIST[transition.next_submachine];
         (*automata)->current_state = Q0;
-        // semantico_tbd();
-        // if (run_automata(automata, token, stack) == FALSE) {
-        //   return FALSE;
-        // }
+        semantico_tbd();
 
         return run_automata(automata, token, stack);
       }

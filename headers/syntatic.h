@@ -3,7 +3,6 @@
 #define MAXSTATES 1000
 #define MAXTRANSITIONS 20
 #define MAXAUTOMATA 20
-#define DEBUG
 #include <stdio.h>
 #include "../headers/tokenizer.h"
 #include "../headers/bool.h"
