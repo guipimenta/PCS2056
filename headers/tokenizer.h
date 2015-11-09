@@ -32,8 +32,8 @@ typedef enum {
 typedef struct {
   TOKEN_CLASS token_class;
   int table_index;
-    int row;
-    int column;
+  int row;
+  int column;
 } TOKEN;
 
 typedef enum states {

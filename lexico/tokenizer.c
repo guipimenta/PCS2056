@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../headers/tokenizer.h"
+// #include "../headers/tokenizer.h"
 #include "../headers/bool.h"
 #include "../headers/aux_char.h"
 #include "../headers/tables.h"
@@ -231,11 +231,11 @@ void print_token(TOKEN token) {
   switch(token.token_class) {
     case VARIABLE:
       strcpy(token_class, "Variable");
-      strcpy(token_value, get_variable(token.table_index));
+      strcpy(token_value, get_symbol(token.table_index));
       break;
     case IDENTIFIER:
       strcpy(token_class, "Identifier");
-      strcpy(token_value, get_identifier(token.table_index));
+      strcpy(token_value, get_symbol(token.table_index));
       break;
     case RESERVED_WORD:
       strcpy(token_class, "Reserved Word");
@@ -274,10 +274,10 @@ char* get_token_value(TOKEN_CLASS token_class, int table_index) {
   char* token_value = (char *)malloc(sizeof(char)*WMAX);
   switch(token_class) {
     case VARIABLE:
-      strcpy(token_value, get_variable(table_index));
+      strcpy(token_value, get_symbol(table_index));
       break;
     case IDENTIFIER:
-      strcpy(token_value, get_identifier(table_index));
+      strcpy(token_value, get_symbol(table_index));
       break;
     case RESERVED_WORD:
       strcpy(token_value, get_reserved_word(table_index));
@@ -321,11 +321,11 @@ TOKEN tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
 
   switch(t_class) {
     case VARIABLE:
-      table_index = insert_into_variables_table(t_value);
+      table_index = insert_into_symbols_table(t_class, t_value);
       strcpy(token_class, "Variable");
       break;
     case IDENTIFIER:
-      table_index = insert_into_identifiers_table(t_value);
+      table_index = insert_into_symbols_table(t_class, t_value);
       strcpy(token_class, "Identifier");
       break;
     case RESERVED_WORD:

@@ -12,6 +12,8 @@
 #define EMPTY_VALUE ""
 #define TRIGGER_NULL  0
 
+// #define DEBUG
+
 void read_file(char* file_name);
 
 typedef enum {
