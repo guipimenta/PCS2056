@@ -5,9 +5,9 @@
   #define TABLE_MAX_SIZE    1000
   #define STRING_MAX_SIZE   100
 
-  #define SS_TABLE_SIZE 20
+  #define SS_TABLE_SIZE 21
   #define DS_TABLE_SIZE 6
-  #define RW_TABLE_SIZE 23
+  #define RW_TABLE_SIZE 25
 
   // TABLE SEARCH FUNCTIONS
   int is_in_single_symbols_table(char symbol);

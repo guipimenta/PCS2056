@@ -19,4 +19,9 @@ begin
 
     return #fib;
   end
+
+  def void main
+  begin
+    output "Hello World!";
+  end
 end

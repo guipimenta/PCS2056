@@ -80,19 +80,57 @@ BOOL lexic_error(STATE current_state, STATE next_state, char current_char, char 
 
 TRANS_TABLE trans_table = {
 /*  [<ROW NUMBER>] {<STATEID>, { {TRIGGER, NEXT_STATE}, ... }}*/
-  [S0]        = {S0,        { {'#', SVAR1, variable_hashtag}, {DD, SINT, number_first_char},   {LL, SIDENT, identifier_first_char}, {'/', SCOMM1}, {'"', SSTR1, string_beginning}, {SB, SSYMB1, symbol_first_char}, {WS, S0}, {AN, SERROR, symbol_error} }},
-  [SVAR1]     = {SVAR1,     { {DD, SVAR2, variable_loop}, {LL, SVAR2, variable_loop},   {AN, S0, lexic_error}                      }},
-  [SVAR2]     = {SVAR2,     { {DD, SVAR2, variable_loop}, {LL, SVAR2, variable_loop},   {AN, S0, variable_end}                      }},
-  [SIDENT]    = {SIDENT,    { {LL, SIDENT, identifier_loop}, {DD, SIDENT, identifier_loop}, {AN, S0, identifier_end}                  }},
-  [SINT]      = {SINT,      { {DD, SINT, number_loop}, {'.', SFLOAT1, float_number},  {AN, S0, integer_end}                   }},
-  [SFLOAT1]   = {SFLOAT1,   { {DD, SFLOAT2, float_first_char}, {AN, SERROR, lexic_error}                           }},
-  [SFLOAT2]   = {SFLOAT2,   { {DD, SFLOAT2, float_loop}, {AN, S0, float_end}                            }},
-  [SCOMM1]    = {SCOMM1,    { {'/', SCOMM2}, {AN, S0}                         }},
-  [SCOMM2]    = {SCOMM2,    { {'\n', S0},  {AN, SCOMM2}                         }},
-  [SSTR1]     = {SSTR1,     { {'"', S0, string_end},  {'\\', SSTR2}, {AN, SSTR1, string_loop}                   }},
-  [SSTR2]     = {SSTR2,     { {AN, SSTR1, string_escaped_char}                              }},
-  [SSYMB1]    = {SSYMB1,    { {SB, S0, single_symbol_end}, {LL, S0, single_symbol_end}, {DD, S0, single_symbol_end}, {WS, S0, single_symbol_end}, {AN, S0, symbol_error}                          }},
-  [SERROR]    = {SERROR,    { {AN, S0, lexic_error}}}
+  [S0]        = {S0,        { {'#', SVAR1, variable_hashtag},
+                              {DD, SINT, number_first_char},
+                              {LL, SIDENT, identifier_first_char},
+                              {'/', SCOMM1},
+                              {'"', SSTR1, string_beginning},
+                              {SB, SSYMB1, symbol_first_char},
+                              {WS, S0},
+                              {AN, SERROR, symbol_error} 
+                            }},
+  [SVAR1]     = {SVAR1,     { {DD, SVAR2, variable_loop},
+                              {LL, SVAR2, variable_loop},
+                              {AN, S0, lexic_error} 
+                            }},
+  [SVAR2]     = {SVAR2,     { {DD, SVAR2, variable_loop},
+                              {LL, SVAR2, variable_loop},
+                              {AN, S0, variable_end}
+                            }},
+  [SIDENT]    = {SIDENT,    { {LL, SIDENT, identifier_loop},
+                              {DD, SIDENT, identifier_loop},
+                              {AN, S0, identifier_end}
+                            }},
+  [SINT]      = {SINT,      { {DD, SINT, number_loop},
+                              {'.', SFLOAT1, float_number},
+                              {AN, S0, integer_end}
+                            }},
+  [SFLOAT1]   = {SFLOAT1,   { {DD, SFLOAT2, float_first_char},
+                              {AN, SERROR, lexic_error}
+                            }},
+  [SFLOAT2]   = {SFLOAT2,   { {DD, SFLOAT2, float_loop},
+                              {AN, S0, float_end}
+                            }},
+  [SCOMM1]    = {SCOMM1,    { {'/', SCOMM2},
+                              {AN, S0}
+                            }},
+  [SCOMM2]    = {SCOMM2,    { {'\n', S0},
+                              {AN, SCOMM2}
+                            }},
+  [SSTR1]     = {SSTR1,     { {'"', S0, string_end},
+                              {'\\', SSTR2},
+                              {AN, SSTR1, string_loop}
+                            }},
+  [SSTR2]     = {SSTR2,     { {AN, SSTR1, string_escaped_char}
+                            }},
+  [SSYMB1]    = {SSYMB1,    { {SB, S0, single_symbol_end},
+                              {LL, S0, single_symbol_end},
+                              {DD, S0, single_symbol_end},
+                              {WS, S0, single_symbol_end},
+                              {AN, S0, symbol_error}
+                            }},
+  [SERROR]    = {SERROR,    { {AN, S0, lexic_error}
+                            }}
 };
 
 //GLOBAL VARIABLES
@@ -126,8 +164,10 @@ BOOL get_token(FILE *f, TOKEN *token_found, BOOL *wasTokenFound, BOOL *endOfProg
     if(current_char) {
       current_column++;
       next = next_state(current, current_char, next_char, &token_end, endOfProgram);
-      // printf("current_state: %d, next_state: %d, tokenFound: %d\n", current, next, tokenFound);
-      // printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
+      #ifdef DEBUG_LEXIC
+        printf("current_state: %d, next_state: %d, tokenFound: %d\n", current, next, tokenFound);
+        printf("current_char: %c, next_char: %c, token_end: %d\n", current_char, next_char, token_end);
+      #endif
       if(current_char == '\n') {
         current_column = 0;
         current_row++;

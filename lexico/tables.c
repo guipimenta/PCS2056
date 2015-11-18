@@ -48,7 +48,8 @@ char single_symbols_table[SS_TABLE_SIZE] = {
   ',',
   '"',
   '|',
-  '&'
+  '&',
+  '.'
 };
 
 /*
@@ -89,7 +90,9 @@ char* reserved_words_table[RW_TABLE_SIZE] = {
   "TRUE",
   "FALSE",
   "break",
-  "return"
+  "return",
+  "main",
+  "struct"
 };
 
 // TABLE SEARCH FUNCTIONS

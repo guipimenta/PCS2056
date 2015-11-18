@@ -31,7 +31,8 @@ POSSIBLE_SYMBOLS_TABLE SB_TABLE = {
   '_',
   '-',
   ':',
-  '.'
+  '.',
+  '#'
 };
 
 BOOL isWhiteSpace(const unsigned char c) {

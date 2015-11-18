@@ -12,7 +12,7 @@
 #define EMPTY_VALUE ""
 #define TRIGGER_NULL  0
 
-// #define DEBUG
+// #define DEBUG_SYNTATIC
 
 void read_file(char* file_name);
 
@@ -31,6 +31,7 @@ typedef enum {
   SUBMACHINE_BOOL_EXP,
   SUBMACHINE_BOOL_EXP_SPEC,
   SUBMACHINE_OUTPUT,
+  SUBMACHINE_FUNC_ARG,
   SUBMACHINE_NULL
 } sub_machine;
 
@@ -53,6 +54,10 @@ typedef enum sub_machine_states {
   Q11,
   Q12,
   Q13,
+  Q14,
+  Q15,
+  Q16,
+  Q17,
   QF,
   EOR
 } SUB_MACHINE_STATES;

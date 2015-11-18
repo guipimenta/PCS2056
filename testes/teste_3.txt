@@ -1,0 +1,42 @@
+program 
+begin
+  struct testStruct
+  begin
+    declare integer #a;
+    declare float #jaj;
+  end
+
+  def integer fibonacci (integer #n, struct testStruct #structT)
+  begin
+    declare integer #i, #a, #b, #fib;
+    declare struct testStruct #ts;
+
+    #i = 0;
+    #a = 0;
+    #b = 1;
+    #ts.#a = 3;
+    #structT.#jaj = 10.34;
+
+    while #i < #n then
+      #fib = #a + #b;
+      if #a == #b then
+        output "hello";
+      fend
+      #a = #b;
+      #b = #fib;
+    wend
+
+    return #fib;
+  end
+
+  def void main
+  begin
+    declare struct testStruct #fibStruct;
+
+    output "Hello World!";
+
+    #fibStruct.#a = 3;
+
+    fibonacci(#fibStruct.#a, #fibStruct);
+  end
+end

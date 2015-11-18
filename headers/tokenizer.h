@@ -5,6 +5,8 @@
 #define SMAX 1000
 #define WMAX 1000
 
+// #define DEBUG_LEXIC
+
 typedef char  TOKEN_VALUE[WMAX];
 
 typedef enum {
