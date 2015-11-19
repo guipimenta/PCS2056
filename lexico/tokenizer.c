@@ -281,6 +281,10 @@ void print_token(TOKEN token) {
       strcpy(token_class, "Reserved Word");
       strcpy(token_value, get_reserved_word(token.table_index));
       break;
+    case TYPE:
+      strcpy(token_class, "Type");
+      strcpy(token_value, get_type(token.table_index));
+      break;
     case INTEGER:
       strcpy(token_class, "Integer");
       strcpy(token_value, get_integer(token.table_index));
@@ -321,6 +325,9 @@ char* get_token_value(TOKEN_CLASS token_class, int table_index) {
       break;
     case RESERVED_WORD:
       strcpy(token_value, get_reserved_word(table_index));
+      break;
+    case TYPE:
+      strcpy(token_value, get_type(table_index));
       break;
     case INTEGER:
       strcpy(token_value, get_integer(table_index));
@@ -372,6 +379,10 @@ TOKEN tokenize(TOKEN_VALUE t_value, TOKEN_CLASS t_class)
       table_index = is_in_reserved_words_table(t_value);
       strcpy(token_class, "Reserved Word");
       break;
+    case TYPE:
+      table_index = is_in_types_table(t_value);
+      strcpy(token_class, "Type");
+      break;
     case INTEGER:
       table_index = insert_into_integers_table(t_value);
       strcpy(token_class, "Integer");
@@ -415,6 +426,8 @@ BOOL identifier_first_char(STATE current_state, STATE next_state, char current_c
     token_value[++token_array_index] = '\0';
     if(is_in_reserved_words_table(token_value) > -1)
       tokenize(token_value, RESERVED_WORD);
+    else if(is_in_types_table(token_value) > -1)
+      tokenize(token_value, TYPE);
     else
       tokenize(token_value, IDENTIFIER);
     tokenFound = TRUE;
@@ -432,6 +445,8 @@ BOOL identifier_loop(STATE current_state, STATE next_state, char current_char, c
     token_value[++token_array_index] = '\0';
     if(is_in_reserved_words_table(token_value) > -1)
       global_token = tokenize(token_value, RESERVED_WORD);
+    else if(is_in_types_table(token_value) > -1)
+      global_token = tokenize(token_value, TYPE);
     else
       global_token = tokenize(token_value, IDENTIFIER);
     tokenFound = TRUE;
@@ -444,6 +459,9 @@ BOOL identifier_end(STATE current_state, STATE next_state, char current_char, ch
   token_value[++token_array_index] = '\0';
   if(is_in_reserved_words_table(token_value) > -1)
     global_token = tokenize(token_value, RESERVED_WORD);
+  else if(is_in_types_table(token_value) > -1)
+    
+    global_token = tokenize(token_value, TYPE);
   else
     global_token = tokenize(token_value, IDENTIFIER);
   tokenFound = TRUE;

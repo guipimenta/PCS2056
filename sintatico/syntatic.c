@@ -61,10 +61,10 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
     {
       [Q0] =  { { FALSE, { RESERVED_WORD, "def" },     Q1, SUBMACHINE_NULL },
                 EOR_TRANSITION },
-      [Q1] =  { { FALSE, { RESERVED_WORD, "string" },  Q2, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "float" },   Q2, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "integer" }, Q2, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "boolean" }, Q2, SUBMACHINE_NULL },
+      [Q1] =  { { FALSE, { TYPE, "string" },  Q2, SUBMACHINE_NULL },
+                { FALSE, { TYPE, "float" },   Q2, SUBMACHINE_NULL },
+                { FALSE, { TYPE, "integer" }, Q2, SUBMACHINE_NULL },
+                { FALSE, { TYPE, "boolean" }, Q2, SUBMACHINE_NULL },
                 { FALSE, { RESERVED_WORD, "void" },    Q2, SUBMACHINE_NULL },
                 { FALSE, { RESERVED_WORD, "struct" },  Q3, SUBMACHINE_NULL },
                 EOR_TRANSITION },
@@ -75,10 +75,10 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
       [Q4] =  { { FALSE, { SINGLE_SYMBOL, "(" },       Q5, SUBMACHINE_NULL },
                 { FALSE, { RESERVED_WORD, "begin" },   Q6, SUBMACHINE_NULL },
                 EOR_TRANSITION },
-      [Q5] =  { { FALSE, { RESERVED_WORD, "string" },  Q9, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "float" },   Q9, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "integer" }, Q9, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "boolean" }, Q9, SUBMACHINE_NULL },
+      [Q5] =  { { FALSE, { TYPE, "string" },  Q9, SUBMACHINE_NULL },
+                { FALSE, { TYPE, "float" },   Q9, SUBMACHINE_NULL },
+                { FALSE, { TYPE, "integer" }, Q9, SUBMACHINE_NULL },
+                { FALSE, { TYPE, "boolean" }, Q9, SUBMACHINE_NULL },
                 { FALSE, { RESERVED_WORD, "struct" },  Q10, SUBMACHINE_NULL },
                 EOR_TRANSITION },
       [Q6] =  { { FALSE, { RESERVED_WORD, "declare" }, Q7, SUBMACHINE_NULL },
@@ -110,10 +110,10 @@ STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
     SUBMACHINE_DECLARATION,
     Q0,
     {
-      [Q0] =  { { FALSE, { RESERVED_WORD, "string" },  Q1, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "float" },   Q1, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "integer" }, Q1, SUBMACHINE_NULL },
-                { FALSE, { RESERVED_WORD, "boolean" }, Q1, SUBMACHINE_NULL },
+      [Q0] =  { { FALSE, { TYPE, "string" },  Q1, SUBMACHINE_NULL },
+                { FALSE, { TYPE, "float" },   Q1, SUBMACHINE_NULL },
+                { FALSE, { TYPE, "integer" }, Q1, SUBMACHINE_NULL },
+                { FALSE, { TYPE, "boolean" }, Q1, SUBMACHINE_NULL },
                 { FALSE, { RESERVED_WORD, "struct" },  Q2, SUBMACHINE_NULL },
                 EOR_TRANSITION },
       [Q1] =  { { FALSE, { VARIABLE, EMPTY_VALUE },    Q3, SUBMACHINE_NULL },
@@ -533,6 +533,7 @@ char submachine_debug_names[256][256] = {
   [SUBMACHINE_BOOL_EXP] = "Automata Boolean Expression",
   [SUBMACHINE_BOOL_EXP_SPEC] = "Automata Boolean Expression Specification",
   [SUBMACHINE_OUTPUT] = "Automata Output",
+  [SUBMACHINE_FUNC_ARG] = "Automata Function Arguments",
 };
 
 BOOL tokenUsed = TRUE;
@@ -679,6 +680,7 @@ BOOL compare_token_values(STRUCTURED_AUTOMATA_TOKEN t1, TOKEN t2) {
   switch (t2.token_class)
   {
     case RESERVED_WORD:
+    case TYPE:
     case SINGLE_SYMBOL:
       if (t2.token_class == t1.class
           && strcmp(t1.value, t2value) == 0)

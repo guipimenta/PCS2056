@@ -72,11 +72,6 @@ char* reserved_words_table[RW_TABLE_SIZE] = {
   "declare",
   "begin",
   "end",
-  "boolean",
-  "integer",
-  "float",
-  "string",
-  "void",
   "if",
   "fend",
   "else",
@@ -91,8 +86,19 @@ char* reserved_words_table[RW_TABLE_SIZE] = {
   "FALSE",
   "break",
   "return",
+  "void",
   "main",
   "struct"
+};
+
+/*
+* TYPES SYMBOLS
+*/
+char* types_table[TP_TABLE_SIZE] = {
+  "boolean",
+  "integer",
+  "float",
+  "string",
 };
 
 // TABLE SEARCH FUNCTIONS
@@ -116,6 +122,20 @@ int is_in_reserved_words_table(char* identifier) {
 
   for(i=0; i < RW_TABLE_SIZE; i++) {
     if(strcmp(identifier, reserved_words_table[i]) == 0) {
+      ret_value = i;
+      break;
+    }
+  }
+
+  return ret_value;
+}
+
+int is_in_types_table(char* identifier) {
+  int i = 0;
+  int ret_value = -1;
+
+  for(i=0; i < TP_TABLE_SIZE; i++) {
+    if(strcmp(identifier, types_table[i]) == 0) {
       ret_value = i;
       break;
     }
@@ -306,6 +326,17 @@ void print_reserved_words_table() {
   printf("\n\n");
 }
 
+void print_types_table() {
+  int i;
+
+  printf("-----TYPES TABLE-----\n");
+
+  for(i=0; i < TP_TABLE_SIZE; i++) {
+    printf("    %2d  -  %s\n", i, types_table[i]);
+  }
+  printf("\n\n");
+}
+
 void print_single_symbols_table() {
   int i;
 
@@ -400,6 +431,10 @@ void print_floats_table() {
 //TABLES GETTERS FUNCTIONS
 char* get_reserved_word(int table_index) {
   return reserved_words_table[table_index];
+}
+
+char* get_type(int table_index) {
+  return types_table[table_index];
 }
 
 // char* get_identifier(int table_index) {

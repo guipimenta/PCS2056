@@ -13,6 +13,7 @@ typedef enum {
   VARIABLE,
   IDENTIFIER,
   RESERVED_WORD,
+  TYPE,
   INTEGER,
   FLOAT,
   STRING,
