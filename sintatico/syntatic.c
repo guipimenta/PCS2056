@@ -4,6 +4,7 @@
 #include "../headers/bool.h"
 #include "../headers/tokenizer.h"
 #include "../headers/syntatic.h"
+#include "../headers/semantic.h"
 
 STRUCTURED_AUTOMATA SUBMACHINE_LIST[MAXAUTOMATA] = {
   [SUBMACHINE_PROGRAM] = {
@@ -545,8 +546,6 @@ void Stack_Display(node **head);
 sm_stack_pair Stack_Pop(node **top);
 int Stack_Empty(node *temp);
 
-void semantico_tbd();
-
 void read_file(char* file_name) {
 
   FILE *input_file;
@@ -563,6 +562,8 @@ void read_file(char* file_name) {
 
   Stack *stack;
   Stack_Init(&stack);
+
+  initialize_symbols_table();
 
   while (!endOfProgram) {
     if (tokenUsed) {
@@ -696,10 +697,6 @@ BOOL compare_token_values(STRUCTURED_AUTOMATA_TOKEN t1, TOKEN t2) {
 
 void print_stack_pair(sm_stack_pair pair) {
   printf("(%d,%d)\n", pair.sm, pair.state);
-}
-
-void semantico_tbd() {
-  printf("TODO\n");
 }
 
 void Stack_Init(node **top) {

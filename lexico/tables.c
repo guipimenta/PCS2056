@@ -9,21 +9,29 @@ typedef struct {
   TOKEN_CLASS token_class;
 } SYMBOL;
 
-typedef SYMBOL SYMBOLS_TABLE[TABLE_MAX_SIZE];
+typedef struct {
+  int symbols_table_index;
+  SYMBOL symbols_table[TABLE_MAX_SIZE];
+} SYMBOLS_TABLE;
+
+typedef SYMBOLS_TABLE SYMBOLS_TABLE_ARRAY[SYMBOLS_TABLE_MAX];
 
 char integers_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
 char floats_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
 // char variables_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
 char strings_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
 // char identifiers_table[TABLE_MAX_SIZE][STRING_MAX_SIZE];
-SYMBOLS_TABLE symbols_table;
+
+SYMBOLS_TABLE_ARRAY symbols_table_array;
 
 int integers_table_index = 0;
 int floats_table_index = 0;
 // int variables_table_index = 0;
 int strings_table_index = 0;
 // int identifiers_table_index = 0;
-int symbols_table_index = 0;
+
+int current_symbols_table;
+int symbols_table_array_index = 0;
 
 /*
 * SINGLE SYMBOLS
@@ -41,8 +49,6 @@ char single_symbols_table[SS_TABLE_SIZE] = {
   '!',
   '(',
   ')',
-  '{',
-  '}',
   '[',
   ']',
   ',',
@@ -51,18 +57,6 @@ char single_symbols_table[SS_TABLE_SIZE] = {
   '&',
   '.'
 };
-
-/*
-* DOUBLE SYMBOLS
-*/
-// char* double_symbols_table[DS_TABLE_SIZE] = {
-//   "&&",
-//   "||",
-//   "<=",
-//   "==",
-//   ">=",
-//   "!="
-// };
 
 /*
 * RESERVED WORDS SYMBOLS
@@ -90,6 +84,18 @@ char* reserved_words_table[RW_TABLE_SIZE] = {
   "main",
   "struct"
 };
+
+void set_current_symbols_table (int index) {
+  current_symbols_table = index;
+}
+
+void increment_symbols_table_array_index(void) {
+  symbols_table_array_index++;
+}
+
+void initialize_symbol_table (int index) {
+  symbols_table_array[index].symbols_table_index = 0;
+}
 
 /*
 * TYPES SYMBOLS
@@ -176,8 +182,9 @@ int is_in_symbols_table(TOKEN_CLASS token_class, char* value) {
   int i = 0;
   int ret_value = -1;
 
-  for(i=0; i < symbols_table_index; i++) {
-    if(symbols_table[i].token_class == token_class && strcmp(value, symbols_table[i].value) == 0) {
+  for(i=0; i < symbols_table_array[current_symbols_table].symbols_table_index; i++) {
+    if(symbols_table_array[current_symbols_table].symbols_table[i].token_class == token_class
+       && strcmp(value, symbols_table_array[current_symbols_table].symbols_table[i].value) == 0) {
       ret_value = i;
       break;
     }
@@ -235,10 +242,10 @@ int insert_into_symbols_table(TOKEN_CLASS token_class, char* value) {
 
   ret_value = is_in_symbols_table(token_class, value);
   if(ret_value == -1) {
-    symbols_table[symbols_table_index].token_class = token_class;
-    strcpy(symbols_table[symbols_table_index].value, value);
-    ret_value = symbols_table_index;
-    symbols_table_index++;
+    symbols_table_array[current_symbols_table].symbols_table[symbols_table_array[current_symbols_table].symbols_table_index].token_class = token_class;
+    strcpy(symbols_table_array[current_symbols_table].symbols_table[symbols_table_array[current_symbols_table].symbols_table_index].value, value);
+    ret_value = symbols_table_array[current_symbols_table].symbols_table_index;
+    symbols_table_array[current_symbols_table].symbols_table_index++;
   }
 
   return ret_value;
@@ -352,25 +359,31 @@ void print_symbols_table() {
   int i = 0;
   int count = 0;
 
-  printf("-----IDENTIFIERS TABLE-----\n");
+  for(int j = 0; j < symbols_table_array_index; j++) {
 
-  for(i=0; i < symbols_table_index; i++) {
-    if (symbols_table[i].token_class == IDENTIFIER) {
-      printf("    %3d  -  %s\n", count, symbols_table[i].value);
-      count++;
-    }
-  }
-  printf("\n\n");
+    printf("-----SYMBOLS TABLE %2d-----\n\n", j);
 
-  printf("-----VARIABLES TABLE-----\n");
-  count = 0;
-  for(i=0; i < symbols_table_index; i++) {
-    if (symbols_table[i].token_class == VARIABLE) {
-      printf("    %3d  -  %s\n", count, symbols_table[i].value);
-      count++;
+    printf("\t-----IDENTIFIERS TABLE-----\n");
+
+    for(i=0; i < symbols_table_array[j].symbols_table_index; i++) {
+      if (symbols_table_array[j].symbols_table[i].token_class == IDENTIFIER) {
+        printf("\t    %3d  -  %s\n", count, symbols_table_array[j].symbols_table[i].value);
+        count++;
+      }
     }
+    printf("\n\n");
+
+    printf("\t-----VARIABLES TABLE-----\n");
+    count = 0;
+    for(i=0; i < symbols_table_array[j].symbols_table_index; i++) {
+      if (symbols_table_array[j].symbols_table[i].token_class == VARIABLE) {
+        printf("\t    %3d  -  %s\n", count, symbols_table_array[j].symbols_table[i].value);
+        count++;
+      }
+    }
+    printf("\n\n");
+
   }
-  printf("\n\n");
 }
 
 // void print_identifiers_table() {
@@ -442,7 +455,7 @@ char* get_type(int table_index) {
 // }
 
 char* get_symbol(int table_index) {
-  return symbols_table[table_index].value;
+  return symbols_table_array[current_symbols_table].symbols_table[table_index].value;
 }
 
 char* get_string(int table_index) {

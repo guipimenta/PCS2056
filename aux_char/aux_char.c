@@ -20,8 +20,6 @@ POSSIBLE_SYMBOLS_TABLE SB_TABLE = {
 	'!',
 	'(',
 	')',
-	'{',
-	'}',
 	'[',
 	']',
 	',',

@@ -20,8 +20,6 @@ typedef enum {
   SINGLE_SYMBOL
 } TOKEN_CLASS;
 
-
-
 /*
 * Tokens contains a single identification number
 * and it's value, string representation for a token

@@ -9,7 +9,7 @@
 #include "bool.h"
 
 
-#define SBSIZE  25
+#define SBSIZE  23
 
 /*DEFINE SPECIAL OPERATORS*/
 
