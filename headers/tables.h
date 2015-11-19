@@ -4,9 +4,9 @@
 
   #define TABLE_MAX_SIZE    1000
   #define STRING_MAX_SIZE   100
+  #define SYMBOLS_TABLE_MAX 50
 
-  #define SS_TABLE_SIZE 21
-  #define DS_TABLE_SIZE 6
+  #define SS_TABLE_SIZE 19
   #define RW_TABLE_SIZE 21
   #define TP_TABLE_SIZE 4
 
@@ -50,5 +50,10 @@
   char get_single_symbol(int table_index);
   char* get_integer(int table_index);
   char* get_float(int table_index);
+
+  void set_current_symbols_table (int symbol_table);
+  void increment_symbols_table_array_index(void);
+
+  void initialize_symbol_table (int symbol_table);
 
 #endif
