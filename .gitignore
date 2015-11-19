@@ -7,3 +7,7 @@ bin/*
 *.cbp
 *.exe
 analisador_sintatico/*
+*.jar
+*.bat
+*.mvn
+*.lst
