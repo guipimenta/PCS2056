@@ -80,7 +80,7 @@ LOAD    K  /0000        ; executes assembled instruction
 PRETURN RS POP          ; return pop
 
 ;
-; Switch context function
+; Switch context functions
 ;
 
 ; CALL
@@ -100,6 +100,8 @@ TOCALL  K  /0000   ; function to be called
 
 ;function body
 CALL    JP  /000     ; return address
+        LD  STACKTP  ; load stack top pointer
+        MM  BASEP    ; moves base pointer to stack top pointer
         LD  PSIZE    ; calculates stack real size
         *   UNITSIZE ; multiply by unit size
         MM  PSIZE    ; saves params size
@@ -133,6 +135,35 @@ FORLEND LD  RETADR   ; load return address
 CALLSUB K   /0000    ; calls subrotine
 CRETURN RS CALL      ; when all functions are called
 
+; CALLRET
+;   returns to previous function
+
+CTEMP1   K   /0000    ; return address
+CTEMP2   K   /0000    ; frame size
+
+CALLRET     K   /0000     ; return address
+            SC  POP       ; pops current frame size
+            SC  POP       ; return address (to be called)
+            LD  POPVAL    ; loads pop value (return address)
+            MM  CTEMP1     ; saves return address
+            LD  BASEP     ; loads base pointer
+            MM  STACKTP   ; new stack top pointer
+            LD  BASEP     ; loads base pointer
+            -   UNITSIZE  ; goes back 1 position
+            +   READINS   ; creates a read instruction
+            MM  LOADFSIZE ; stores instruction
+LOADFSIZE   K   /0000     ; loads frame size
+            MM  CTEMP2     ; stores frame size
+            LD  BASEP     ; loads base pointer
+            -   CTEMP2     ; goes back to previous stack
+            MM  BASEP     ; base pointer to start of previous stack
+            LD  CTEMP1     ; loads return address
+            +   SCINS     ; loads SC instruction
+            MM  GOTOPREV  ; returns to previous function
+GOTOPREV    K   /0000     ; returns 
+
+
+
 ; CHANGEBP:
 ;   Move pointers to new position on context switch
 ; Parameters:
@@ -162,6 +193,7 @@ TEST   JP /000           ; return address
        MM SPOS           ; sttores
        SC LOADPARM       ; calls load param function
        +  TEMP1          ; stores a + b
+       SC CALLRET        ; goes back to main routine
        RS TEST           ; end of routine
 
 ; this is a test routine
