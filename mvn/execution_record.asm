@@ -100,6 +100,8 @@ TOCALL  K  /0000   ; function to be called
 
 ;function body
 CALL    JP  /000     ; return address
+        LV  /00      ; zeros counter
+        MM  i        ; stores zero counter
         LD  STACKTP  ; load stack top pointer
         MM  BASEP    ; moves base pointer to stack top pointer
         LD  PSIZE    ; calculates stack real size
@@ -180,21 +182,46 @@ CHANGEBP JP /000         ; return address
          +  STACKTP      ; add it to stack pointer
          MM STACKTP      ; stores new value
          RS CHANGEBP     ; returns
+; Second call
+; teste2
+TEMP2   K  /0000
+TEST2   JP /0000         ; return address
+        LV /00           ; load 0
+        MM SPOS          ; stores position of param
+        SC LOADPARM      ; loads parameter
+        MM TEMP2         ; stores parameter
+        LV /02           ; loads constant
+        *  TEMP2         ; multiply
+        SC CALLRET       ; returns
 
 ; test
 ; simulates params stack
 TEMP1  K  /0000
-TEST   JP /000           ; return address
-       LV /00            ; try to read first param
-       MM SPOS           ; stores
-       SC LOADPARM       ; calls load param function
-       MM TEMP1          ; stores temp1       
-       LV /01            ; try to read second param
-       MM SPOS           ; sttores
-       SC LOADPARM       ; calls load param function
-       +  TEMP1          ; stores a + b
-       SC CALLRET        ; goes back to main routine
-       RS TEST           ; end of routine
+TEST    JP /000           ; return address
+        LV /00            ; try to read first param
+        MM SPOS           ; stores
+        SC LOADPARM       ; calls load param function
+        MM TEMP1          ; stores temp1       
+        LV /01            ; try to read second param
+        MM SPOS           ; sttores
+        SC LOADPARM       ; calls load param function
+        +  TEMP1          ; stores a + b
+        MM TEMP1          ; stores into temp
+        LV /01            ; loads value 3
+        MM PSIZE          ; two parameters
+        LD TEMP1          ; loads value 2
+        MM PARAM1         ; parameter 1
+        LV PARAM1         ; top of vector
+        MM PSTACKP        ; stores at params vector
+        LV RETFCAL        ; loads return address
+        MM RETADR         ; address return of main
+        LV TEST2          ; loads function address
+        MM TOCALL         ; function that should be called
+        SC CALL           ; lets do it!
+        RS TEST           ; end of routine
+RETFCAL LV /FF            ; loads a value
+        SC CALLRET        ; goes back to main routine
+        
 
 ; this is a test routine
 ; program entry point
