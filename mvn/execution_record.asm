@@ -60,6 +60,25 @@ LOADPARM JP /000        ; return address
 GETPARM  K  /0000       ; fetches param
          RS LOADPARM    ; returns
 
+; STOREPARM
+;   Stores parms into stack frame
+; Parameters:
+;    SSPOS: stack position to be written
+;    SSVAL: parameter to be stored
+
+SSPOS  K   /0000         ; Declaration of position
+SSVAL  K   /0000         ; Declaration of value
+SSTEMP K   /0000         ; temporary holder
+STOREPARM  JP /000       ; return address
+           LD SSPOS      ; loads position
+           *  UNITSIZE   ; unit size
+           +  BASEP      ; base pointer
+           +  STOREINS   ; reads instruction
+           MM SAVEPARM   ; creates instruction
+           LD SSVAL      ; loads val
+SAVEPARM   K  /0000      ; executes instruction
+           RS STOREPARM  ; goes back
+
 ; POP
 ;   Pop 1 byte value from the stack
 ; Parameters:
@@ -192,6 +211,12 @@ TEST2   JP /0000         ; return address
         MM TEMP2         ; stores parameter
         LV /02           ; loads constant
         *  TEMP2         ; multiply
+        MM TEMP2         ; saves into TEMP2
+        LV /01           ; loads value 01
+        MM SSPOS         ; saves position were to store
+        LD TEMP2         ; loads data to be stored
+        MM SSVAL         ; saves value to store
+        SC STOREPARM     ; stores into stack
         SC CALLRET       ; returns
 
 ; test
@@ -207,7 +232,7 @@ TEST    JP /000           ; return address
         SC LOADPARM       ; calls load param function
         +  TEMP1          ; stores a + b
         MM TEMP1          ; stores into temp
-        LV /01            ; loads value 3
+        LV /02            ; loads value 3
         MM PSIZE          ; two parameters
         LD TEMP1          ; loads value 2
         MM PARAM1         ; parameter 1
