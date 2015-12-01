@@ -11,3 +11,5 @@ analisador_sintatico/*
 *.bat
 *.mvn
 *.lst
+*.run
+*.sh

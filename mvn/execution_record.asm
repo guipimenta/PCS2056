@@ -3,8 +3,8 @@
 ;
 ;       Used to organized function calls and save context
 
-@        /0000  ; absolut start
-JP       MAIN   ; goes to main (test) function
+& /0000
+JP       MAINFAKE   ; goes to main (test) function
 
 ;
 ; Variables and constant declarions
@@ -47,8 +47,12 @@ STORE   K   /0000       ; assembled instruction
 ;       Push a local variable into the stack
 ; Parameters:
 ;       PLVAL: value to be pushed into local context
+
+; exports
+PLVAL   >
+PSLOCAL >
+
 PLFSIZE JP /0000    ; Stores frame size
-PLRADDR JP /0000    ; Stores return address
 PLVAL   JP /0000    ; value to be stored
 
 PSLOCAL JP /000     ; Return Address
@@ -63,6 +67,88 @@ PSLOCAL JP /000     ; Return Address
         SC PUSH     ; stores it 
         RS PSLOCAL  ; returns
 
+; LOADLOCAL
+;   Loads local variable value
+; PARAMS
+;   LLPOS  position to be loaded from
+;   LLRET  where to return the read value
+
+LLPOS     >
+LLRET     >
+LOCALLOAD >
+LLPOS  JP /0000      ; position to be read
+LLRET  JP /0000      ; return address
+
+
+LOADLOCAL JP /00      ; return address
+          LD LLPOS    ; load position
+          MM CSPOS    ; loads into calculate shift params
+          SC CALCSHIFT ; get shift
+          LD STACKTP  ; sums with stack
+          -  CSRET    ; calculates shift
+          +  READINS  ; read local instruction
+          MM LLREAD   ; stores read local instruction
+LLREAD    K  /0000    ; read local
+          MM LLRET    ; puts on return
+          RS LOADLOCAL ; returns
+
+; CALCSHIFT
+;   calculate shift to read or store a param
+; PARAMS
+;   CSPOS position to calculate shift
+;   CSRET shift size
+
+CSPOS   K /0000
+CSRET   K /0000
+CSBUF1  K /0000     
+CSBUF2  K /0000     
+
+CALCSHIFT JP /00       ; return address
+          LD STACKTP   ; loads stacktop pointer
+          -  UNITSIZE  ; goes back one position
+          +  READINS   ; creates read instruction
+          MM CSLOADV   ; creates instruction
+CSLOADV   K  /000      ; reads locals size
+          MM CSBUF1    ; stores size
+          LD LLPOS     ; loads position
+          *  UNITSIZE  ; count space on memory
+          MM CSBUF2    ; saves size into buffer 2
+          LD CSBUF1    ; gets size
+          -  CSBUF2    ; now we calculate shift size
+          -  UNITSIZE  ; one of the size
+          MM CSRET     ; stores shift
+          RS CALCSHIFT ; returns
+
+; STORELOCAL
+;   stores local variable
+; PARAMS
+;   SLVAL: value to be stored
+;   SLPOS: position to be stored
+
+SLVAL      >
+SLPOS      >
+STORELOCAL >
+
+SLVAL K /0000
+SLPOS K /0000
+
+STORELOCAL K /000       ; return address
+           LD SLPOS     ; loads position
+           MM CSPOS     ; stores into calculate shift params
+           SC CALCSHIFT ; get shift
+           LD STACKTP   ; stack pointer
+           -  CSRET     ; sums with stack
+           +  STOREINS  ; read local instruction
+           MM SLWRITE   ; creates a instruction
+           LD SLVAL     ; loads vall
+SLWRITE    K /0000      ; stores val
+           RS STORELOCAL ; returns
+
+
+; Exports parameters
+SPOS       >
+SLOADPARAM >
+LOADPARAM  >
 
 ; LOADPARM
 ;   Load parameter from frame on the stack and 
@@ -86,6 +172,11 @@ LOADPARM JP /000        ; return address
 GETPARM  K  /0000       ; fetches param
          MM SLOADPARM   ; loaded param
          RS LOADPARM    ; returns
+
+; Exports parameters
+SSPOS      >
+SSVAL      >
+STOREPARAM >
 
 ; STOREPARM
 ;   Stores parms into stack frame
@@ -136,6 +227,13 @@ PRETURN RS POP          ; return pop
 ;   PSIZE:      size of PARMS vector
 ;   RETADR:     return address of function
 ;   TOCALL:     function to be called
+
+; Exports parameters
+PSTACKP >
+PSIZE   >
+RETADR  >
+TOCALL  >
+CALL    >
 
 ; internal variables of call
 i       K  /0000   ; counter
@@ -192,6 +290,9 @@ CRETURN RS CALL      ; when all functions are called
 CTEMP1   K   /0000    ; return address
 CTEMP2   K   /0000    ; frame size
 
+; exports
+CALLRET  >
+
 CALLRET     K   /0000     ; return address
             SC  POP       ; pops size of local
             LD  BASEP     ; debug
@@ -232,22 +333,6 @@ GOTOPREV    K   /0000     ; returns
 
 
 
-; CHANGEBP:
-;   Move pointers to new position on context switch
-; Parameters:
-;   BASEOFFSET: offset of the new position in
-;               relation to old base pointer
-
-BASEOFFSET  K  /0000
-
-CHANGEBP JP /000         ; return address
-         LD BASEOFFSET   ; loads offset
-         +  BASEP        ; add it base pointer
-         MM BASEP        ; store new value
-         LD BASEOFFSET   ; loads offset
-         +  STACKTP      ; add it to stack pointer
-         MM STACKTP      ; stores new value
-         RS CHANGEBP     ; returns
 ; Second call
 ; teste2
 TEMP2   K  /0000
@@ -334,7 +419,7 @@ PARAM1  K    /0000
 PARAM2  K    /0000
 PARAM3  K    /0000
 
-MAIN         LV     /03          ; loads value 3
+MAINFAKE     LV     /03          ; loads value 3
              MM     PSIZE        ; three parameters
              LV     /05          ; loads value 5
              MM     PARAM1       ; parameter 1

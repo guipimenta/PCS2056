@@ -1,0 +1,20 @@
+program
+begin
+  def void fatorial (integer #n)
+  begin
+    declare integer #fat, #temp2;
+    if #n == 1 then
+      return 1;
+    fend
+    #temp2 = #n - 1;
+    #fat = #n * fatorial(#temp2);
+    return #fat;
+  end
+
+  def void main
+  begin
+    declare integer #fat;
+    #fat = fatorial(5)
+  end
+end
+
