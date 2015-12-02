@@ -1,0 +1,620 @@
+;
+;   Execution Record
+;
+;       Used to organized function calls and save context
+
+@  /0000  ; absolut start
+JP START   ; goes to main (test) function
+
+
+
+; example compiled program
+; into mvn code using execution record
+
+; this is common to all
+; compiled programs
+; =======================
+
+
+; this should always be here to call main routine
+CONST1 K /0001
+START LV /FF
+      LV END
+      MM RETADR
+      LV /00
+      MM PSIZE
+      LV MAIN
+      MM TOCALL
+      SC CALL
+      END HM /00
+      HM /00
+
+; =====================
+; ends of common area
+
+PARAMN K /000   ; N parameter of function fatorial
+BUFFER K /000   ; buffer
+RETURN K /000   ; return address
+FATORIAL K /000  ; start of fatorial function
+         ;
+         ; declare integer #fat
+         ;
+         LV /00       
+         MM PLVAL
+         SC PSLOCAL
+         ;
+         ; declare integer #temp2
+         ;
+         LV /00
+         MM PLVAL
+         SC PSLOCAL
+         ;
+         ;  if #n == 1
+         ;
+         LV /00       ; first parameter
+         MM SPOS      ; paramter to read parameter 
+         SC LOADPARM  ; loads parameter
+         LD SLOADPARM ; loads parameter
+         -  CONST1       ; #n == 1?
+         JZ EQUALS    ; equals
+         ;
+         ; #temp2 = #n - 1
+         ;
+         LV /00       ; loads first parameter
+         MM SPOS      ; stores it
+         SC LOADPARM ; load fist parameter (#n)
+         LD SLOADPARM ; loads into register (#n)
+         -  CONST1       ; subtracts one
+         MM BUFFER    ; all functions should have buffer
+         LV CONST1       ; read of second local (#temp2)
+         MM LLPOS     ; parameter to write local routine
+         LD BUFFER    ; loads buffer
+         MM SLVAL     ; stores value to be stores into #temp2
+         SC STORELOCAL ; calls load route: #temp2 = #n - 1
+         ;
+         ; fatorial(#temp2)
+         ;
+         LV CONST1       ; loads second local
+         MM LLPOS     ; stores as parameter to load function
+         SC LOADLOCAL ; calls read local subrotine
+         LD LLRET     ; loads value
+         MM PARAMN    ; stores parameter into N
+         LV CONST1       ; fatorial has 1 argument
+         MM PSIZE     ; stores argument size
+         LV PARAMN    ; top of vector
+         MM PSTACKP   ; stores at params vector pointer
+         LV RETFAT   ; return address
+         MM RETADR    ; return address
+         LV FATORIAL  ; load fatorial address function
+         MM TOCALL    ; what function to be called
+         SC CALL      ; fatorial(#temp2)
+RETFAT   K  /00       ; returns
+         LV /00       ; first parameter
+         MM SPOS      ; paramter to read parameter 
+         SC LOADPARM ; loads parameter
+         ;
+         ; #fat = #n * fatorial(#temp2)
+         ;
+         *  RETURN     ; return value
+         MM SLVAL      ; value to be stored
+         LV /00        ; read of second local (#fat)
+         MM SLPOS      ; parameter to write local routine
+         SC STORELOCAL ; calls save routine
+         ;
+         ; return #fat ; returns #fat
+         ;
+         LV /00        ; read first local (#fat)
+         MM LLPOS      ; stores as parameter
+         SC LOADLOCAL  ; calls load local subroutine
+         LD LLRET      ; loads value
+         MM RETURN     ; returns
+         SC CALLRET    ; goback
+EQUALS   LV /01       ; start to return
+         MM RETURN    ; return 1;
+         SC CALLRET   ; returns
+
+
+MAIN K /0000
+     ;
+     ; declare integer #fat
+     ;
+     LV /00  
+     MM PLVAL   
+     SC PSLOCAL
+     ;
+     ; fatorial(5) call
+     ;
+     LV /01     ; fatorial has 1 argument
+     MM PSIZE   ; stores argument size
+     LV /05     ; loads value 05
+     MM PARAMN  ; stores parameter into N
+     LV PARAMN  ; top of vector
+     MM PSTACKP ; stores at params vector pointer
+     LV RETMAIN1 ; return address
+     MM RETADR  ; return address
+     LV FATORIAL ; load fatorial address function
+     MM TOCALL  ; what function to be called
+     SC CALL    ; fatorial(5)
+RETMAIN1 K /000 
+     ;
+     ; #fat = fatorial(5)
+     ;
+     LD RETURN  ; loads returned value
+     MM SLVAL   ; stores into storelocal param
+     LV /00     ; to store on first local
+     MM SLPOS   ; set position param
+     SC STORELOCAL ; stores
+     SC CALLRET
+
+;
+; Variables and constant declarions
+;
+
+; Stack Structure
+STACK    $ =100     ; defines a stack for 100 bytes
+UNITSIZE K /0002    ; each unit in the stack contains 
+BASEP    K STACK    ; base pointer
+STACKTP  K STACK    ; top of stack pointer
+
+; Instruction assember
+READINS  K /8000    ; used to assembly a read instruction
+STOREINS K /9000    ; used to assembly a store to memory
+SCINS    K /A000    ; call instruction
+
+
+; Parameters from pop/push function
+POPVAL  K   /0A0A   ; address to get poped value
+PUSHVAL K   /0A0A   ; address to push value
+
+
+; PUSH:
+;   Store 1 byte value on the stack
+; Parameters:
+;   PUSHVAL: memory address to read byte from
+
+PUSH    JP /000
+        LD  STACKTP     ; loads latest position
+        +   STOREINS    ; generates instruction
+        MM  STORE       ; saves address
+        LD  PUSHVAL     ; loads push val
+STORE   K   /0000       ; assembled instruction
+        LD  STACKTP     ; loads stack top
+        +   UNITSIZE    ; update it
+        MM  STACKTP     ; stores it 
+        RS  PUSH        ; returns push
+
+; PUSHLOCAL:
+;       Push a local variable into the stack
+; Parameters:
+;       PLVAL: value to be pushed into local context
+
+; exports
+PLVAL   >
+PSLOCAL >
+
+PLFSIZE JP /0000    ; Stores frame size
+PLVAL   JP /0000    ; value to be stored
+
+PSLOCAL JP /000     ; Return Address
+        SC POP      ; gets current locals frame size
+        MM PLFSIZE  ; saves it
+        LD PLVAL    ; loads value
+        MM PUSHVAL  ; loads into push val memory
+        SC PUSH     ; pushes into stack local variable
+        LD PLFSIZE  ; loads frame size
+        +  UNITSIZE ; sums one unit
+        MM PUSHVAL  ; pushes into stack
+        SC PUSH     ; stores it 
+        RS PSLOCAL  ; returns
+
+; LOADLOCAL
+;   Loads local variable value
+; PARAMS
+;   LLPOS  position to be loaded from
+;   LLRET  where to return the read value
+
+LLPOS     >
+LLRET     >
+LOADLOCAL >
+LLPOS  JP /0000      ; position to be read
+LLRET  JP /0000      ; return address
+
+
+LOADLOCAL JP /00      ; return address
+          LD LLPOS    ; load position
+          MM CSPOS    ; loads into calculate shift params
+          SC CALCSHIFT ; get shift
+          LD STACKTP  ; sums with stack
+          -  CSRET    ; calculates shift
+          +  READINS  ; read local instruction
+          MM LLREAD   ; stores read local instruction
+LLREAD    K  /0000    ; read local
+          MM LLRET    ; puts on return
+          RS LOADLOCAL ; returns
+
+; CALCSHIFT
+;   calculate shift to read or store a param
+; PARAMS
+;   CSPOS position to calculate shift
+;   CSRET shift size
+
+CSPOS   K /0000
+CSRET   K /0000
+CSBUF1  K /0000     
+CSBUF2  K /0000     
+
+CALCSHIFT JP /00       ; return address
+          LD STACKTP   ; loads stacktop pointer
+          -  UNITSIZE  ; goes back one position
+          +  READINS   ; creates read instruction
+          MM CSLOADV   ; creates instruction
+CSLOADV   K  /000      ; reads locals size
+          MM CSBUF1    ; stores size
+          LD LLPOS     ; loads position
+          *  UNITSIZE  ; count space on memory
+          MM CSBUF2    ; saves size into buffer 2
+          LD CSBUF1    ; gets size
+          -  CSBUF2    ; now we calculate shift size
+          -  UNITSIZE  ; one of the size
+          MM CSRET     ; stores shift
+          RS CALCSHIFT ; returns
+
+; STORELOCAL
+;   stores local variable
+; PARAMS
+;   SLVAL: value to be stored
+;   SLPOS: position to be stored
+
+SLVAL      >
+SLPOS      >
+STORELOCAL >
+
+SLVAL K /0000
+SLPOS K /0000
+
+STORELOCAL K /000       ; return address
+           LD SLPOS     ; loads position
+           MM CSPOS     ; stores into calculate shift params
+           SC CALCSHIFT ; get shift
+           LD STACKTP   ; stack pointer
+           -  CSRET     ; sums with stack
+           +  STOREINS  ; read local instruction
+           MM SLWRITE   ; creates a instruction
+           LD SLVAL     ; loads vall
+SLWRITE    K /0000      ; stores val
+           RS STORELOCAL ; returns
+
+
+; Exports parameters
+SPOS      >
+SLOADPARM >
+LOADPARM  >
+
+; LOADPARM
+;   Load parameter from frame on the stack and 
+;   put it into SLOADPARM
+; Parameters:
+;   SPOS:  position to be read (0 based vector)
+
+SPOS        K   /0000         ; declaration of position
+SLOADPARM   K   /0000         ; where function returns
+STEMP       K   /0000         ; temporary needs
+
+
+LOADPARM JP /000        ; return address
+         LD SPOS        ; loads base pointer
+         *  UNITSIZE    ; calculates position
+         MM STEMP       ; temporary
+         LD  BASEP      ; add offset to pointer
+         +   STEMP      ; loads temp
+         +  READINS     ; create a instruction
+         MM GETPARM     ; saves instruction
+GETPARM  K  /0000       ; fetches param
+         MM SLOADPARM   ; loaded param
+         RS LOADPARM    ; returns
+
+; Exports parameters
+SSPOS      >
+SSVAL      >
+STOREPARAM >
+
+; STOREPARM
+;   Stores parms into stack frame
+; Parameters:
+;    SSPOS: stack position to be written
+;    SSVAL: parameter to be stored
+
+SSPOS  K   /0000         ; Declaration of position
+SSVAL  K   /0000         ; Declaration of value
+SSTEMP K   /0000         ; temporary holder
+STOREPARM  JP /000       ; return address
+           LD SSPOS      ; loads position
+           *  UNITSIZE   ; unit size
+           +  BASEP      ; base pointer
+           +  STOREINS   ; reads instruction
+           MM SAVEPARM   ; creates instruction
+           LD SSVAL      ; loads val
+SAVEPARM   K  /0000      ; executes instruction
+           RS STOREPARM  ; goes back
+
+; POP
+;   Pop 1 byte value from the stack
+; Parameters:
+;   POPVAL: where to store value poped from stack
+
+POP     JP /000
+        LD STACKTP      ; loads stack pointer
+        -  BASEP        ; subtracts base pointer
+        JN PRETURN      ; if negative, stack is empty
+        LD STACKTP      ; loads stack pointer
+        -  UNITSIZE     ; update val
+        MM STACKTP      ; stores updated val
+        LD STACKTP      ; load latest positon
+        +  READINS      ; assembly a load instruction
+        MM LOAD         ; stores assembled instruction
+LOAD    K  /0000        ; executes assembled instruction
+        MM POPVAL       ; stores pop val
+PRETURN RS POP          ; return pop
+
+;
+; Switch context functions
+;
+
+; CALL
+;   function to create a new context
+; PARAMETERS
+;   PARMS:      vector containg the function parameters
+;   PSIZE:      size of PARMS vector
+;   RETADR:     return address of function
+;   TOCALL:     function to be called
+
+; Exports parameters
+PSTACKP >
+PSIZE   >
+RETADR  >
+TOCALL  >
+CALL    >
+
+; internal variables of call
+i       K  /0000   ; counter
+PSTACKP K  /0000   ; pointer to params stack
+PSIZE   K  /0000   ; parameter size
+RETADR  K  /0000   ; return address of current function
+TOCALL  K  /0000   ; function to be called
+
+;function body
+CALL    JP  /000     ; return address
+        LV  /00      ; zeros counter
+        MM  i        ; stores zero counter
+        LD  STACKTP  ; load stack top pointer
+        MM  BASEP    ; moves base pointer to stack top pointer
+        LD  PSIZE    ; calculates stack real size
+        *   UNITSIZE ; multiply by unit size
+        MM  PSIZE    ; saves params size
+FORL    LD  i        ; loads counter
+        -   PSIZE    ; compares to the size
+        JZ  FORLEND  ; end of loop
+        LD  READINS  ; start instruction to read next param
+        +   PSTACKP  ; creates new read function
+        MM  LOADP    ; stores at load new parameters
+LOADP   K   /0000    ; load next param
+        MM  PUSHVAL  ; stores parameter to be pushed
+        SC  PUSH     ; push parameter into stack
+        LD  PSTACKP  ; loads stack pointer
+        +   UNITSIZE ; goes to next position
+        MM  PSTACKP  ; stores
+        LD  i        ; loads i
+        +   UNITSIZE ; sums unit size
+        MM  i        ; new i
+        JP  FORL     ; goest to for
+FORLEND LD  RETADR   ; load return address
+        MM  PUSHVAL  ; prepares to store return address
+        SC  PUSH     ; stores return address
+        LD  UNITSIZE ; load constant 2
+        *   UNITSIZE ; return address + frame size
+        +   i        ; sums 2 to i, calculate size of the frame
+        MM  PUSHVAL  ; prepares push framesize
+        SC  PUSH     ; push return address
+        LV  /00      ; loads zero value: size of locals
+        MM  PUSHVAL  ; pushes into stack
+        SC  PUSH     ; pushes
+        LD  TOCALL   ; loads to call address
+        +   SCINS    ; creates new to call instruction
+        MM  CALLSUB  ; saves created instruction
+CALLSUB K   /0000    ; calls subrotine
+CRETURN RS CALL      ; when all functions are called
+
+; CALLRET
+;   returns to previous function
+
+CTEMP1   K   /0000    ; return address
+CTEMP2   K   /0000    ; frame size
+
+; exports
+CALLRET  >
+
+CALLRET     K   /0000     ; return address
+            SC  POP       ; pops size of local
+            LD  BASEP     ; debug
+            LD  POPVAL    ; loads local variables frame size
+            MM  CTEMP1    ; stores frame size
+            LD  STACKTP   ; loads stack pointer
+            -   CTEMP1    ; removes all locals  
+            MM  STACKTP   ; stores pointer without locals
+            SC  POP       ; pops current frame size
+            SC  POP       ; return address (to be called)
+            LD  POPVAL    ; loads pop value (return address)
+            MM  CTEMP1    ; saves return address
+            LD  BASEP     ; loads base pointer
+            MM  STACKTP   ; new stack top pointer
+            LD  BASEP     ; loads base pointer
+            -   UNITSIZE  ; goes back 1 position
+            +   READINS   ; creates a read instruction
+            MM  LOADFSIZE ; stores instruction
+LOADFSIZE   K   /0000     ; load locals frame size
+            MM  CTEMP2    ; stores locals frame frame size
+            LD  BASEP     ; loads base pointer
+            -   CTEMP2    ; jumps locals
+            -   UNITSIZE  ; jumps local frame size
+            MM  BASEP     ; base pointer to start of locals
+            LD  BASEP     ; loads base pointer
+            -   UNITSIZE  ; goes back one postion
+            +   READINS   ; creates a read instruction
+            MM  LOADFSIZE2 ; stores instruction
+LOADFSIZE2  K   /0000     ; loads frame size
+            MM  CTEMP2    ; real value of new base pointer
+            LD  BASEP     ; loads base pointer
+            -   CTEMP2    ; removes frame size
+            MM  BASEP     ; base pointer at stack start
+            LD  CTEMP1    ; loads return address
+            +   SCINS     ; loads SC instruction
+            MM  GOTOPREV  ; returns to previous function
+GOTOPREV    K   /0000     ; returns 
+
+
+
+; Second call
+; teste2
+TEMP2   K  /0000
+TEST2   JP /0000         ; return address
+        LV /00           ; load 0
+        MM SPOS          ; stores position of param
+        SC LOADPARM      ; loads parameter
+        MM TEMP2         ; stores parameter
+        LV /02           ; loads constant
+        *  TEMP2         ; multiply
+        MM TEMP2         ; saves into TEMP2
+        LV /01           ; loads value 01
+        MM SSPOS         ; saves position were to store
+        LD TEMP2         ; loads data to be stored
+        MM SSVAL         ; saves value to store
+        SC STOREPARM     ; stores into stack
+        SC CALLRET       ; returns
+
+; test
+; simulates params stack
+TESTBUF  K  /000          ; must have temporary
+TEST    JP /000           ; return address
+        LV /AB            ; load any value
+        MM PLVAL          ; stores into push address
+        SC PSLOCAL        ; stores into stack, we have one parameter :), position 4 on the stack (3 zero-based)
+        LV /00            ; try to read first param
+        MM SPOS           ; gogo
+        SC LOADPARM       ; calls load param function
+        LD SLOADPARM      ; reads
+        MM TESTBUF        ; buffer for dealing with the stack      
+        LV /01            ; try to read second param
+        MM SPOS           ; sttores
+        SC LOADPARM       ; calls load param function
+        LD SLOADPARM      ; reads
+        +  TESTBUF        ; stores a + b
+        MM SSVAL          ; prepare to store as local parameter
+        LV /05            ; prepares to store local 1 (position + 2)
+        MM SSPOS          ; stores position to read
+        SC STOREPARM      ; stores into stack
+        LV /02            ; loads value 2
+        MM PSIZE          ; two parameters
+        LD TESTBUF        ; loads value 2
+        MM PARAM1         ; parameter 1
+        LV PARAM1         ; top of vector
+        MM PSTACKP        ; stores at params vector
+        LV RETRET         ; loads return address
+        MM RETADR         ; address return of main
+        LV TEST2          ; loads function address
+        MM TOCALL         ; function that should be called
+        SC CALL           ; lets do it!
+RETRET  JP /000           ; where call returns
+        LD BASEP          ; debug: where is it
+        LV /05            ; loads parameter index
+        MM SPOS           ; where to read
+        SC LOADPARM       ; loads it
+        LD SLOADPARM      ; loads return value
+RETFCAL LV /FF            ; loads a value
+        LD SLOADPARM      ; debug
+        SC CALLRET        ; goes back to main routine
+
+; this is a test routine
+; program entry point
+
+STACKTEST    LV  /AA
+             MM  UPPER
+             LV  /FF
+             MM  LOWER
+             SC  ASMNUM
+             MM  PUSHVAL
+             SC  PUSH
+             LV  /CC
+             MM  UPPER
+             LV  /45
+             MM  LOWER
+             SC  ASMNUM
+             MM  PUSHVAL
+             SC  PUSH
+             SC  POP
+             LD  POPVAL       
+             RS  STACKTEST
+
+ ; header to call function
+PARAM1  K    /0000
+PARAM2  K    /0000
+PARAM3  K    /0000
+
+MAINFAKE     LV     /03          ; loads value 3
+             MM     PSIZE        ; three parameters
+             LV     /05          ; loads value 5
+             MM     PARAM1       ; parameter 1
+             LV     /09          ; loads value 3
+             MM     PARAM2       ; parameter 2
+             LV     /00          ; parameter 3   
+             MM     PARAM3       ; start of parameter vector
+             LV     PARAM1       ; top of vector
+             MM     PSTACKP      ; stores at params vector
+             LV     RETMAIN      ; loads return address
+             MM     RETADR       ; address return of main
+             LV     TEST         ; loads function address
+             MM     TOCALL       ; function that should be called
+             SC     CALL         ; lets do it!
+RETMAIN      LV     /0A          ; return of main
+OVER         HM     /00          ; over 
+
+
+;
+; Number assembler
+;
+;   Generates numbers that are composed by lower and upper
+;   params:
+;       UPPER: upper part of the number
+;       LOWER: lower part of the number
+;   returns:
+;       ASSEMBLED: equals UPPER LOWER
+;
+
+UPPER       K  /0000    ; upper part of number
+LOWER       K  /0000    ; lower part of number
+ASSEMBLED   K  /0000    ; assembled number
+CONSTMUL    K  /0100    ; multiply constant
+
+; ASMNUM
+;   Assembly 1 byte number with upper and low word
+; Parameters
+;   UPPER: upper word from number
+;   LOWER: lower word from number
+; Returns
+;   ASSEMBLED: 1 byte number (HL)
+
+ASMNUM  JP /000
+        LD UPPER        ; loads UPPER
+        *  CONSTMUL     ; multiplies 10
+        +  LOWER        ; sums up lower part
+        MM ASSEMBLED    ; stores assembled number
+        RS ASMNUM       ; returns
+
+
+
+
+
+
+
+
+; physical end of program
+# EXECUTION
